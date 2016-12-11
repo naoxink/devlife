@@ -1,0 +1,343 @@
+body, html {
+	height:100%;
+	padding:0;
+	margin: 0;
+}
+body {
+	background-color:#DDD;
+	color:#000;
+	font-family: sans-serif;
+}
+.left, .right {
+	float:left;
+	width: 50%;
+	min-height: 100%;
+}
+div {
+	font-weight:700;
+}
+
+div > span {
+	font-weight:400;
+}
+
+ul {
+	list-style-type: square;
+}
+
+button {
+	outline:none;
+	border: 1px outset #AAA;
+	cursor:pointer;
+	display: block;
+	margin-bottom: 5px;
+}
+
+.button-section {
+	/*width:300px;*/
+	border: 2px outset #AAA;
+	margin:20px;
+	padding:20px;
+	background-color: #FFF;
+}
+.button-section.compact {
+	height: 20px;
+	overflow: hidden;
+}
+.button-section.compact > .header {
+	margin: -20px -20px 0 -20px;
+	height: 60px;
+	line-height: 60px;
+	float: none;
+}
+.button-section.compact > .header:after {
+	content: ' +';
+}
+.button-section > .header {
+	margin: -20px -20px 10px -20px;
+	color:#FFF;
+	font-size:16px;
+	font-weight:400;
+	background-color: #009;
+	padding: 2px 10px;
+	cursor: pointer;
+}
+
+.spaced {
+	margin-top:60px;
+}
+.spaced.thin {
+	margin-top:10px;
+}
+
+.help {
+	cursor:pointer;
+	position: relative;
+}
+
+.help.stat:hover {
+	text-decoration: underline;
+}
+
+.help:hover:before {
+	content:attr(data-title);
+	color:#000;
+	position: absolute;
+	top: -1px;
+	left: 100%;
+	margin-left: 2px;
+	font-size: 14px;
+	font-weight: normal;
+	background-color: #AAA;
+	padding: 10px;
+	z-index: 2;
+	width: 200px;
+	border: 1px solid #666;
+}
+.right .help:hover:before {
+	left: 0;
+	margin-left: -222px;
+}
+.rentRoom {
+	padding:5px;
+	margin: 2px;
+	cursor:pointer;
+	display: block;
+}
+
+.rentRoom.owned,
+.rentRoom.owned:hover {
+	border: 0;
+	background-color: transparent;
+	color: #000;
+}
+.rentRoom:disabled {
+	color: #888;
+	border: 1px outset #AAA;
+}
+
+ul > li > button {
+	margin-left: 10px;
+}
+
+.projectProgress {
+	position: absolute;
+	height: 5px;
+	bottom: -6px;
+	left: 0;
+	width: 100%;
+	min-width: 0%;
+	background-color: blue;
+}
+
+#salaries-timer-bar-container .salaries-timer-bar,
+#rents-timer-bar-container .rents-timer-bar {
+	height: 10px;
+	background-color: blue;
+}
+
+.startProject:disabled:after {
+	content: attr(data-profit);
+	margin-left: 5px;
+}
+
+#lottery #winner,
+#lottery #owned {
+	float: left;
+	width: 50%;
+	text-align: center;
+}
+#lottery #winner:before {
+	content: 'Winner number: ';
+}
+#lottery #owned:before {
+	content: 'Your number: ';
+}
+#lottery #info {
+	background-color: #000;
+	color: #FFF;
+	padding: 10px;
+	text-align: center;
+	margin: 5px 0;
+	text-transform: uppercase;
+}
+#lottery #info.win {
+	color: green;
+}
+#lottery #info.lose {
+	color: red;
+}
+.job-list > li > button {
+	display: inline-block;
+}
+#employees-section .help.label {
+	width: 70%;
+	display: inline-block;
+}
+.hireContainer {
+	text-align: right;
+	width: 25%;
+	display: inline-block;
+}
+.hireEmployee,
+.fireEmployee,
+.employeeCounter {
+	text-align: center;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+}
+
+/* ACHIEVEMENTS */
+.achievementPopup {
+	background-color: transparent;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+.achievementPopup .container {
+	position: fixed;
+	background-color: #DDD;
+	border: 1px solid #333;
+	width: 300px;
+	z-index: 2;
+	top: 40%;
+	left: 50%;
+	margin-left: -150px;
+}
+.achievementPopup .container .title {
+	text-align: center;
+	font-weight: bold;
+	background-color: #009;
+	color: #FFF;
+	padding: 5px 10px;
+	margin-top: 0;
+}
+.achievementPopup .container .description {
+	text-align: center;
+	font-weight: 100;
+	color: #333;
+}
+.achievementPopup .container .closeBtn {
+	margin: 10px auto 10px auto;
+	width: 100px;
+}
+#achievement-list {
+	display: none;
+	background-color: transparent;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	color: #333;
+}
+#achievement-list table:before {
+	content: 'Achievements table';
+	background-color: #009;
+	color: #FFF;
+	padding: 5px 10px;
+	display: block;
+}
+#achievement-list table {
+	position: fixed;
+	top: 10%;
+	left: 50%;
+	width: 400px;
+	margin-left: -200px;
+	border: 1px solid #333;
+	border-collapse: collapse;
+}
+#achievement-list table tr td {
+	padding: 5px 10px;
+	background-color: #999;
+}
+#achievement-list table tr.locked td {
+	background-color: #FFF;
+	color: #AAA;
+}
+#achievement-list table tr.unlocked td {
+	background-color: green;
+	color: #FFF;
+}
+
+/* navbar */
+.navbar {
+	height: 60px;
+	line-height: 60px;
+	margin: 0;
+	padding: 0 30px;
+	background-color: #FFF;
+	border-bottom: 1px solid #000;
+}
+.navbar > .brand {
+	float: left;
+	overflow: hidden;
+	max-height: 60px;
+}
+.navbar > .brand > span {
+	font-size: 30px;
+}
+.navbar > .brand > span:after {
+	content: ' v2.0';
+	color: #777;
+	font-size: 15px;
+}
+.navbar > .menu {
+	float: right;
+}
+.navbar > .menu > .dropdown {
+	min-width: 100px;
+	text-align: center;
+}
+
+/* dropdowns */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    line-height: initial;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #FFF;
+	border: 2px outset #AAA;
+    min-width: 100px;
+}
+.dropdown .dropdown-button {
+	width: 100%;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+.dropdown:hover .dropdown-button {
+	background-color: #009;
+	color: #FFF;
+}
+.dropdown-content ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.dropdown-content ul > li {
+	padding: 5px 10px;
+	cursor: pointer;
+	text-align: left;
+	width: 200px;
+}
+.dropdown-content ul > li.disabled {
+	color: rgba(0, 0, 0, .5);
+	cursor: default;
+}
+.dropdown-content ul > li:not(.disabled):hover {
+	background-color: #009;
+	color: #FFF;
+}

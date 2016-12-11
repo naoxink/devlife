@@ -1,0 +1,448 @@
+body, html {
+	height:100%;
+	padding: 0;
+	margin: 0;
+}
+body {
+	background-color:#F4F4F4;
+	color:#333;
+	font-family:sans-serif;
+}
+.left, .right {
+	float:left;
+	width: 50%;
+	min-height: 100%;
+}
+div {
+	font-weight:700;
+}
+
+div > span {
+	font-weight:400;
+}
+
+ul {
+	list-style-type: disc;
+}
+
+hr{
+	border: 0;
+	margin: 0;
+	padding: 0;
+	border-bottom: 1px solid #EEE;
+}
+
+button, .rentRoom {
+	outline: none;
+	border:1px solid #2e6da4;
+	background-color: #337ab7;
+	font-family: sans-serif;
+	color:#FFF;
+	cursor:pointer;
+	margin:5px 0;
+	padding:5px 10px;
+	display: block;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+}
+
+button:disabled,button:disabled:hover,
+.rentRoom:disabled, .rentRoom:disabled:hover {
+	color:#666;
+	background-color:#DDD;
+	border-color:#CCC;
+}
+
+.button-section {
+	margin:20px;
+	padding:20px;
+	background-color: #FFF;
+	-webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+	box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+}
+.button-section.compact {
+	height: 20px;
+	overflow: hidden;
+}
+.button-section.compact > .header {
+	margin: -20px -20px 0 -20px;
+	height: 40px;
+	line-height: 40px;
+	float: none;
+	background-color: #d9edf7;
+}
+.button-section.compact > .header:after {
+	font-size: 12px;
+	content: ' (Click to show)';
+	-webkit-opacity: .5;
+	-moz-opacity: .5;
+	-ms-opacity: .5;
+	-o-opacity: .5;
+	opacity: .5;
+}
+.button-section > .header {
+	margin: -20px -20px 10px -20px;
+	padding:10px;
+	font-size:16px;
+	font-weight:700;
+	color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+    cursor: pointer;
+}
+.button-section > .header:after {
+	font-size: 12px;
+	content: ' (Click to collapse)';
+	-webkit-opacity: .5;
+	-moz-opacity: .5;
+	-ms-opacity: .5;
+	-o-opacity: .5;
+	opacity: .5;
+}
+.spaced {
+	margin-top:60px;
+}
+.spaced.thin {
+	margin-top:10px;
+}
+
+.help {
+	cursor:pointer;
+	position: relative;
+}
+.help.stat {
+	padding: 3px 5px;
+}
+.help.stat:hover {
+	background-color:rgba(150, 150, 150, .1);
+}
+
+.help:hover:before {
+	content:attr(data-title);
+	color: #8a6d3b;
+    background-color: #fcf8e3;
+    border: 1px solid #faebcc;
+    padding: 10px;
+	position: absolute;
+	top: -1px;
+	left: 100%;
+	margin-left: 2px;
+	width: 200px;
+	font-size: 14px;
+	font-weight: normal;
+	z-index: 2;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+}
+.right .help:hover:before {
+	left: 0;
+	margin-left: -222px;
+}
+.rentRoom.owned,
+.rentRoom.owned:hover {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border: 1px solid #d6e9c6;
+}
+
+button:hover, .rentRoom:hover {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
+
+.jobList {
+
+}
+ul > li > button {
+	margin-left: 10px;
+}
+
+.projectProgress,
+.salaries-timer-bar,
+.rents-timer-bar {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	min-width: 0%;
+	background-color: #dff0d8;
+	-webkit-transition: width .5s;
+	-o-transition: width .5s;
+	transition: width .5s;
+	-webkit-opacity: .9;
+	-moz-opacity: .9;
+	-ms-opacity: .9;
+	-o-opacity: .9;
+	opacity: .9;
+	border-right: 1px solid rgba(0, 0, 0, .2);
+}
+
+#salaries-timer-bar-container,
+#rents-timer-bar-container {
+	position: relative;
+	height: 20px;
+}
+#salaries-timer-bar-container .salaries-timer-bar,
+#rents-timer-bar-container .rents-timer-bar {
+	height: 20px;
+}
+
+.startProject:disabled:after {
+	content: attr(data-profit);
+	margin-left: 5px;
+}
+#lottery #winner,
+#lottery #owned {
+	display: inline-block;
+	width: 45%;
+	text-align: center;
+	padding: 15px 0 5px 0;
+}
+#lottery #winner:before {
+	content: 'Winner number: ';
+}
+#lottery #owned:before {
+	content: 'Your number: ';
+}
+#lottery #info {
+	background-color: rgba(0, 0, 0, .05);
+	border: 1px solid rgba(0, 0, 0, .05);
+	padding: 10px;
+	text-align: center;
+	margin: 5px 0;
+	text-transform: uppercase;
+}
+#lottery #info.lose {
+	color: #d9534f;
+}
+#lottery #info.win {
+	color: #5cb85c;
+}
+.job-list > li > button,
+.employee-list > li > button {
+	display: inline-block;
+}
+#employees-section .help.label {
+	width: 70%;
+	display: inline-block;
+}
+.hireContainer {
+	text-align: right;
+	width: 25%;
+	display: inline-block;
+}
+.hireEmployee,
+.fireEmployee,
+.employeeCounter {
+	text-align: center;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	padding: 0 5px;
+	margin: 0;
+}
+
+/* ACHIEVEMENTS */
+.achievementPopup {
+	background-color: rgba(255, 255, 255, .7);
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+}
+.achievementPopup .container {
+	position: fixed;
+	background-color: #FFF;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+	box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+	border-radius: 3px;
+	width: 300px;
+	z-index: 2;
+	top: 40%;
+	left: 50%;
+	margin-left: -150px;
+	padding-bottom: 10px;
+	overflow: hidden;
+}
+.achievementPopup .container .title {
+	text-align: center;
+	font-weight: bold;
+	background-color: #d9edf7;
+	color: #31708f;
+	padding: 10px;
+	margin-top: 0;
+}
+.achievementPopup .container .description {
+	text-align: center;
+	font-weight: 100;
+	color: #333;
+}
+.achievementPopup .container .closeBtn {
+	margin: 10px auto 0 auto;
+	width: 100px;
+}
+#achievement-list {
+	display: none;
+	background-color: rgba(225, 225, 225, .9);
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	color: #333;
+}
+#achievement-list table:before {
+	content: 'Achievements table';
+	padding: 10px;
+	display: block;
+	background-color: #d9edf7;
+	color: #31708f;
+	width: 200%;
+}
+#achievement-list table {
+	overflow: hidden;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	-webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+	box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
+	border-radius: 3px;
+	position: fixed;
+	top: 10%;
+	left: 50%;
+	width: 400px;
+	margin-left: -200px;
+	border-collapse: collapse;
+	background-color: #FFF;
+}
+#achievement-list table tr td {
+	padding: 5px 10px;
+	color: #333;
+	border: 1px solid #EEE;
+}
+#achievement-list table tr.locked td {
+	color: #DDD;
+}
+#achievement-list table tr.unlocked td {
+	color: #3c763d;
+}
+
+/* navbar */
+.navbar {
+	height: 60px;
+	line-height: 60px;
+	margin: 0;
+	padding: 0 30px;
+	-webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+	box-shadow: 0 0 5px rgba(0, 0, 0, .2);
+	background-color: #333;
+}
+.navbar > .brand {
+	float: left;
+	overflow: hidden;
+	max-height: 60px;
+}
+.navbar > .brand > span {
+	font-size: 30px;
+	color: #FFF;
+	padding: 0 15px;
+}
+.navbar > .brand > span:before {
+	content: '|';
+	color: #bce8f1;
+}
+.navbar > .brand > span:after {
+	content: ' v3.0';
+	margin-left: 5px;
+	color: #777;
+	font-size: 15px;
+}
+.navbar > .menu {
+	float: right;
+}
+.navbar > .menu > .dropdown {
+	min-width: 100px;
+	text-align: center;
+}
+
+/* dropdowns */
+.dropdown {
+    position: relative;
+    display: inline-block;
+    line-height: initial;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #FFF;
+    min-width: 100px;
+    -webkit-border-radius: 0 0 3px 3px;
+	-moz-border-radius: 0 0 3px 3px;
+	-ms-border-radius: 0 0 3px 3px;
+	-o-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+	-webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, .3);
+	box-shadow: 0 3px 3px rgba(0, 0, 0, .3);
+}
+.dropdown .dropdown-button {
+	width: 100%;
+	height: 60px;
+	margin: 0;
+	padding: 0 10px;
+	border: 0;
+	font-size: 14px;
+	background-color: #222;
+	-webkit-border-radius: 0 0 3px 3px;
+	-moz-border-radius: 0 0 3px 3px;
+	-ms-border-radius: 0 0 3px 3px;
+	-o-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+.dropdown:hover .dropdown-button {
+	background-color: #444;
+	color: #FFF;
+}
+.dropdown-content ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.dropdown-content ul > li {
+	padding: 10px;
+	cursor: pointer;
+	text-align: left;
+	width: 200px;
+	font-size: 14px;
+}
+.dropdown-content ul > li.disabled {
+	color: rgba(0, 0, 0, .5);
+	cursor: default;
+}
+.dropdown-content ul > li:not(.disabled):hover {
+	background-color: #d9edf7;
+	color: #31708f;
+}
