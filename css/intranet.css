@@ -341,3 +341,11 @@ ul > li > button {
 	background-color: #009;
 	color: #FFF;
 }
+.dropdown-content a {
+	color: #333;
+	text-decoration: none;
+	display: block;
+}
+.dropdown-content li:hover a {
+	color: #FFF;
+}

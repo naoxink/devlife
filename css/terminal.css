@@ -368,3 +368,9 @@ ul > li > button {
 .dropdown-content ul > li:not(.disabled):hover {
 	background-color: rgba(0, 255, 0, .2);
 }
+
+.dropdown-content a {
+	color: #0F0;
+	text-decoration: none;
+	display: block;
+}
