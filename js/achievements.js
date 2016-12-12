@@ -82,6 +82,27 @@ var achievements = [
 			return Stats.warehouses >= 1
 		},
 		'done': false
+	},
+	{
+		'title': 'Drop all your jobs',
+		'check': function(){
+			return Stats.jobs.length <= 0
+		},
+		'done': false
+	},
+	{
+		'title': 'Achieve the minimum pulse speed',
+		'check': function(){
+			return Core.base.pulseDuration <= Core.base.minPulseDuration
+		},
+		'done': false
+	},
+	{
+		'title': 'Unlock a parallel project',
+		'check': function(){
+			return Stats.improvements.indexOf('addProject') !== -1
+		},
+		'done': false
 	}
 
 ]
