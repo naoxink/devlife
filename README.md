@@ -2,4 +2,6 @@
 
 Web browser game in pure JavaScript. I hope you like it ^^
 
+### Play it now [HERE](http://naoxink.hol.es/devlife)!
+
 Check out the [wiki](https://github.com/naoxink/devlife/wiki) if you have any question! You don't find what you are looking for? Then [tell me](https://github.com/naoxink/devlife/issues) :)
