@@ -6,18 +6,17 @@ Core.projects = {  }
 Core.init = function(fromLoad){
 	document.title = 'devLife'
 	Core.initRecruitingSection()
-	Core.paySalaries()
-	Core.payRents()
 	Core.jobFinder()
 	if(!fromLoad){
 		Core.takeJob()
+		Core.startMonthTimer()
+		Core.addListeners()
 	}
 	Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 	Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
 	if(Notification.permission !== "granted"){
 		Notification.requestPermission()
 	}
-	Core.addListeners()
 	Core.updateHUD()
 }
 
@@ -51,6 +50,30 @@ Core.pulse = function(projectID, button){
 	Core.projects[projectID].engine = setTimeout(function(){
 		Core.pulse(projectID, button)
 	}, Core.base.pulseDuration)
+}
+
+Core.startMonthTimer = function(secondsLeft){
+	var sbar = Core._('.salaries-timer-bar')
+	var rbar = Core._('.rents-timer-bar')
+	var percent = 100
+	Stats.monthTimeLeft = 60
+	if(secondsLeft){
+		Stats.monthTimeLeft = secondsLeft
+		percent = (Stats.monthTimeLeft / 60) * 100
+	}
+	console.log(percent, Stats.monthTimeLeft)
+	window.monthInterval = setInterval(function(){
+		if(Stats.monthTimeLeft <= 0){
+			clearInterval(window.monthInterval)
+			Stats.money -= (Core.calcSalariesCost() + Core.calcRentCost())
+			Core.startMonthTimer()
+		}else{
+			Stats.monthTimeLeft--
+			percent = (Stats.monthTimeLeft / 60) * 100
+			if(sbar){ sbar.style.width = percent + '%' }
+			if(rbar){ rbar.style.width = percent + '%' }
+		}
+	}, 1000)
 }
 
 Core.controlPulseDuration = function(){
@@ -159,16 +182,17 @@ Core.buyCoffee = function(button){
 	var coffeeInc = Core.base.coffeeInc
 	var effectTime = Core.base.coffeeEffectTime
 	if(Stats.money < coffeePrice) return false
-	button.setAttribute('disabled', true)
 	Stats.money -= coffeePrice
-	var increment = (Core.base.moneyIncPerPulse / (Stats.employees.length + 1)) * coffeeInc
-	Core.base.moneyIncPerPulse += increment
+	Stats.coffeeIncrement = (Core.base.moneyIncPerPulse / (Stats.employees.length + 1)) * coffeeInc
+	Core.base.moneyIncPerPulse += Stats.coffeeIncrement
 	Stats.isCoffeePowered = true
 	Core.updateHUD()
-	Core.startCoffeeEffect(button, increment, effectTime)
+	Stats.coffeesBought++
+	Core.startCoffeeEffect(button, Stats.coffeeIncrement, effectTime)
 }
 
 Core.startCoffeeEffect = function(button, increment, seconds){
+	button.setAttribute('disabled', true)
 	Stats.coffeeTimeLeft = seconds
 	button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
 	window.coffeeInterval = setInterval(function(){
@@ -193,15 +217,16 @@ Core.buyEnergyDrink = function(button){
 	var energyDrinkInc = Core.base.energyDrinkInc
 	var effectTime = Core.base.energyDrinkEffectTime
 	if(Stats.money < energyDrinkCost) return false
-	button.setAttribute('disabled', true)
 	Stats.money -= energyDrinkCost
 	Core.base.pulseDuration *= energyDrinkInc
 	Stats.isEnergyDrinkPowered = true
 	Core.updateHUD()
+	Stats.energyDrinksBought++
 	Core.startEnergyDrinkEffect(button, energyDrinkInc, effectTime)
 }
 
 Core.startEnergyDrinkEffect = function(button, increment, seconds){
+	button.setAttribute('disabled', true)
 	Stats.energyDrinkTimeLeft = seconds
 	button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
 	window.energyDrinkInterval = setInterval(function(){
@@ -246,52 +271,6 @@ Core.calcRentCost = function(){
 		qty += Rents.building.price * Stats.buildings
 		qty += Rents.warehouse.price * Stats.warehouses
 	return qty <= 0 || isNaN(qty) ? 0 : qty
-}
-
-Core.paySalaries = function(){
-	var statBar = Core._('.salaries-timer-bar')
-	if(!statBar){
-		statBar = document.createElement('div')
-		statBar.className = 'salaries-timer-bar'
-		Core._('#salaries-timer-bar-container').appendChild(statBar)
-	}
-	var percent = 100
-	var salariesTimeout = 60
-	var seconds = salariesTimeout
-	window.salariesInterval = setInterval(function(){
-		Core.updateHUD()
-		seconds--
-		if(seconds <= 0){
-			clearInterval(window.salariesInterval)
-			Stats.money -= Core.calcSalariesCost()
-			Core.paySalaries()
-		}
-		percent = (seconds / salariesTimeout) * 100
-		statBar.style.width = percent + '%'
-	}, 1000)
-}
-
-Core.payRents = function(){
-	var statBar = Core._('.rents-timer-bar')
-	if(!statBar){
-		statBar = document.createElement('div')
-		statBar.className = 'rents-timer-bar'
-		Core._('#rents-timer-bar-container').appendChild(statBar)
-	}
-	var percent = 100
-	var rentsTimeout = 60
-	var seconds = rentsTimeout
-	window.rentsInterval = setInterval(function(){
-		Core.updateHUD()
-		seconds--
-		if(seconds <= 0){
-			clearInterval(window.rentsInterval)
-			Stats.money -= Core.calcRentCost()
-			Core.payRents()
-		}
-		percent = (seconds / rentsTimeout) * 100
-		statBar.style.width = percent + '%'
-	}, 1000)
 }
 
 Core.jobFinder = function(){
@@ -510,16 +489,16 @@ Core.startImprovement = function(ty, button){
 	Stats.money -= improvements[ty].cost
 	button.setAttribute('disabled', true)
 	button.innerText = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(improvements[ty].investigationTime) + ')'
-	var seconds = improvements[ty].investigationTime / 1000
+	Stats['imp' + ty + 'timeleft'] = improvements[ty].investigationTime / 1000
 	window['interval' + ty] = setInterval(function(){
-		if(seconds <= 0){
+		if(Stats['imp' + ty + 'timeleft'] <= 0){
 			Stats.improvements.push(ty)
 			improvements[ty].effect(button)
 			improvements[ty].inProgress = false
 			clearInterval(window['interval' + ty])
 		}else{
-			seconds--
-			button.innerText = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(seconds * 1000) + ')'
+			Stats['imp' + ty + 'timeleft']--
+			button.innerText = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Stats['imp' + ty + 'timeleft'] * 1000) + ')'
 		}
 	}, 1000)
 }
@@ -560,6 +539,7 @@ Core.buyTicket = function(button){
 	Stats.numTicket = Core.pad(Math.floor((Math.random() * Core.base.numbersTickets) + 1))
 	Core._('#lottery #owned').innerText = Stats.numTicket
 	button.setAttribute('disabled', true)
+	Stats.ticketsBought++
 	Core.startRaffle(button)
 }
 
@@ -613,8 +593,10 @@ Core.startRaffle = function(button){
 			partial = true
 		}
 		if(full){
+			Stats.lotteryWon = true
 			state = 'win: ' + Core.numberFormat(prize)
 		}else if(partial){
+			Stats.partialWon = true
 			state = 'partial win: ' + Core.numberFormat(prize)
 		}
 		Stats.money += prize
@@ -634,7 +616,15 @@ Core.save = function(){
 	if(!localStorage || !JSON || typeof JSON.stringify !== 'function') return false
 	localStorage.setItem('core.base', JSON.stringify(Core.base))
 	localStorage.setItem('stats', JSON.stringify(Stats))
+	localStorage.setItem('achievements', JSON.stringify(achievements, function(k, v){
+		if (typeof v === 'function') { return v.toString() }
+		return v
+	}))
 	localStorage.setItem('css', Core._('#css').getAttribute('href'))
+	// Timers
+	// - Coffee (Saved in Stats.coffeeTimeLeft)
+	// - Energy Drink (Saved in Stats.energyDrinkTimeLeft)
+	// - Improvements (Saved in Stats['imp' + ty + 'timeleft'])
 	return true
 }
 
@@ -642,6 +632,10 @@ Core.load = function(){
 	if(!localStorage || !JSON || typeof JSON.parse !== 'function') return false
 	Core.base = JSON.parse(localStorage.getItem('core.base'))
 	Stats = JSON.parse(localStorage.getItem('stats'))
+	achievements = JSON.parse(localStorage.getItem('achievements'))
+	for(var a = 0, len = achievements.length; a < len; a++){
+		achievements[a].check = eval('(' + achievements[a].check + ')') // Not the best aproach :(
+	}
 	var css = localStorage.getItem('css')
 	// Añadir los jobs a la lista
 	Core._('ul.job-list').innerHTML = ''
@@ -652,11 +646,15 @@ Core.load = function(){
 	Core._('#css').setAttribute('href', css)
 	// Añadir las mejoras
 	for(var i = 0, len = Stats.improvements.length; i < len; i++){
-		Stats.improvements[i].effect()
+		improvements[Stats.improvements[i]].effect()
 	}
 	// Limpieza de intervals/timeouts
-	clearInterval(window.salariesInterval)
-	clearInterval(window.rentsInterval)
+	clearInterval(window.monthInterval)
+	clearInterval(window.coffeeInterval)
+	clearInterval(window.energyDrinkInterval)
+	window.monthInterval       = null
+	window.coffeeInterval      = null
+	window.energyDrinkInterval = null
 	if(Core.projects){
 		for(var projectID in Core.projects){
 			if(Core.projects.hasOwnProperty(projectID) && Core.projects[projectID].engine){
@@ -664,7 +662,23 @@ Core.load = function(){
 			}
 		}
 	}
-	Core.init(true) // Así no se agrega otro trabajo
+	// Creación de nuevos timers
+	Core.startMonthTimer(Stats.monthTimeLeft)
+	Core.startCoffeeEffect(Core._('#buyCoffee'), Stats.coffeeIncrement, Stats.coffeeTimeLeft)
+	Core.startEnergyDrinkEffect(Core._('#buyEnergyDrink'), Core.base.energyDrinkInc, Stats.energyDrinkTimeLeft)
+	// Alquileres
+	var rents = ['room', 'floor', 'building', 'warehouse']
+	for(var r = 0, len = rents.length; r < len; r++){
+		for(var i = 0; i < Stats[rents[r] + 's']; i++){
+			var b = Core._('.rentRoom[data-type=' + rents[r] + ']:not(.owned)')
+				b.removeAttribute('data-cost')
+				b.removeAttribute('data-type')
+				b.removeAttribute('disabled')
+			Core.addClass(b, 'owned')
+		}
+	}
+
+	Core.init(true) // Evitamos algunas líneas necesarias sólo al principio (Sin cargar)
 	return true
 }
 

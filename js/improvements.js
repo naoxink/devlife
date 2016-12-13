@@ -5,6 +5,7 @@ var improvements = {
 		'cost': 8000,
 		'investigationTime': 600000, // 10m
 		'effect': function(button){
+			if(Core._('.startProject', true).length >= 2) return false
 			var cloned = document.createElement('button')
 				cloned.innerText = 'Start project'
 				cloned.className = 'startProject'

@@ -20,12 +20,17 @@ var Stats = {
 	'seo': 0,
 	'project-manager': 0,
 	// Statuses
+	'coffeesBought': 0,
 	'isCoffeePowered': false,
+	'energyDrinksBought': 0,
 	'isEnergyDrinkPowered': false,
 	// Lottery
 	'numTicket': 0,
 	'winnerTicket': 0,
 	'raffleRunning': false,
+	'ticketsBought': 0,
+	'partialWon': false,
+	'lotteryWon': false,
 	// Arrays
 	'improvements': [  ]
 }

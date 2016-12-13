@@ -22,8 +22,8 @@
 				<div class="dropdown-content">
 					<ul>
 						<li id="toggle-achievement-list">Achievements</li>
-						<li id="save" class="disabled">Save (Unavailable)</li>
-						<li id="load" class="disabled">Load (Unavailable)</li>
+						<li id="save" onclick="Core.save()">Save (testing)</li>
+						<li id="load" onclick="Core.load()">Load (testing)</li>
 						<li id="reset" onclick="javascript:location.reload()">Reset</li>
 						<li class="disabled"><hr></li>
 						<li><a href="https://github.com/naoxink/devlife/issues" target="_blank">Issue tracker</a></li>
@@ -99,7 +99,7 @@
 			<div class="stat">Warehouses: <span id="warehouses"></span></div>
 			<div class="help stat" data-title="Available seats you have for hiring people">Available spaces: <span id="availableSpaces"></span></div>
 			<div class="help stat" data-title="Each minute you have to pay the rent of all of your properties. This is the total cost.">Rents cost: <span id="rentsCost"></span></div>
-			<div id="rents-timer-bar-container"></div>
+			<div id="rents-timer-bar-container"><div class="rents-timer-bar"></div></div>
 			<div class="spaced thin"></div>
 			<button class="rentRoom owned">House (3 seats)</button>
 			<button class="rentRoom" disabled="disabled" data-cost="800" data-type="room">Rent room (+10 seats)(800¢/m)</button>
