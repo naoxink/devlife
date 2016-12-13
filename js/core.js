@@ -188,11 +188,7 @@ Core.buyCoffee = function(button){
 	Stats.isCoffeePowered = true
 	Core.updateHUD()
 	Stats.coffeesBought++
-<<<<<<< HEAD
 	Core.startCoffeeEffect(button, Stats.coffeeIncrement, effectTime)
-=======
-	Core.startCoffeeEffect(button, increment, effectTime)
->>>>>>> origin/master
 }
 
 Core.startCoffeeEffect = function(button, increment, seconds){
