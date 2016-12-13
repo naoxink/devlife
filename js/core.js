@@ -165,6 +165,7 @@ Core.buyCoffee = function(button){
 	Core.base.moneyIncPerPulse += increment
 	Stats.isCoffeePowered = true
 	Core.updateHUD()
+	Stats.coffeesBought++
 	Core.startCoffeeEffect(button, increment, effectTime)
 }
 
@@ -198,6 +199,7 @@ Core.buyEnergyDrink = function(button){
 	Core.base.pulseDuration *= energyDrinkInc
 	Stats.isEnergyDrinkPowered = true
 	Core.updateHUD()
+	Stats.energyDrinksBought++
 	Core.startEnergyDrinkEffect(button, energyDrinkInc, effectTime)
 }
 
@@ -560,6 +562,7 @@ Core.buyTicket = function(button){
 	Stats.numTicket = Core.pad(Math.floor((Math.random() * Core.base.numbersTickets) + 1))
 	Core._('#lottery #owned').innerText = Stats.numTicket
 	button.setAttribute('disabled', true)
+	Stats.ticketsBought++
 	Core.startRaffle(button)
 }
 
@@ -613,8 +616,10 @@ Core.startRaffle = function(button){
 			partial = true
 		}
 		if(full){
+			Stats.lotteryWon = true
 			state = 'win: ' + Core.numberFormat(prize)
 		}else if(partial){
+			Stats.partialWon = true
 			state = 'partial win: ' + Core.numberFormat(prize)
 		}
 		Stats.money += prize
