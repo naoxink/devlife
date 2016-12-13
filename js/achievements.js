@@ -103,6 +103,55 @@ var achievements = [
 			return Stats.improvements.indexOf('addProject') !== -1
 		},
 		'done': false
+	},
+	{
+		'title': 'Buy your first ticket for the lottery',
+		'check': function(){
+			return Stats.ticketsBought === 1
+		},
+		'done': false
+	},
+	{
+		'title': 'Spend 100¢ in the lottery',
+		'check': function(){
+			return Stats.ticketsBought * Core.base.lotteryTicketCost >= 100
+		},
+		'done': false
+	},
+	{
+		'title': 'Win a partial in the lottery',
+		'check': function(){
+			return Stats.partialWon
+		},
+		'done': false
+	},
+	{
+		'title': 'Win the lottery',
+		'check': function(){
+			return Stats.lotteryWon
+		},
+		'done': false
+	},
+	{
+		'title': 'Caffeine addict',
+		'check': function(){
+			return Stats.coffeesBought >= 500
+		},
+		'done': false
+	},
+	{
+		'title': 'Taurine addict',
+		'check': function(){
+			return Stats.energyDrinksBought >= 500
+		},
+		'done': false
+	},
+	{
+		'title': 'Lottery addict',
+		'check': function(){
+			return Stats.ticketsBought >= 500
+		},
+		'done': false
 	}
 
 ]
