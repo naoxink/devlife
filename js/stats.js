@@ -32,5 +32,10 @@ var Stats = {
 	'partialWon': false,
 	'lotteryWon': false,
 	// Arrays
-	'improvements': [  ]
+	'improvements': [  ],
+	// Command prompt
+	'commandPrompt': {
+		'keysPressed': 0,
+		'moneyEarned': 0
+	}
 }

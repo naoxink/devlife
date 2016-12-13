@@ -24,6 +24,8 @@ Core.base = {
 	'coffeeEffectTime': 180, // ms
 	'energyDrinkPrice': 15,
 	'energyDrinkInc': 0.75, // Pulse speed
-	'energyDrinkEffectTime': 60
+	'energyDrinkEffectTime': 60,
+
+	'commandPromptInc': 1
 
 }

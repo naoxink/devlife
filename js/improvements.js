@@ -13,7 +13,9 @@ var improvements = {
 				Core.startProject(this)
 			})
 			Core._('#projects-section').appendChild(cloned)
-			button.parentNode.removeChild(button)
+			if(button){
+				button.parentNode.removeChild(button)
+			}
 		},
 		'inProgress': false
 	},
@@ -23,12 +25,14 @@ var improvements = {
 		'cost': 0,
 		'investigationTime': 180000, // 3m
 		'effect': function(button){
-			button.removeAttribute('disabled')
-			button.innerText = 'Activate new intranet'
-			button.onclick = function(){
-				Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
-				button.parentNode.removeChild(button)
-				Core.showImprovementButton('intranet2')
+			if(button){
+				button.removeAttribute('disabled')
+				button.innerText = 'Activate new intranet'
+				button.onclick = function(){
+					Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
+					button.parentNode.removeChild(button)
+					Core.showImprovementButton('intranet2')
+				}
 			}
 		},
 		'inProgress': false
@@ -39,11 +43,13 @@ var improvements = {
 		'cost': 0,
 		'investigationTime': 540000, // 9m
 		'effect': function(button){
-			button.removeAttribute('disabled')
-			button.innerText = 'Activate new intranet'
-			button.onclick = function(){
-				Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
-				button.parentNode.removeChild(button)
+			if(button){
+				button.removeAttribute('disabled')
+				button.innerText = 'Activate new intranet'
+				button.onclick = function(){
+					Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
+					button.parentNode.removeChild(button)
+				}
 			}
 		},
 		'inProgress': false
@@ -54,7 +60,9 @@ var improvements = {
 		'cost': 5000,
 		'investigationTime': 600000, // 10m
 		'effect': function(button){
-			button.parentNode.removeChild(button)
+			if(button){
+				button.parentNode.removeChild(button)
+			}
 			Core.base.maxComputerVersion = 20
 			Core.base.nextComputerVersionCost = Core.base.nextComputerVersionCost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
 			Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
@@ -69,6 +77,10 @@ var improvements = {
 		'investigationTime': 1800000, // 30m,
 		'effect': function(button){
 			button.parentNode.removeChild(button)
+			if(window.autoStartProjectsInterval){
+				clearInterval(window.autoStartProjectsInterval)
+				window.autoStartProjectsInterval = null
+			}
 			window.autoStartProjectsInterval = setInterval(function(){
 				if(Stats['project-manager'] <= 0){
 					return
@@ -99,7 +111,43 @@ var improvements = {
 		'cost': 100000,
 		'investigationTime': 900000, // 15m
 		'effect': function(button){
-			button.parentNode.removeChild(button)
+			if(button){
+				button.parentNode.removeChild(button)
+			}
+		},
+		'inProgress': false
+	},
+	'intranetCommandPrompt': {
+		'label': 'Develop an intranet terminal to enhance some code',
+		'help': 'Smash your keys without control to get some money. Some people do that, why not you?',
+		'cost': 500,
+		'investigationTime': 60000, // 1m
+		'effect': function(button){
+			if(Core._('#command-prompt')) return false
+			if(button){
+				button.parentNode.removeChild(button)
+			}
+			var HTMLtemplate = [
+				'<div id="command-prompt">',
+					'<input type="text">',
+				'</div>'
+			].join('')
+			var div = document.createElement('DIV')
+				div.setAttribute('id', 'command-prompt')
+			var input = document.createElement('INPUT')
+				input.setAttribute('type', 'text')
+			div.appendChild(input)
+			Core._('body').appendChild(div)
+			// keyup
+			Core._('#command-prompt > input[type=text]').addEventListener('keyup', function(e){
+				Stats.money += Core.base.commandPromptInc
+				Stats.commandPrompt.keysPressed++
+				Stats.commandPrompt.moneyEarned += Core.base.commandPromptInc
+				if(this.value.length > Math.floor(Math.random() * 60) + 25 || e.keyCode === 13){
+					this.value = ''
+				}
+				Core.updateHUD()
+			})
 		},
 		'inProgress': false
 	}

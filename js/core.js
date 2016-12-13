@@ -159,6 +159,9 @@ Core.upgradeComputer = function(){
 	if(Stats.money >= cost && Stats.computerVersion < Core.base.maxComputerVersion){
 		Stats.money -= cost
 		Stats.computerVersion++
+		if(Stats.computerVersion === 1){
+			Core.showImprovementButton('intranetCommandPrompt')
+		}
 		Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
 		Core.base.pulseDuration -= 10
 		if(Core.base.maxComputerVersion >= Stats.computerVersion + 1){
@@ -174,75 +177,6 @@ Core.upgradeComputer = function(){
 		}
 		Core.updateHUD()
 	}
-}
-
-Core.buyCoffee = function(button){
-	if(Stats.isCoffeePowered) return false
-	var coffeePrice = Core.base.coffeePrice
-	var coffeeInc = Core.base.coffeeInc
-	var effectTime = Core.base.coffeeEffectTime
-	if(Stats.money < coffeePrice) return false
-	Stats.money -= coffeePrice
-	Stats.coffeeIncrement = (Core.base.moneyIncPerPulse / (Stats.employees.length + 1)) * coffeeInc
-	Core.base.moneyIncPerPulse += Stats.coffeeIncrement
-	Stats.isCoffeePowered = true
-	Core.updateHUD()
-	Stats.coffeesBought++
-	Core.startCoffeeEffect(button, Stats.coffeeIncrement, effectTime)
-}
-
-Core.startCoffeeEffect = function(button, increment, seconds){
-	button.setAttribute('disabled', true)
-	Stats.coffeeTimeLeft = seconds
-	button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
-	window.coffeeInterval = setInterval(function(){
-		if(Stats.coffeeTimeLeft <= 0){
-			Core.base.moneyIncPerPulse -= increment
-			Stats.isCoffeePowered = false
-			button.innerText = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
-			button.removeAttribute('disabled')
-			clearInterval(window.coffeeInterval)
-			delete Stats.coffeeTimeLeft
-		}else{
-			Stats.coffeeTimeLeft--
-			button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
-		}
-		Core.updateHUD()
-	}, 1000)
-}
-
-Core.buyEnergyDrink = function(button){
-	if(Stats.isEnergyDrinkPowered) return false
-	var energyDrinkCost = Core.base.energyDrinkPrice
-	var energyDrinkInc = Core.base.energyDrinkInc
-	var effectTime = Core.base.energyDrinkEffectTime
-	if(Stats.money < energyDrinkCost) return false
-	Stats.money -= energyDrinkCost
-	Core.base.pulseDuration *= energyDrinkInc
-	Stats.isEnergyDrinkPowered = true
-	Core.updateHUD()
-	Stats.energyDrinksBought++
-	Core.startEnergyDrinkEffect(button, energyDrinkInc, effectTime)
-}
-
-Core.startEnergyDrinkEffect = function(button, increment, seconds){
-	button.setAttribute('disabled', true)
-	Stats.energyDrinkTimeLeft = seconds
-	button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
-	window.energyDrinkInterval = setInterval(function(){
-		if(Stats.energyDrinkTimeLeft <= 0){
-			Core.base.pulseDuration /= increment
-			Stats.isEnergyDrinkPowered = false
-			button.removeAttribute('disabled')
-			button.innerText = 'Buy Energy Drink (' + Core.numberFormat(Core.base.energyDrinkPrice) + ')'
-			clearInterval(window.energyDrinkInterval)
-			delete Stats.energyDrinkTimeLeft
-		}else{
-			Stats.energyDrinkTimeLeft--
-			button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
-		}
-		Core.updateHUD()
-	}, 1000)
 }
 
 Core.calcSalariesCost = function(){
@@ -471,10 +405,13 @@ Core.startProject = function(button){
 
 Core.showImprovementButton = function(id){
 	var button = document.createElement('button')
+		button.className = 'startImprovement'
 		if(improvements[id].help){
-			button.className = 'help ' + id
+			button.className += ' help'
 			button.setAttribute('data-title', improvements[id].help)
 		}
+		button.setAttribute('data-type', id)
+		button.setAttribute('data-cost', improvements[id].cost)
 		button.innerText = improvements[id].label + ' (' + Core.numberFormat(improvements[id].cost) + ') (Development time: ' + Core.timeFormat(improvements[id].investigationTime) + ')'
 		button.addEventListener('click', function(){
 			Core.startImprovement(id, this)
@@ -664,8 +601,8 @@ Core.load = function(){
 	}
 	// Creación de nuevos timers
 	Core.startMonthTimer(Stats.monthTimeLeft)
-	Core.startCoffeeEffect(Core._('#buyCoffee'), Stats.coffeeIncrement, Stats.coffeeTimeLeft)
-	Core.startEnergyDrinkEffect(Core._('#buyEnergyDrink'), Core.base.energyDrinkInc, Stats.energyDrinkTimeLeft)
+	Shop.startCoffeeEffect(Core._('#buyCoffee'), Stats.coffeeIncrement, Stats.coffeeTimeLeft)
+	Shop.startEnergyDrinkEffect(Core._('#buyEnergyDrink'), Core.base.energyDrinkInc, Stats.energyDrinkTimeLeft)
 	// Alquileres
 	var rents = ['room', 'floor', 'building', 'warehouse']
 	for(var r = 0, len = rents.length; r < len; r++){
@@ -730,8 +667,8 @@ Core.initRecruitingSection = function(){
 Core.addListeners = function(){
 	Core._('#toggle-achievement-list').addEventListener('click', function(){ Core.toggleAchievementList() })
 	Core._('#upgradePC').addEventListener('click', function(){ Core.upgradeComputer() })
-	Core._('#buyCoffee').addEventListener('click', function(){ Core.buyCoffee(this) })
-	Core._('#buyEnergyDrink').addEventListener('click', function(){ Core.buyEnergyDrink(this) })
+	Core._('#buyCoffee').addEventListener('click', function(){ Shop.buyCoffee(this) })
+	Core._('#buyEnergyDrink').addEventListener('click', function(){ Shop.buyEnergyDrink(this) })
 	Core._('#takeJob').addEventListener('click', function(){ Core.takeJob(this) })
 	Core._('.startProject').addEventListener('click', function(){ Core.startProject(this) })
 	Core._('#buyTicket').addEventListener('click', function(){ Core.buyTicket(this) })

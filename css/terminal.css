@@ -374,3 +374,28 @@ ul > li > button {
 	text-decoration: none;
 	display: block;
 }
+
+/* Command prompt */
+#command-prompt {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 10px;
+	border-top: 1px solid #0F0;
+	background-color: #000;
+}
+#command-prompt > input[type=text] {
+	background-color: #000;
+	color: #0F0;
+	font-size: 14px;
+	outline: none;
+	float: left;
+	width: 95%;
+}
+#command-prompt:before {
+	content: '>';
+	color: #0F0;
+	float: left;
+	margin-top: 5px;
+}
