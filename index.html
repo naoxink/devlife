@@ -22,12 +22,15 @@
 				<div class="dropdown-content">
 					<ul>
 						<li id="toggle-achievement-list">Achievements</li>
-						<li id="save" onclick="Core.save()">Save (testing)</li>
-						<li id="load" onclick="Core.load()">Load (testing)</li>
-						<li id="reset" onclick="javascript:location.reload()">Reset</li>
+						<li id="save" onclick="Core.save()">Save (test)</li>
+						<li id="load" onclick="Core.load()">Load (test)</li>
+						<li class="disabled"><hr></li>
+						<li id="reqNotifications" onclick="javascript:Notification.requestPermission()">Notifications on/off</li>
 						<li class="disabled"><hr></li>
 						<li><a href="https://github.com/naoxink/devlife/issues" target="_blank">Issue tracker</a></li>
 						<li><a href="https://github.com/naoxink/devlife/wiki" target="_blank">Wiki</a></li>
+						<li class="disabled"><hr></li>
+						<li id="reset" onclick="javascript:location.reload()">! Reset game</li>
 						<li class="disabled"><hr></li>
 						<li class="disabled">Developed by naoxink</li>
 					</ul>
@@ -114,9 +117,9 @@
 	</div>
 	<div id="achievement-list"></div>
 	
-	<script src="js/achievements.js"></script>
 	<script src="js/core.js"></script>
 	<script src="js/core.base.js"></script>
+	<script src="js/achievements.js"></script>
 	<script src="js/improvements.js"></script>
 	<script src="js/employees.js"></script>
 	<script src="js/rents.js"></script>

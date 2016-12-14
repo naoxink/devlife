@@ -250,9 +250,7 @@ ul > li > button {
 	padding: 0 5px;
 	margin: 0;
 }
-
-/* ACHIEVEMENTS */
-.achievementPopup {
+.popup {
 	background-color: rgba(255, 255, 255, .7);
 	position: fixed;
 	top: 0;
@@ -263,7 +261,7 @@ ul > li > button {
 	height: 100%;
 	z-index: 1;
 }
-.achievementPopup .container {
+.popup .container {
 	position: fixed;
 	background-color: #FFF;
 	-webkit-border-radius: 3px;
@@ -281,7 +279,7 @@ ul > li > button {
 	padding-bottom: 10px;
 	overflow: hidden;
 }
-.achievementPopup .container .title {
+.popup .container .title {
 	text-align: center;
 	font-weight: bold;
 	background-color: #d9edf7;
@@ -289,15 +287,16 @@ ul > li > button {
 	padding: 10px;
 	margin-top: 0;
 }
-.achievementPopup .container .description {
+.popup .container .description {
 	text-align: center;
 	font-weight: 100;
 	color: #333;
 }
-.achievementPopup .container .closeBtn {
+.popup .container .closeBtn {
 	margin: 10px auto 0 auto;
 	width: 100px;
 }
+/* ACHIEVEMENTS */
 #achievement-list {
 	display: none;
 	background-color: rgba(225, 225, 225, .9);
@@ -479,4 +478,8 @@ ul > li > button {
 }
 #command-prompt .multiplier {
 	font-size: 14px;
+}
+.command-prompt-number-key-up {
+	position: fixed;
+	color: green;
 }

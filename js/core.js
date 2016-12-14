@@ -14,8 +14,9 @@ Core.init = function(fromLoad){
 	}
 	Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 	Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
-	if(Notification.permission !== "granted"){
+	if(Notification.permission !== "granted" && !Core.base.notificationsRequested){
 		Notification.requestPermission()
+		Core.base.notificationsRequested = true
 	}
 	Core.updateHUD()
 }
@@ -378,7 +379,7 @@ Core.startProject = function(button){
 	Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * Core.calcEmployeesMoneyInc()
 	Core.projects[projectID].profit = 0
 	Core.projects[projectID].secondsLeft = projectTime
-	button.setAttribute('data-profit', '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0¢)')
+	button.setAttribute('data-profit', '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0' + Core.base.moneyChar + ')')
 	Core.start(projectID, button)
 	Core.projects[projectID].timer = setInterval(function(){
 		Core.projects[projectID].secondsLeft--
@@ -440,7 +441,7 @@ Core.startImprovement = function(ty, button){
 }
 
 Core.numberFormat = function(number){
-	return number.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.') + ' ¢'
+	return number.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.') + ' ' + Core.base.moneyChar
 }
 
 Core.timeFormat = function(s){
@@ -477,6 +478,7 @@ Core.buyTicket = function(button){
 	button.setAttribute('disabled', true)
 	Stats.ticketsBought++
 	Core.startRaffle(button)
+	Core.updateHUD()
 }
 
 Core.startRaffle = function(button){
@@ -550,6 +552,7 @@ Core.pad = function(number){
 
 Core.save = function(){
 	if(!localStorage || !JSON || typeof JSON.stringify !== 'function') return false
+	localStorage.setItem('savedDate', new Date())
 	localStorage.setItem('core.base', JSON.stringify(Core.base))
 	localStorage.setItem('stats', JSON.stringify(Stats))
 	localStorage.setItem('achievements', JSON.stringify(achievements, function(k, v){
@@ -561,6 +564,10 @@ Core.save = function(){
 	// - Coffee (Saved in Stats.coffeeTimeLeft)
 	// - Energy Drink (Saved in Stats.energyDrinkTimeLeft)
 	// - Improvements (Saved in Stats['imp' + ty + 'timeleft'])
+	Core.showPopUp({
+		'title': 'Success!',
+		'description': 'Your game is saved in this browser!'
+	})
 	return true
 }
 
@@ -602,8 +609,12 @@ Core.load = function(){
 	if(Stats.monthTimeLeft){
 		Core.startMonthTimer(Stats.monthTimeLeft)
 	}
-	Shop.startCoffeeEffect(Core._('#buyCoffee'), Stats.coffeeIncrement, Stats.coffeeTimeLeft)
-	Shop.startEnergyDrinkEffect(Core._('#buyEnergyDrink'), Core.base.energyDrinkInc, Stats.energyDrinkTimeLeft)
+	if(Stats.coffeeTimeLeft){
+		Shop.startCoffeeEffect(Core._('#buyCoffee'), Stats.coffeeIncrement, Stats.coffeeTimeLeft)
+	}
+	if(Stats.energyDrinkTimeLeft){
+		Shop.startEnergyDrinkEffect(Core._('#buyEnergyDrink'), Core.base.energyDrinkInc, Stats.energyDrinkTimeLeft)
+	}
 	// Alquileres
 	var rents = ['room', 'floor', 'building', 'warehouse']
 	for(var r = 0, len = rents.length; r < len; r++){
@@ -617,6 +628,10 @@ Core.load = function(){
 	}
 
 	Core.init(true) // Evitamos algunas líneas necesarias sólo al principio (Sin cargar)
+	Core.showPopUp({
+		'title': 'Success!',
+		'description': 'Your game is loaded!'
+	})
 	return true
 }
 
@@ -624,7 +639,7 @@ Core.notification = function(title, text){
 	if(!Notification) return false
 	if(!title) title = 'DevLife'
 
-	if(Notification.permission !== 'granted'){
+	if(Notification.permission !== 'granted' && !Core.base.notificationsRequested){
 		Notification.requestPermission()
 	}else{
 		var notification = new Notification(title, {
@@ -646,7 +661,7 @@ Core.initRecruitingSection = function(){
 			'<span class="hireContainer">',
 				'<button class="fireEmployee" disabled="disabled" data-type="::type::">-</button>',
 				'<span class="employeeCounter" id="::id::Counter">0</span>',
-				'<button class="hireEmployee help" data-title="Hiring cost: ::cost::¢ per minute" data-type="::type::">+</button>',
+				'<button class="hireEmployee help" data-title="Hiring cost: ::cost::' + Core.base.moneyChar + ' per minute" data-type="::type::">+</button>',
 			'</span>',
 		'</div>'
 	].join('')
@@ -737,29 +752,32 @@ Core.checkAchievements = function(){
 			if(!achievements[i].done){
 				achievements[i].done = achievements[i].check()
 				if(achievements[i].done){
-					Core.showAchievementPopUp(achievements[i])
+					Core.showPopUp({
+						'title': 'Achievement unlocked!',
+						'description': achievements[i].title
+					})
 				}
 			}
 		}
 	}
 }
 
-Core.showAchievementPopUp = function(achievement){
+Core.showPopUp = function(data){
 	var bg = document.createElement('DIV')
-		bg.className = 'achievementPopup'
+		bg.className = 'popup'
 	var container = document.createElement('DIV')
 		container.className = 'container'
 	var title = document.createElement('P')
 		title.className = 'title'
-		title.innerText = 'Achievement unlocked!'
+		title.innerText = data.title
 	var description = document.createElement('P')
 		description.className = 'description'
-		description.innerText = achievement.title
+		description.innerText = data.description
 	var close = document.createElement('BUTTON')
 		close.className = 'closeBtn'
 		close.innerText = 'Close'
 		close.onclick = function(){
-			Core._('.achievementPopup').remove()
+			Core._('.popup').remove()
 		}
 	container.appendChild(title)
 	container.appendChild(description)
@@ -767,6 +785,7 @@ Core.showAchievementPopUp = function(achievement){
 	Core._('body')
 		.appendChild(bg)
 		.appendChild(container)
+	Core.notification(title, description)
 }
 
 Core.refreshAchievementList = function(){

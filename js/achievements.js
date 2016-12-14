@@ -7,21 +7,21 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Raise your money up to 1.000.000',
+		'title': 'Raise your money up to 1.000.000' + Core.base.moneyChar,
 		'check': function(){
 			return Stats.money >= 1000000
 		},
 		'done': false
 	},
 	{
-		'title': 'Raise your money up to 10.000.000',
+		'title': 'Raise your money up to 10.000.000' + Core.base.moneyChar,
 		'check': function(){
 			return Stats.money >= 10000000
 		},
 		'done': false
 	},
 	{
-		'title': 'Raise your money up to 100.000.000',
+		'title': 'Raise your money up to 100.000.000' + Core.base.moneyChar,
 		'check': function(){
 			return Stats.money >= 100000000
 		},
@@ -112,7 +112,7 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Spend 100¢ in the lottery',
+		'title': 'Spend 100' +  Core.base.moneyChar + ' in the lottery',
 		'check': function(){
 			return Stats.ticketsBought * Core.base.lotteryTicketCost >= 100
 		},

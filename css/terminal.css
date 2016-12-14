@@ -224,9 +224,7 @@ ul > li > button {
 	width: 20px;
 	height: 20px;
 }
-
-/* ACHIEVEMENTS */
-.achievementPopup {
+.popup {
 	background-color: rgba(0, 0, 0, .6);
 	position: fixed;
 	top: 0;
@@ -237,7 +235,7 @@ ul > li > button {
 	height: 100%;
 	z-index: 1;
 }
-.achievementPopup .container {
+.popup .container {
 	position: fixed;
 	background-color: #000;
 	border: 1px solid #0F0;
@@ -247,20 +245,21 @@ ul > li > button {
 	left: 50%;
 	margin-left: -150px;
 }
-.achievementPopup .container .title {
+.popup .container .title {
 	text-align: center;
 	font-weight: bold;
 	color: #0F0;
 }
-.achievementPopup .container .description {
+.popup .container .description {
 	text-align: center;
 	font-weight: 100;
 	color: #0F0;
 }
-.achievementPopup .container .closeBtn {
+.popup .container .closeBtn {
 	margin: 10px auto;
 	width: 100px;
 }
+/* ACHIEVEMENTS */
 #achievement-list {
 	display: none;
 	background-color: #000;
@@ -403,4 +402,8 @@ ul > li > button {
 }
 #command-prompt .multiplier {
 	font-size: 14px;
+}
+.command-prompt-number-key-up {
+	position: fixed;
+	color: #0F0;
 }

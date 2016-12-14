@@ -143,12 +143,37 @@ var improvements = {
 				'multiplierTime': 200,
 				'maxMultiplier': 5
 			}
+			var cpNumberAnimation = function(){
+				var cpna = document.createElement('SPAN')
+					cpna.className = 'command-prompt-number-key-up'
+					cpna.innerText = '+' + (Core.base.commandPromptInc * window.commandPrompt.multiplier) + Core.base.moneyChar
+					cpna.style.left = (Math.floor(Math.random() * 200) + 10) + 'px'
+					cpna.style.bottom = (Math.floor(Math.random() * 40) + 30) + 'px'
+					cpna.style.opacity = 1
+				Core._('body').appendChild(cpna)
+				var animationTime = 100
+				var animationID = 'cpnai-' + new Date().getTime()
+				window[animationID] = setInterval(function(){
+					if(animationTime <= 0){
+						clearInterval(window[animationID])
+						if(cpna){
+							cpna.parentNode.removeChild(cpna)
+							cpna = null
+						}
+					}else{
+						animationTime--
+						cpna.style.bottom = (parseInt(cpna.style.bottom, 10) + 1) + 'px'
+						cpna.style.opacity = parseFloat(cpna.style.opacity) - 0.01
+					}
+					
+				})
+			}
 			Core._('#command-prompt > input[type=text]').addEventListener('keyup', function(e){
 				clearTimeout(window.commandPrompt.multiplierTimeout)
 				window.commandPrompt.multiplierTimeout = setTimeout(function(){
 					// Reset multiplier
 					window.commandPrompt.multiplierTime = 1000
-					window.commandPrompt.multiplier = 0
+					window.commandPrompt.multiplier = 1
 					window.commandPrompt.multiplierKeys = 0
 					span.innerText = ''
 				}, window.commandPrompt.multiplierTime)
@@ -166,6 +191,7 @@ var improvements = {
 				}
 				Stats.money += Core.base.commandPromptInc * window.commandPrompt.multiplier
 				Stats.commandPrompt.keysPressed++
+				cpNumberAnimation()
 				Stats.commandPrompt.moneyEarned += Core.base.commandPromptInc
 				if(this.value.length > Math.floor(Math.random() * 60) + 25 || e.keyCode === 13){
 					this.value = ''

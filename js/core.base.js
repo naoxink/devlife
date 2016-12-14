@@ -1,4 +1,5 @@
 Core.base = {
+	'moneyChar': '¢',
 	'pulseDuration': 1000,
 	'moneyIncPerPulse': 0,
 	'maxPulseDuration': 10000,
@@ -26,6 +27,7 @@ Core.base = {
 	'energyDrinkInc': 0.75, // Pulse speed
 	'energyDrinkEffectTime': 60,
 
-	'commandPromptInc': 1
+	'commandPromptInc': 1,
+	'notificationsRequested': false
 
 }
