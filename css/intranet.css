@@ -349,3 +349,28 @@ ul > li > button {
 .dropdown-content li:hover a {
 	color: #FFF;
 }
+/* Command prompt */
+#command-prompt {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 10px;
+	border-top: 1px outset #000;
+	background-color: #FFF;
+}
+#command-prompt > input[type=text] {
+	background-color: transparent;
+	color: #000;
+	font-size: 14px;
+	outline: none;
+	float: left;
+	width: 95%;
+	border: 0;
+}
+#command-prompt:before {
+	content: '$';
+	color: #000;
+	float: left;
+	margin-right: 2px;
+}
