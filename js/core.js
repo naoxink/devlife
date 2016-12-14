@@ -785,7 +785,7 @@ Core.showPopUp = function(data){
 	Core._('body')
 		.appendChild(bg)
 		.appendChild(container)
-	Core.notification(title, description)
+	Core.notification(data.title, data.description)
 }
 
 Core.refreshAchievementList = function(){
