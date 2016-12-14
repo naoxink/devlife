@@ -374,3 +374,7 @@ ul > li > button {
 	float: left;
 	margin-right: 2px;
 }
+#command-prompt .multiplier {
+	font-size: 14px;
+	color: #009;
+}

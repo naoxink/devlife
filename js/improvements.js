@@ -127,20 +127,44 @@ var improvements = {
 			if(button){
 				button.parentNode.removeChild(button)
 			}
-			var HTMLtemplate = [
-				'<div id="command-prompt">',
-					'<input type="text">',
-				'</div>'
-			].join('')
 			var div = document.createElement('DIV')
 				div.setAttribute('id', 'command-prompt')
+			var span = document.createElement('SPAN')
+				span.className = 'multiplier'
 			var input = document.createElement('INPUT')
 				input.setAttribute('type', 'text')
+			div.appendChild(span)
 			div.appendChild(input)
 			Core._('body').appendChild(div)
 			// keyup
+			window.commandPrompt = {
+				'multiplier': 1,
+				'multiplierKeys': 0,
+				'multiplierTime': 200,
+				'maxMultiplier': 5
+			}
 			Core._('#command-prompt > input[type=text]').addEventListener('keyup', function(e){
-				Stats.money += Core.base.commandPromptInc
+				clearTimeout(window.commandPrompt.multiplierTimeout)
+				window.commandPrompt.multiplierTimeout = setTimeout(function(){
+					// Reset multiplier
+					window.commandPrompt.multiplierTime = 1000
+					window.commandPrompt.multiplier = 0
+					window.commandPrompt.multiplierKeys = 0
+					span.innerText = ''
+				}, window.commandPrompt.multiplierTime)
+				window.commandPrompt.multiplierKeys++
+				if(window.commandPrompt.multiplierKeys >= 60){
+					if(window.commandPrompt.multiplier < window.commandPrompt.maxMultiplier){
+						window.commandPrompt.multiplier++
+						window.commandPrompt.multiplierKeys = 0
+						window.commandPrompt.multiplierTime *= 0.05
+						if(window.commandPrompt.multiplierTime <= 150){
+							window.commandPrompt.multiplierTime = 150
+						}
+						span.innerText = 'x' + window.commandPrompt.multiplier
+					}
+				}
+				Stats.money += Core.base.commandPromptInc * window.commandPrompt.multiplier
 				Stats.commandPrompt.keysPressed++
 				Stats.commandPrompt.moneyEarned += Core.base.commandPromptInc
 				if(this.value.length > Math.floor(Math.random() * 60) + 25 || e.keyCode === 13){

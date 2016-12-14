@@ -61,7 +61,6 @@ Core.startMonthTimer = function(secondsLeft){
 		Stats.monthTimeLeft = secondsLeft
 		percent = (Stats.monthTimeLeft / 60) * 100
 	}
-	console.log(percent, Stats.monthTimeLeft)
 	window.monthInterval = setInterval(function(){
 		if(Stats.monthTimeLeft <= 0){
 			clearInterval(window.monthInterval)
@@ -600,7 +599,9 @@ Core.load = function(){
 		}
 	}
 	// Creación de nuevos timers
-	Core.startMonthTimer(Stats.monthTimeLeft)
+	if(Stats.monthTimeLeft){
+		Core.startMonthTimer(Stats.monthTimeLeft)
+	}
 	Shop.startCoffeeEffect(Core._('#buyCoffee'), Stats.coffeeIncrement, Stats.coffeeTimeLeft)
 	Shop.startEnergyDrinkEffect(Core._('#buyEnergyDrink'), Core.base.energyDrinkInc, Stats.energyDrinkTimeLeft)
 	// Alquileres
