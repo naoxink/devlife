@@ -58,13 +58,12 @@
 		</div>
 		<div class="button-section" id="improvements-section">
 			<p class="header">Improvements</p>
-			<button data-cost="8000" class="startImprovement help" data-title="You will be able to start another project at the same time" data-type="addProject" disabled="disabled">Improve project tech (8.000¢) (Investigation time: 10m)</button>
 		</div>
 		<div class="button-section">
 			<p class="header">Upgrades</p>
 			<button id="upgradePC" disabled="disabled">Upgrade computer (<span id="PCCost"></span>)</button>
 		</div>
-		<div class="button-section compact" id="employees-section">
+		<div class="button-section" id="employees-section">
 			<p class="header">Recruiting</p>
 			<div class="help stat" data-title="Each minute your employees receive their salaries. This is the total cost.">Salaries cost: <span id="salariesCost"></span></div>
 			<div id="salaries-timer-bar-container">
@@ -94,7 +93,7 @@
 			<div id="owned">-</div>
 			<div id="winner">-</div>
 		</div>
-		<div class="button-section buildings compact">
+		<div class="button-section buildings">
 			<p class="header">Space</p>
 			<div class="stat">Rooms: <span id="rooms"></span></div>
 			<div class="stat">Floors: <span id="floors"></span></div>
@@ -104,15 +103,7 @@
 			<div class="help stat" data-title="Each minute you have to pay the rent of all of your properties. This is the total cost.">Rents cost: <span id="rentsCost"></span></div>
 			<div id="rents-timer-bar-container"><div class="rents-timer-bar"></div></div>
 			<div class="spaced thin"></div>
-			<button class="rentRoom owned">House (3 seats)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="800" data-type="room">Rent room (+10 seats)(800¢/m)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="800" data-type="room">Rent room (+10 seats)(800¢/m)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="10000" data-type="floor">Rent floor (+100 seats)(10.000¢/m)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="10000" data-type="floor">Rent floor (+100 seats)(10.000¢/m)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="30000" data-type="building">Rent building (+1000 seats)(30.000¢/m)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="30000" data-type="building">Rent building (+1000 seats)(30.000¢/m)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="50000" data-type="warehouse">Rent warehouse (+5000 seats) (50.000¢/m)</button>
-			<button class="rentRoom" disabled="disabled" data-cost="50000" data-type="warehouse">Rent warehouse (+5000 seats) (50.000¢/m)</button>
+			<div id="renting-list"></div>
 		</div>
 	</div>
 	<div id="achievement-list"></div>

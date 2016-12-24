@@ -133,9 +133,19 @@ var achievements = [
 		'done': false
 	},
 	{
+		'title': 'You have to hack this achievement',
+		'check': function(){ 
+			return Stats.hackedAchievement
+		},
+		'done': false
+	},
+	{
 		'title': 'Caffeine addict',
 		'check': function(){
 			return Stats.coffeesBought >= 500
+		},
+		'progress': function(){
+			return '' + Stats.coffeesBought + '/' + 500
 		},
 		'done': false
 	},
@@ -144,12 +154,68 @@ var achievements = [
 		'check': function(){
 			return Stats.energyDrinksBought >= 500
 		},
+		'progress': function(){
+			return '' + Stats.energyDrinksBought + '/' + 500
+		},
 		'done': false
 	},
 	{
 		'title': 'Lottery addict',
 		'check': function(){
 			return Stats.ticketsBought >= 500
+		},
+		'progress': function(){
+			return '' + Stats.ticketsBought + '/' + 500
+		},
+		'done': false
+	},
+	{
+		'title': 'Command prompt addict',
+		'check': function(){
+			return Stats.commandPrompt.keysPressed >= 500
+		},
+		'progress': function(){
+			return '' + Stats.commandPrompt.keysPressed + '/' + 500
+		},
+		'done': false
+	},
+	{
+		'title': 'Make 1.000¢ with the command prompt',
+		'check': function(){
+			return Stats.commandPrompt.moneyEarned >= 1000
+		},
+		'progress': function(){
+			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(1000)
+		},
+		'done': false
+	},
+	{
+		'title': 'Make 10.000¢ with the command prompt',
+		'check': function(){
+			return Stats.commandPrompt.moneyEarned >= 10000
+		},
+		'progress': function(){
+			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(10000)
+		},
+		'done': false
+	},
+	{
+		'title': 'Make 100.000¢ with the command prompt',
+		'check': function(){
+			return Stats.commandPrompt.moneyEarned >= 100000
+		},
+		'progress': function(){
+			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(100000)
+		},
+		'done': false
+	},
+	{
+		'title': 'Make 1.000.000¢ with the command prompt',
+		'check': function(){
+			return Stats.commandPrompt.moneyEarned >= 1000000
+		},
+		'progress': function(){
+			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(1000000)
 		},
 		'done': false
 	}

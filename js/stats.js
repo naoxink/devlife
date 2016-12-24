@@ -6,7 +6,7 @@ var Stats = {
 	'projects': 0,
 	'employees': [  ],
 	// Spaces
-	'house': 1,
+	'houses': 1,
 	'rooms': 0,
 	'floors': 0,
 	'buildings': 0,

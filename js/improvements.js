@@ -1,7 +1,7 @@
 var improvements = {
 	'addProject': {
 		'label': 'Improve project tech',
-		'help': '',
+		'help': 'You will be able to start another project at the same time',
 		'cost': 8000,
 		'investigationTime': 600000, // 10m
 		'effect': function(button){
@@ -65,8 +65,10 @@ var improvements = {
 			}
 			Core.base.maxComputerVersion = 20
 			Core.base.nextComputerVersionCost = Core.base.nextComputerVersionCost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
-			Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
-			Core._('#upgradePC').setAttribute('disabled', true)
+			if(Core._('#PCCost')){
+				Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
+				Core._('#upgradePC').setAttribute('disabled', true)
+			}
 		},
 		'inProgress': false
 	},
@@ -194,6 +196,9 @@ var improvements = {
 				cpNumberAnimation()
 				Stats.commandPrompt.moneyEarned += Core.base.commandPromptInc
 				if(this.value.length > Math.floor(Math.random() * 60) + 25 || e.keyCode === 13){
+					if(this.value === 'hack achievement'){
+						Stats.hackedAchievement = true
+					}
 					this.value = ''
 				}
 				Core.updateHUD()

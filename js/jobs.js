@@ -1,22 +1,22 @@
 var jobs = [
 	{
 		'name': 'Web developer',
-		'increment': 6
+		'increment': 8
 	},
 	{
 		'name': 'Tech support',
-		'increment': 6
+		'increment': 7
 	},
 	{
 		'name': 'Secretary',
-		'increment': 6
+		'increment': 5
 	},
 	{
 		'name': 'Waiter',
-		'increment': 6
+		'increment': 3
 	},
 	{
 		'name': 'Doorman',
-		'increment': 6
+		'increment': 4
 	}
 ]
