@@ -39,7 +39,7 @@ Core.stop = function(projectID){
 	if(Core.hasImprovement('autoSaveOnProjectComplete')){
 		Core.save()
 	}
-	if(Stats.projects > 4 && !Core.hasImprovement('addProject')){
+	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
 		Core.showImprovementButton('addProject')
 	}
 }
