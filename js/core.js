@@ -113,7 +113,7 @@ Core.updateHUD = function(){
 	for(var type in employees){
 		if(employees.hasOwnProperty(type)){
 			Core._('#' + employees[type].id + 'Counter').innerText = Stats[type] || 0
-            if(employees[type] === 'friend' && Stats.friend >= Core.base.maxFriendHiring) {
+            if(employees[type].label === 'Friend' && Stats.friend >= Core.base.maxFriendHiring) {
 				Core._('.hireEmployee[data-type=' + type + ']').removeAttribute('disabled')
             }
 			if(employees[type].salary < Stats.money){
