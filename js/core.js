@@ -113,9 +113,6 @@ Core.updateHUD = function(){
 	for(var type in employees){
 		if(employees.hasOwnProperty(type)){
 			Core._('#' + employees[type].id + 'Counter').innerText = Stats[type] || 0
-            if(employees[type].label === 'Friend' && Stats.friend >= Core.base.maxFriendHiring) {
-				Core._('.hireEmployee[data-type=' + type + ']').removeAttribute('disabled')
-            }
 			if(employees[type].salary < Stats.money){
 				Core._('.hireEmployee[data-type=' + type + ']').removeAttribute('disabled')
 			}else{
@@ -124,6 +121,9 @@ Core.updateHUD = function(){
 			if(Stats[type] > 0){
 				Core._('.fireEmployee[data-type=' + type + ']').removeAttribute('disabled')
 			}
+            if(employees[type].label === 'Friend' && Stats.friend >= Core.base.maxFriendHiring) {
+				Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
+            }
 		}
 	}
 	if(Stats.money > Core.base.coffeePrice && Stats.isCoffeePowered === false){
