@@ -188,7 +188,7 @@ ul > li > button {
 #lottery #owned {
 	float: left;
 	width: 50%;
-	text-align: center;
+	text-align: left;
 }
 #lottery #winner:before {
 	content: 'Winner number: ';
