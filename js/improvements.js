@@ -65,10 +65,11 @@ var improvements = {
 			}
 			Core.base.maxComputerVersion = 20
 			Core.base.nextComputerVersionCost = Core.base.nextComputerVersionCost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
-			if(Core._('#PCCost')){
-				Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
-				Core._('#upgradePC').setAttribute('disabled', true)
+			if(!Core._('#PCCost')){
+				Core._('#upgradePC').innerHTML = 'Upgrade computer (<span id="PCCost">' + Core.numberFormat(Core.base.nextComputerVersionCost) + '</span>)'
 			}
+			Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
+			Core.updateHUD()
 		},
 		'inProgress': false
 	},

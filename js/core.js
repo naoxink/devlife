@@ -865,7 +865,7 @@ Core.refreshAchievementList = function(){
 		var tdStatus = document.createElement('TD')
 		var statusText = achievements[i].done ? 'Unlocked' : 'Locked'
 		tdTitle.innerText = achievements[i].title
-		if(achievements[i].progress && typeof achievements[i].progress === 'function'){
+		if(!achievements[i].done && achievements[i].progress && typeof achievements[i].progress === 'function'){
 			tdTitle.innerHTML += ' <span class="achievement-progress-text">(' + achievements[i].progress() + ')</span>'
 		}
 		tdStatus.innerText = statusText
