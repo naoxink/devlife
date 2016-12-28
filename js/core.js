@@ -28,7 +28,7 @@ Core.start = function(projectID, button){
 	Core.controlPulseDuration()
 	Core.projects[projectID].engine = setTimeout(function(){
 		Core.pulse(projectID, button)
-	}, Core.base.pulseDuration)	
+	}, Core.base.pulseDuration)
 }
 
 Core.stop = function(projectID){
@@ -121,6 +121,9 @@ Core.updateHUD = function(){
 			if(Stats[type] > 0){
 				Core._('.fireEmployee[data-type=' + type + ']').removeAttribute('disabled')
 			}
+            if(employees[type].label === 'Friend' && Stats.friend >= Core.base.maxFriendHiring) {
+				Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
+            }
 		}
 	}
 	if(Stats.money > Core.base.coffeePrice && Stats.isCoffeePowered === false){
@@ -142,7 +145,7 @@ Core.updateHUD = function(){
 	}else{
 		Core._('#upgradePC').setAttribute('disabled', true)
 		Core._('#upgradePC').innerText = 'Computer version maxed (' + Core.base.maxComputerVersion + ')'
-	}	
+	}
 	var rooms = Core._('.rentRoom', true)
 	for(var i = 0, len = rooms.length; i < len; i++){
 		var el = rooms[i]
@@ -334,7 +337,6 @@ Core.hireEmployee = function(button){
 	if(!employees[type]) return false
 	if(Stats.availableSpaces <= 0) return false
 	if(employees[type].salary > Stats.money) return false
-	if(type === 'friend' && Stats.friend >= Core.base.maxFriendHiring) return false
 	Stats.money -= employees[type].salary
 	Core.base.pulseDuration -= Core.base.pulseDuration * employees[type].increment
 	Stats[type]++
@@ -608,7 +610,7 @@ Core.load = function(){
 					Core.base[key] = value === 'true'
 				}else{
 					Core.base[key] = !isNaN(value) ? parseFloat(value) : value
-				}	
+				}
 		}else if(key.indexOf('stats.') === 0){
 			key = key.replace('stats.', '')
 			if(key.indexOf('employees.') === 0){
@@ -623,7 +625,7 @@ Core.load = function(){
 					Stats[key] = value === 'true'
 				}else{
 					Stats[key] = !isNaN(value) ? parseFloat(value) : value
-				}	
+				}
 			}
 		}else if(key === 'css'){
 			Core._('#css').setAttribute('href', value)
