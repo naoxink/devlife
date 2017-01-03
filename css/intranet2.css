@@ -48,6 +48,10 @@ button, .rentRoom {
 	-o-border-radius: 3px;
 	border-radius: 3px;
 }
+button.inline {
+	display: inline-block;
+	margin: 0 0 0 10px;
+}
 
 button:disabled,button:disabled:hover,
 .rentRoom:disabled, .rentRoom:disabled:hover {

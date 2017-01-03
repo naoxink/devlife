@@ -25,7 +25,7 @@ var employees = {
 		'id': 'webDesigners',
 		'help': 'Unlocks intranet improvement.',
 		'unlocks': function(){
-			if(Stats['designer-web'] === 1 && !Core.hasImprovement('intranet')){
+			if(Stats['designer-web'] === 1 && !Core.hasImprovement('intranet') && !Core._('.startImprovement[data-type=intranet]', true).length){
 				Core.showImprovementButton('intranet')
 			}
 		}
@@ -43,7 +43,7 @@ var employees = {
 		'id': 'projectManagers',
 		'help': 'Unlocks auto projects improvement.',
 		'unlocks': function(){
-			if(Stats['project-manager'] === 1 && !Core.hasImprovement('autoStartProjects') && !Core._('.autoStartProjects', true).length){
+			if(Stats['project-manager'] === 1 && !Core.hasImprovement('autoStartProjects') && !Core._('.startImprovement[data-type=autoStartProjects]', true).length){
 				Core.showImprovementButton('autoStartProjects')
 			}
 		}

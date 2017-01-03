@@ -41,6 +41,10 @@ button {
 	padding:3px;
 	display: block;
 }
+button.inline {
+	display: inline-block;
+	margin: 0 0 0 10px;
+}
 
 button:disabled,button:disabled:hover {
 	color:#007504;

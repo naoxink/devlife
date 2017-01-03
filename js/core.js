@@ -287,6 +287,30 @@ Core.rentRoom = function(ty, button){
 	button.removeAttribute('data-cost')
 	button.removeAttribute('data-type')
 	button.className += ' owned'
+	var dropButton = document.createElement('BUTTON')
+	dropButton.className = 'inline'
+	dropButton.innerText = ' Drop ' + ty
+	dropButton.onclick = function(){ Core.dropRent(this) }
+	dropButton.setAttribute('data-type', ty)
+	button.appendChild(dropButton)
+	Core.updateHUD()
+}
+
+Core.dropRent = function(button){
+	var ty = button.getAttribute('data-type')
+	if(!ty || !Rents[ty]) return false
+	// El edificio tiene que estar vacío para poder dropearlo
+	if(Rents[ty].spaces > Stats.availableSpaces){
+		Core.showPopUp({
+			'title': 'You can\'t drop this ' + ty,
+			'description': 'There are people working there!'
+		})
+		return false
+	}
+	Stats[ty + 's']--
+	Stats.money -= Rents[ty].price
+	Stats.availableSpaces -= Rents[ty].spaces
+	Core.initRentingSection()
 	Core.updateHUD()
 }
 
@@ -628,6 +652,7 @@ Core.load = function(){
 				}
 			}
 		}else if(key === 'css'){
+			value = value.replace(/(\?.*$)/, '?' + new Date().getTime())
 			Core._('#css').setAttribute('href', value)
 		}else if(key === 'savedDate'){
 
@@ -708,6 +733,14 @@ Core.initRentingSection = function(){
 				if(Stats[rents[r] + 's'] > n){
 					button.className += ' owned'
 					button.innerText = 'Rent ' + rents[r] + ': ' + Rents[rents[r]].spaces + ' seats. ' + Core.numberFormat(Rents[rents[r]].price) + '/m'
+					if(rents[r] !== 'house'){
+						var dropButton = document.createElement('BUTTON')
+						dropButton.className = 'inline'
+						dropButton.innerText = ' Drop ' + rents[r]
+						dropButton.onclick = function(){ Core.dropRent(this) }
+						dropButton.setAttribute('data-type', rents[r])
+						button.appendChild(dropButton)
+					}
 				}else{
 					button.setAttribute('disabled', true)
 					button.setAttribute('data-cost', Rents[rents[r]].price)
