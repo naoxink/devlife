@@ -4,23 +4,31 @@ Core.engine = {  }
 Core.projects = {  }
 
 Core.init = function(fromLoad){
-	document.title = 'devLife'
 	Core.initRecruitingSection()
 	Core.initRentingSection()
 	Core.jobFinder()
+	Core.quickProjectFinder()
 	if(!fromLoad){
 		Core.takeJob()
 		Core.startMonthTimer()
 		Core.addListeners()
+		// Mostrar los items iniciales de la tienda
+		for(var key in Shop.items){
+			if(Shop.items.hasOwnProperty(key) && Shop.items[key].initial){
+				Shop.showItemButton(key)
+			}
+		}
 	}else{
 		Core.checkAchievements(true)
 	}
 	Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 	Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
 	if(Notification.permission !== "granted" && !Core.base.notificationsRequested){
-		Notification.requestPermission()
+		// Notification.requestPermission()
 		Core.base.notificationsRequested = true
 	}
+	document.title = Stats.companyName + ' intranet | devLife'
+	Core._('.navbar .brand').innerText = Stats.companyName + ' intranet'
 	Core.updateHUD()
 }
 
@@ -35,9 +43,14 @@ Core.stop = function(projectID){
 	clearTimeout(Core.projects[projectID].engine)
 	Core.projects[projectID].engine = null
 	Stats.money += Core.projects[projectID].profit
+	Stats.companyValue += Core.projects[projectID].profit / 2
 	Core.updateHUD()
 	if(Core.hasImprovement('autoSaveOnProjectComplete')){
 		Core.save()
+	}else{
+		if(Stats.projects > 50 && !Core._('.startImprovement[data-type=autoSaveOnProjectComplete]')){
+			Core.showImprovementButton('autoSaveOnProjectComplete')
+		}
 	}
 	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
 		Core.showImprovementButton('addProject')
@@ -69,9 +82,17 @@ Core.startMonthTimer = function(secondsLeft){
 		percent = (Stats.monthTimeLeft / 60) * 100
 	}
 	window.monthInterval = setInterval(function(){
+		var monthCost = (Core.calcSalariesCost() + Core.calcRentCost())
+		if(!monthCost){
+			if(sbar){ sbar.style.display = 'none' }
+			if(rbar){ rbar.style.display = 'none' }
+		}else{
+			if(sbar){ sbar.style.display = 'block' }
+			if(rbar){ rbar.style.display = 'block' }
+		}
 		if(Stats.monthTimeLeft <= 0){
 			clearInterval(window.monthInterval)
-			Stats.money -= (Core.calcSalariesCost() + Core.calcRentCost())
+			Stats.money -= monthCost
 			Core.startMonthTimer()
 		}else{
 			Stats.monthTimeLeft--
@@ -99,6 +120,7 @@ Core.updateHUD = function(){
 	Core._('#employees').innerHTML = Stats.employees.length
 	Core._('#pulseSpeed').innerHTML = parseFloat(Core.base.pulseDuration || 0).toFixed(3) + ' ms'
 	Core._('#projects').innerText = Stats.projects
+	// Core._('#companyValue').innerText = Core.numberFormat(Stats.companyValue)
 	// Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
 	// Edificios
 	Core._('#availableSpaces').innerText = Stats.availableSpaces
@@ -107,6 +129,10 @@ Core.updateHUD = function(){
 	Core._('#buildings').innerText = Stats.buildings
 	Core._('#warehouses').innerText = Stats.warehouses
 	Core._('#rentsCost').innerText = Core.numberFormat(Core.calcRentCost())
+	// Lotería
+	Core._('#moneySpent').innerText = (Stats.ticketsBought * Core.base.lotteryTicketCost) + ' ' + Core.base.moneyChar
+	Core._('#moneyWon').innerText = Stats.moneyWon + ' ' + Core.base.moneyChar
+	Core._('#percentWon').innerText = Stats.percentWon + '%'
 	// Empleados
 	// Controlar botones
 	Core._('#salariesCost').innerText = Core.numberFormat(Core.calcSalariesCost())
@@ -125,16 +151,6 @@ Core.updateHUD = function(){
 				Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
             }
 		}
-	}
-	if(Stats.money > Core.base.coffeePrice && Stats.isCoffeePowered === false){
-		Core._('#buyCoffee').removeAttribute('disabled')
-	}else{
-		Core._('#buyCoffee').setAttribute('disabled', true)
-	}
-	if(Stats.money > Core.base.energyDrinkPrice && Stats.isEnergyDrinkPowered === false){
-		Core._('#buyEnergyDrink').removeAttribute('disabled')
-	}else{
-		Core._('#buyEnergyDrink').setAttribute('disabled', true)
 	}
 	if(Core.base.maxComputerVersion > Stats.computerVersion){
 		if(Stats.money >= Core.base.nextComputerVersionCost){
@@ -169,12 +185,24 @@ Core.updateHUD = function(){
 	}else{
 		Core._('#buyTicket').setAttribute('disabled', true)
 	}
+	// Tienda
+	var shopItems = Core._('.shopItem[data-cost]', true)
+	if(shopItems.length){
+		for(var i = 0, len = shopItems.length; i < len; i++){
+			if(parseFloat(shopItems[i].getAttribute('data-cost')) > parseFloat(Stats.money) || (shopItems[i].getAttribute('data-running') && shopItems[i].getAttribute('data-running') === 'true')){
+				shopItems[i].setAttribute('disabled', true)
+			}else{
+				shopItems[i].removeAttribute('disabled')
+			}
+		}
+	}
 }
 
 Core.upgradeComputer = function(){
 	var cost = Core.base.nextComputerVersionCost
 	if(Stats.money >= cost && Stats.computerVersion < Core.base.maxComputerVersion){
 		Stats.money -= cost
+		Stats.companyValue += cost / 2
 		Stats.computerVersion++
 		if(Stats.computerVersion === 1){
 			Core.showImprovementButton('intranetCommandPrompt')
@@ -232,7 +260,7 @@ Core.jobFinder = function(){
 		document.title = 'JOB OPORTUNITY! | devLife'
 		setTimeout(function(){
 			Core._('#takeJob').setAttribute('disabled', true)
-			document.title = 'devLife'
+			document.title = Stats.companyName + ' intranet | devLife'
 			if(Stats.jobs.length < Core.base.maxJobs){
 				Core.jobFinder()
 			}
@@ -246,7 +274,7 @@ Core.takeJob = function(button){
 	var job = jobs[(Math.floor(Math.random() * (jobs.length - 1)))]
 		job.id = 'job-' + new Date().getTime()
 	Core.base.moneyIncPerPulse += job.increment
-	document.title = 'devLife'
+	document.title = Stats.companyName + ' intranet | devLife'
 	Stats.jobs.push(job)
 	Core.addJobToList(job)
 }
@@ -283,6 +311,7 @@ Core.rentRoom = function(ty, button){
 	}
 	Stats[ty + 's']++
 	Stats.money -= room.price
+	Stats.companyValue += room.price / 2
 	Stats.availableSpaces += room.spaces
 	button.removeAttribute('data-cost')
 	button.removeAttribute('data-type')
@@ -308,7 +337,7 @@ Core.dropRent = function(button){
 		return false
 	}
 	Stats[ty + 's']--
-	Stats.money -= Rents[ty].price
+	Stats.companyValue -= Rents[ty].price / 2
 	Stats.availableSpaces -= Rents[ty].spaces
 	Core.initRentingSection()
 	Core.updateHUD()
@@ -474,6 +503,7 @@ Core.startImprovement = function(ty, button){
 			improvements[ty].effect(button)
 			improvements[ty].inProgress = false
 			clearInterval(window['interval' + ty])
+			Stats.companyValue += improvements[ty].cost / 2
 		}else{
 			Stats['imp' + ty + 'timeleft']--
 			button.innerText = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Stats['imp' + ty + 'timeleft'] * 1000) + ')'
@@ -533,7 +563,6 @@ Core.startRaffle = function(button){
 		// Generate winner
 		Stats.winnerTicket = Core.pad(Math.floor((Math.random() * Core.base.numbersTickets) + 1))
 		Core._('#lottery #winner').innerText = Stats.winnerTicket
-		var state = 'lose'
 		var prize = 0
 		var partial = false
 		var full = false
@@ -573,15 +602,23 @@ Core.startRaffle = function(button){
 		}
 		if(full){
 			Stats.lotteryWon = true
-			state = 'win: ' + Core.numberFormat(prize)
+			Stats.lotteryWins++
+			Core._('#lottery #info').className += ' win'
+			Core._('#lottery #info').innerText = 'win: ' + Core.numberFormat(prize)
 		}else if(partial){
 			Stats.partialWon = true
-			state = 'partial win: ' + Core.numberFormat(prize)
+			Stats.lotteryWins++
+			Core._('#lottery #info').className += ' win'
+			Core._('#lottery #info').innerText = 'partial win: ' + Core.numberFormat(prize)
+		}else{
+			Core._('#lottery #info').className += ' lose'
+			Core._('#lottery #info').innerText = 'lose'
 		}
 		Stats.money += prize
-		Core._('#lottery #info').className += ' ' + state
-		Core._('#lottery #info').innerText = state
+		Stats.moneyWon += prize
+		Stats.percentWon = Math.floor((Stats.lotteryWins * 100) / Stats.ticketsBought)
 		button.removeAttribute('disabled')
+		Core.updateHUD()
 	}, Core.base.timeRaffle)
 }
 
@@ -663,19 +700,16 @@ Core.load = function(){
 	for(var i = 0, len = Stats.jobs.length; i < len; i++){
 		Core.addJobToList(Stats.jobs[i])
 	}
-	// Añadir las mejoras
-	for(var i = 0, len = Stats.improvements.length; i < len; i++){
-		improvements[Stats.improvements[i]].effect()
-		Core._('.startImprovement[data-type=' + Stats.improvements[i] + ']')
-	}
 
 	// Limpieza de intervals/timeouts
 	clearInterval(window.monthInterval)
 	clearInterval(window.coffeeInterval)
 	clearInterval(window.energyDrinkInterval)
-	window.monthInterval       = null
-	window.coffeeInterval      = null
-	window.energyDrinkInterval = null
+	clearInterval(window.marketingCampaignInterval)
+	window.monthInterval             = null
+	window.coffeeInterval            = null
+	window.energyDrinkInterval       = null
+	window.marketingCampaignInterval = null
 	if(Core.projects){
 		for(var projectID in Core.projects){
 			if(Core.projects.hasOwnProperty(projectID) && Core.projects[projectID].engine){
@@ -688,15 +722,25 @@ Core.load = function(){
 		Core.startMonthTimer(Stats.monthTimeLeft)
 	}
 	if(Stats.coffeeTimeLeft){
-		Shop.startCoffeeEffect(Core._('#buyCoffee'), Stats.coffeeIncrement, Stats.coffeeTimeLeft)
+		var button = Core._('#shop-item-coffee')
+		Shop.items.coffee.buy(button, Stats.coffeeTimeLeft)
 	}
 	if(Stats.energyDrinkTimeLeft){
-		Shop.startEnergyDrinkEffect(Core._('#buyEnergyDrink'), Core.base.energyDrinkInc, Stats.energyDrinkTimeLeft)
+		var button = Core._('#shop-item-energyDrink')
+		Shop.items.energyDrink.buy(button, Stats.energyDrinkTimeLeft)
 	}
-	// Alquileres. Reinicializar la sección
-	Core.initRentingSection()
+	if(Stats.marketingCampaignRunning && Stats.marketingCampaignTimeLeft){
+		var button = Core._('#shop-item-marketingCampaign')
+		Shop.items.marketingCampaign.buy(button, Stats.marketingCampaignTimeLeft)
+	}
 
 	Core.init(true) // Evitamos algunas líneas necesarias sólo al principio (Sin cargar)
+
+	// Añadir las mejoras
+	for(var i = 0, len = Stats.improvements.length; i < len; i++){
+		improvements[Stats.improvements[i]].effect()
+		Core._('.startImprovement[data-type=' + Stats.improvements[i] + ']')
+	}
 	// Core.showPopUp({
 	// 	'title': 'Success!',
 	// 	'description': 'Your game is loaded!'
@@ -799,9 +843,8 @@ Core.initRecruitingSection = function(){
 Core.addListeners = function(){
 	Core._('#toggle-achievement-list').addEventListener('click', function(){ Core.toggleAchievementList() })
 	Core._('#upgradePC').addEventListener('click', function(){ Core.upgradeComputer() })
-	Core._('#buyCoffee').addEventListener('click', function(){ Shop.buyCoffee(this) })
-	Core._('#buyEnergyDrink').addEventListener('click', function(){ Shop.buyEnergyDrink(this) })
 	Core._('#takeJob').addEventListener('click', function(){ Core.takeJob(this) })
+	Core._('#takeQuickProject').addEventListener('click', function(){ Core.takeQuickProject(this) })
 	Core._('.startProject').addEventListener('click', function(){ Core.startProject(this) })
 	Core._('#buyTicket').addEventListener('click', function(){ Core.buyTicket(this) })
 	var improvs = Core._('.startImprovement', true)
@@ -864,6 +907,9 @@ Core.checkAchievements = function(silent){
 }
 
 Core.showPopUp = function(data){
+	if(Core._('.popup')){
+		Core._('.popup').remove()
+	}
 	var bg = document.createElement('DIV')
 		bg.className = 'popup'
 	var container = document.createElement('DIV')
@@ -933,4 +979,73 @@ Core.toggleAchievementList = function(){
 		_list.style.display = 'block'
 		Core.addClass(_list, 'open')
 	}
+}
+
+// Quick projects
+
+Core.quickProjectFinder = function(){
+	var time = Math.floor(Math.random() * Core.base.quickProjectsMaxTime) + Core.base.quickProjectsMinTime
+		if(Core.base.quickProjectsFinderTimeMagnifier){
+			time += time + (Stats.projects / 3)
+		}
+		time *= 1000
+	setTimeout(function(){
+		Core._('#takeQuickProject').removeAttribute('disabled')
+		document.title = 'Quick project available! | devLife'
+		setTimeout(function(){
+			Core._('#takeQuickProject').setAttribute('disabled', true)
+			document.title = Stats.companyName + ' intranet | devLife'
+			Core.quickProjectFinder()
+		}, 15000)
+	}, time)
+}
+
+Core.takeQuickProject = function(bthis){
+	document.title = Stats.companyName + ' intranet | devLife'
+	var button = document.createElement('BUTTON')
+		button.className = 'startProject'
+		button.innerText = 'Quick project (In progress)'
+		button.setAttribute('disabled', true)
+	Core._('#projects-section').appendChild(button)
+	Core.startQuickProject(button)
+	bthis.setAttribute('disabled', true)
+}
+
+Core.startQuickProject = function(button){
+	// Calcular tiempo (corto)
+	var projectTime = Math.floor(Math.random() * 10) + 4
+		projectTime += projectTime * (Stats.projects / 100)
+	// Porcentage
+	// Iniciar interval actualizando la barra de siempre
+	button.style.position = 'relative'
+	var bar = document.createElement('div')
+		bar.className = 'projectProgress'
+		button.appendChild(bar)
+	var percent = 100
+	var projectID = 'qproject-' + new Date().getTime()
+	Core.projects[projectID] = {  }
+	// Plus de ganancia por trabajador
+	Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * (Core.calcEmployeesMoneyInc() || 1)
+	Core.projects[projectID].moneyPlus += Core.projects[projectID].moneyPlus * ((30 - projectTime) / 100)
+	Core.projects[projectID].profit = 0
+	Core.projects[projectID].secondsLeft = projectTime
+	button.setAttribute('data-profit', '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0' + Core.base.moneyChar + ')')
+	Core.projects[projectID].timer = setInterval(function(){
+		Core.projects[projectID].profit += Core.projects[projectID].moneyPlus
+		Core.projects[projectID].secondsLeft--
+		bar.setAttribute('data-percent', percent)
+		if(Core.projects[projectID].secondsLeft <= 0){
+			clearInterval(Core.projects[projectID].timer)
+			Core.stop(projectID)
+			button.parentNode.removeChild(button)
+			Stats.projects++
+			Core.updateHUD()
+			Core.notification('Project finished', 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
+		}else{
+			percent = (Core.projects[projectID].secondsLeft / projectTime) * 100
+			bar.style.width = percent + '%'
+		}
+		var profitText = '(Time left: '+ Core.timeFormat(Core.projects[projectID].secondsLeft * 1000) +') (Profit: ' + Core.numberFormat(Core.projects[projectID].profit) + ')'
+			button.setAttribute('data-profit', profitText)
+	}, 1000)
 }

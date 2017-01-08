@@ -1,4 +1,4 @@
-# devlife ![version 1.8.3](https://d25lcipzij17d.cloudfront.net/badge.svg?id=gh&type=6&v=1.8.3&x2=0) ![license MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=102)
+# devlife ![version 1.8.4](https://d25lcipzij17d.cloudfront.net/badge.svg?id=gh&type=6&v=1.8.3&x2=0) ![license MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=102)
 
 Web browser game in pure JavaScript. I hope you like it ^^
 

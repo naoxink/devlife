@@ -79,7 +79,9 @@ var improvements = {
 		'cost': 10000,
 		'investigationTime': 1800000, // 30m,
 		'effect': function(button){
-			button.parentNode.removeChild(button)
+			if(button){
+				button.parentNode.removeChild(button)
+			}
 			if(window.autoStartProjectsInterval){
 				clearInterval(window.autoStartProjectsInterval)
 				window.autoStartProjectsInterval = null
@@ -139,6 +141,7 @@ var improvements = {
 			div.appendChild(span)
 			div.appendChild(input)
 			Core._('body').appendChild(div)
+			Shop.showItemButton('mechanicalKeyboard')
 			// keyup
 			window.commandPrompt = {
 				'multiplier': 1,
@@ -194,7 +197,7 @@ var improvements = {
 				}
 				Stats.money += Core.base.commandPromptInc * window.commandPrompt.multiplier
 				Stats.commandPrompt.keysPressed++
-				cpNumberAnimation()
+				// cpNumberAnimation() // Sobrecarga en algunas ocasiones
 				Stats.commandPrompt.moneyEarned += Core.base.commandPromptInc
 				if(this.value.length > Math.floor(Math.random() * 60) + 25 || e.keyCode === 13){
 					if(this.value === 'hack achievement'){
@@ -206,5 +209,17 @@ var improvements = {
 			})
 		},
 		'inProgress': false
-	}
+	},
+	'renewOffices': {
+		'label': 'Renew offices look',
+		'help': 'Renew your offices and create a better working environment to increase effectiveness',
+		'cost': 500000,
+		'investigationTime': 3600000, // 1h
+		'effect': function(button){
+			if(button){
+				button.parentNode.removeChild(button)
+			}
+		},
+		'inProgress': false
+	},
 }

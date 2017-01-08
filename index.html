@@ -22,10 +22,8 @@
 				<div class="dropdown-content">
 					<ul>
 						<li id="toggle-achievement-list">Achievements</li>
-						<li id="save" onclick="Core.save()">Save (test)</li>
-						<li id="load" onclick="Core.load()">Load (test)</li>
-						<li class="disabled"><hr></li>
-						<li id="reqNotifications" onclick="javascript:Notification.requestPermission()">Notifications on/off</li>
+						<li id="save" onclick="Core.save()">Save</li>
+						<li id="load" onclick="Core.load()">Load</li>
 						<li class="disabled"><hr></li>
 						<li><a href="https://github.com/naoxink/devlife/issues" target="_blank">Issue tracker</a></li>
 						<li><a href="https://github.com/naoxink/devlife/wiki" target="_blank">Wiki</a></li>
@@ -47,6 +45,7 @@
 			<div class="help stat" data-title="Your computer version. The higher the better.">Computer Version: <span id="computerVersion"></span></div>
 			<div class="help stat" data-title="Number of jobs you have. Maximum 4 jobs.">Jobs: <span id="jobs"></span></div>
 			<div class="help stat" data-title="People hired">Employees: <span id="employees"></span></div>
+			<!-- <div class="help stat" data-title="This is the value of your company">Company value: <span id="companyValue"></span></div> -->
 			<button id="shareTwitter">Tweet my stats!</button>
 		</div>
 
@@ -54,6 +53,7 @@
 			<p class="header">Projects</p>
 			<div class="help stat" data-title="Projects completed. You earn money by completing projects">Projects completed: <span id="projects">0</span></div>
 			<div class="spaced thin"></div>
+			<button id="takeQuickProject" disabled="disabled">Take quick project</button>
 			<button class="startProject">Start project</button>
 		</div>
 		<div class="button-section" id="improvements-section">
@@ -63,7 +63,7 @@
 			<p class="header">Upgrades</p>
 			<button id="upgradePC" disabled="disabled">Upgrade computer (<span id="PCCost"></span>)</button>
 		</div>
-		<div class="button-section" id="employees-section">
+		<div class="button-section compact" id="employees-section">
 			<p class="header">Recruiting</p>
 			<div class="help stat" data-title="Each minute your employees receive their salaries. This is the total cost.">Salaries cost: <span id="salariesCost"></span></div>
 			<div id="salaries-timer-bar-container">
@@ -81,19 +81,20 @@
 			<p class="header">Actual jobs</p>
 			<ul class="job-list"></ul>
 		</div>
-		<div class="button-section">
+		<div class="button-section" id="shop">
 			<p class="header">Shop</p>
-			<button class="help" data-title="Have a coffee and increment 0.03% your earnings during 3 minutes." id="buyCoffee">Buy coffee (5¢)</button>
-			<button class="help" data-title="Have an Energy Drink and speed up your money rate pulse by 0.75% during 1 minute." id="buyEnergyDrink">Buy Energy Drink (15¢)</button>
 		</div>
 		<div class="button-section" id="lottery">
 			<p class="header">Lottery</p>
 			<button id="buyTicket" class="help" data-title="Everyone has the right to be millionaire. Win a 1.000.000¢ prize!">Buy a ticket (1¢)</button>
+			<div class="stat">Money spent: <span id="moneySpent"></span></div>
+			<div class="stat">Money won: <span id="moneyWon"></span></div>
+			<div class="stat">Win percent: <span id="percentWon"></span></div>
 			<div id="info">-</div>
 			<div id="owned">-</div>
 			<div id="winner">-</div>
 		</div>
-		<div class="button-section buildings">
+		<div class="button-section buildings compact">
 			<p class="header">Space</p>
 			<div class="stat">Rooms: <span id="rooms"></span></div>
 			<div class="stat">Floors: <span id="floors"></span></div>

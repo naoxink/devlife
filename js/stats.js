@@ -1,5 +1,7 @@
 var Stats = {
 	// General
+	'companyName': 'devlife',
+	'companyValue': 0,
 	'computerVersion': 0,
 	'money': 10,
 	'jobs': [  ],
@@ -31,6 +33,9 @@ var Stats = {
 	'ticketsBought': 0,
 	'partialWon': false,
 	'lotteryWon': false,
+	'lotteryWins': 0,
+	'percentWon': 0,
+	'moneyWon': 0,
 	// Arrays
 	'improvements': [  ],
 	// Command prompt

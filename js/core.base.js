@@ -28,6 +28,10 @@ Core.base = {
 	'energyDrinkEffectTime': 60,
 
 	'commandPromptInc': 1,
-	'notificationsRequested': false
+	'notificationsRequested': false,
+
+	'quickProjectsMinTime': 5,
+	'quickProjectsMaxTime': 10,
+	'quickProjectsFinderTimeMagnifier': true
 
 }

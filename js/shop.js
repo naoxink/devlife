@@ -1,70 +1,168 @@
 var Shop = {  }
 
-Shop.buyCoffee = function(button){
-	if(Stats.isCoffeePowered) return false
-	var coffeePrice = Core.base.coffeePrice
-	var coffeeInc = Core.base.coffeeInc
-	var effectTime = Core.base.coffeeEffectTime
-	if(Stats.money < coffeePrice) return false
-	Stats.money -= coffeePrice
-	Stats.coffeeIncrement = (Core.base.moneyIncPerPulse / (Stats.employees.length + 1)) * coffeeInc
-	Core.base.moneyIncPerPulse += Stats.coffeeIncrement
-	Stats.isCoffeePowered = true
-	Core.updateHUD()
-	Stats.coffeesBought++
-	Shop.startCoffeeEffect(button, Stats.coffeeIncrement, effectTime)
-}
-
-Shop.startCoffeeEffect = function(button, increment, seconds){
-	button.setAttribute('disabled', true)
-	Stats.coffeeTimeLeft = seconds
-	button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
-	window.coffeeInterval = setInterval(function(){
-		if(Stats.coffeeTimeLeft <= 0){
-			Core.base.moneyIncPerPulse -= increment
-			Stats.isCoffeePowered = false
-			button.innerText = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
-			button.removeAttribute('disabled')
-			clearInterval(window.coffeeInterval)
-			delete Stats.coffeeTimeLeft
-		}else{
-			Stats.coffeeTimeLeft--
+Shop.items = {
+	'coffee': {
+		'oneuse': false,
+		'initial': true,
+		'label': 'Buy coffee',
+		'help': 'Have a coffee and temporarily increase your money rate',
+		'cost': 5,
+		'buy': function(button, secondsLeft){
+			Stats.coffeeIncrement = (Core.base.moneyIncPerPulse / (Stats.employees.length + 1)) * Core.base.coffeeInc
+			Core.base.moneyIncPerPulse += Stats.coffeeIncrement
+			Stats.isCoffeePowered = true
+			Core.updateHUD()
+			Stats.coffeesBought++
+			button.setAttribute('disabled', true)
+			button.setAttribute('data-running', 'true')
+			Stats.coffeeTimeLeft = secondsLeft || Core.base.coffeeEffectTime
 			button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
+			window.coffeeInterval = setInterval(function(){
+				if(Stats.coffeeTimeLeft <= 0){
+					Core.base.moneyIncPerPulse -= increment
+					Stats.isCoffeePowered = false
+					button.innerText = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+					button.removeAttribute('disabled')
+					button.removeAttribute('data-running')
+					clearInterval(window.coffeeInterval)
+					delete Stats.coffeeTimeLeft
+					Core.updateHUD()
+				}else{
+					button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
+					Stats.coffeeTimeLeft--
+				}
+			}, 1000)
 		}
-		Core.updateHUD()
-	}, 1000)
-}
-
-Shop.buyEnergyDrink = function(button){
-	if(Stats.isEnergyDrinkPowered) return false
-	var energyDrinkCost = Core.base.energyDrinkPrice
-	var energyDrinkInc = Core.base.energyDrinkInc
-	var effectTime = Core.base.energyDrinkEffectTime
-	if(Stats.money < energyDrinkCost) return false
-	Stats.money -= energyDrinkCost
-	Core.base.pulseDuration *= energyDrinkInc
-	Stats.isEnergyDrinkPowered = true
-	Core.updateHUD()
-	Stats.energyDrinksBought++
-	Shop.startEnergyDrinkEffect(button, energyDrinkInc, effectTime)
-}
-
-Shop.startEnergyDrinkEffect = function(button, increment, seconds){
-	button.setAttribute('disabled', true)
-	Stats.energyDrinkTimeLeft = seconds
-	button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
-	window.energyDrinkInterval = setInterval(function(){
-		if(Stats.energyDrinkTimeLeft <= 0){
-			Core.base.pulseDuration /= increment
-			Stats.isEnergyDrinkPowered = false
-			button.removeAttribute('disabled')
-			button.innerText = 'Buy Energy Drink (' + Core.numberFormat(Core.base.energyDrinkPrice) + ')'
-			clearInterval(window.energyDrinkInterval)
-			delete Stats.energyDrinkTimeLeft
-		}else{
-			Stats.energyDrinkTimeLeft--
+	},
+	'energyDrink': {
+		'oneuse': false,
+		'initial': true,
+		'label': 'Buy energy drink',
+		'help': 'Have an energy drink to boost your pulse speed',
+		'cost': 15,
+		'buy': function(button, secondsLeft){
+			Core.base.pulseDuration *= Core.base.energyDrinkInc
+			Stats.isEnergyDrinkPowered = true
+			Core.updateHUD()
+			Stats.energyDrinksBought++
+			button.setAttribute('disabled', true)
+			button.setAttribute('data-running', 'true')
+			Stats.energyDrinkTimeLeft = secondsLeft || Core.base.energyDrinkEffectTime
 			button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
+			window.energyDrinkInterval = setInterval(function(){
+				if(Stats.energyDrinkTimeLeft <= 0){
+					Core.base.pulseDuration /= Core.base.energyDrinkInc
+					Stats.isEnergyDrinkPowered = false
+					button.innerText = 'Buy Energy Drink (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+					button.removeAttribute('disabled')
+					button.removeAttribute('data-running')
+					clearInterval(window.energyDrinkInterval)
+					delete Stats.energyDrinkTimeLeft
+					Core.updateHUD()
+				}else{
+					button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
+					Stats.energyDrinkTimeLeft--
+				}
+			}, 1000)
 		}
+	},
+	'mechanicalKeyboard': {
+		'oneuse': true,
+		'initial': false,
+		'label': 'Mechanical Keyboard',
+		'help': 'Buy a better keyboard to increase the money you make with the command prompt',
+		'cost': 1000,
+		'buy': function(){
+			Core.base.commandPromptInc *= 2
+		}
+	},
+	'infiniteCoffeeContract': {
+		'oneuse': true,
+		'initial': true,
+		'label': 'Infinite coffee contract',
+		'help': 'You make a contract with a coffee vendor to have coffee with no cost',
+		'cost': 20000,
+		'buy': function(){
+			Core.base.coffeePrice = 0
+			Core._('#shop-item-coffee').innerText = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+		}
+	},
+	'companyNameChange': {
+		'oneuse': false,
+		'initial': true,
+		'label': 'Company name change',
+		'help': '',
+		'cost': 5000,
+		'buy': function(){
+			var oldName = Stats.companyName
+			Stats.companyName = prompt('Write the new name of your company') || Stats.companyName
+			// Si no cambia el nombre o cancela se le devuelve el dinero
+			if(Stats.companyName === oldName){
+				Stats.money += this.cost
+				return false
+			}
+			Core.showPopUp({
+				'title': 'Company name changed',
+				'description': 'Your company name is now "' + Stats.companyName + '"'
+			})
+			document.title = Stats.companyName + ' intranet | devLife'
+			Core._('.navbar .brand').innerText = Stats.companyName + ' intranet'
+		}
+	},
+	'marketingCampaign': {
+		'oneuse': false,
+		'initial': true,
+		'label': 'Marketing campaign',
+		'help': 'Launch a marketing campaign to increase opportunities for quick projects',
+		'cost': 2000,
+		'buy': function(button, secondsLeft){
+			Core.base.quickProjectsFinderTimeMagnifier = false
+			Stats.marketingCampaignRunning = true
+			Stats.marketingCampaignTimeLeft = secondsLeft || 300 // 5m
+			button.setAttribute('disabled', true)
+			button.setAttribute('data-running', 'true')
+			button.innerText = 'Marketing campaign time left: ' + Core.timeFormat(Stats.marketingCampaignTimeLeft * 1000)
+			window.marketingCampaignInterval = setInterval(function(){
+				if(Stats.marketingCampaignTimeLeft <= 0){
+					Core.base.quickProjectsFinderTimeMagnifier = true
+					button.innerText = this.label + ' (' + Core.numberFormat(this.cost) + ')'
+					button.removeAttribute('disabled')
+					button.removeAttribute('data-running')
+					clearInterval(window.marketingCampaignInterval)
+					delete Stats.marketingCampaignTimeLeft
+				}else{
+					Stats.marketingCampaignTimeLeft--
+					button.innerText = 'Marketing campaign time left: ' + Core.timeFormat(Stats.marketingCampaignTimeLeft * 1000)
+				}
+			}, 1000)
+		}
+	}
+}
+
+Shop.showItemButton = function(itemID){
+	if(!Shop.items[itemID]) return false
+	var item = Shop.items[itemID]
+	var button = document.createElement('BUTTON')
+		button.innerText = item.label + ' (' + Core.numberFormat(item.cost) + ')'
+		button.className = 'shopItem'
+		button.setAttribute('id', 'shop-item-' + itemID)
+		button.setAttribute('data-cost', item.cost)
+		if(item.help){
+			button.className += ' help'
+			button.setAttribute('data-title', item.help)
+		}
+		button.onclick = function(){
+			if(Stats.money < item.cost){
+				this.setAttribute('disabled', true)
+				return false
+			}
+			Stats.money -= item.cost
+			item.buy(this)
+			if(item.oneuse){
+				this.parentNode.removeChild(this)
+			}
+			Core.updateHUD()
+		}
+		Core._('#shop').appendChild(button)
 		Core.updateHUD()
-	}, 1000)
 }
