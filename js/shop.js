@@ -53,7 +53,7 @@ Shop.items = {
 				if(Stats.energyDrinkTimeLeft <= 0){
 					Core.base.pulseDuration /= Core.base.energyDrinkInc
 					Stats.isEnergyDrinkPowered = false
-					button.innerText = 'Buy Energy Drink (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+					button.innerText = 'Buy Energy Drink (' + Core.numberFormat(Core.base.energyDrinkPrice) + ')'
 					button.removeAttribute('disabled')
 					button.removeAttribute('data-running')
 					clearInterval(window.energyDrinkInterval)
