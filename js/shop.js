@@ -19,7 +19,7 @@ Shop.items = {
 			button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
 			window.coffeeInterval = setInterval(function(){
 				if(Stats.coffeeTimeLeft <= 0){
-					Core.base.moneyIncPerPulse -= increment
+					Core.base.moneyIncPerPulse -= Stats.coffeeIncrement
 					Stats.isCoffeePowered = false
 					button.innerText = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
 					button.removeAttribute('disabled')
