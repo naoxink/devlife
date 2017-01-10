@@ -21,8 +21,10 @@ Core.init = function(fromLoad){
 	}else{
 		Core.checkAchievements(true)
 	}
-	Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
-	Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
+	if(Stats.computerVersion < Core.base.maxComputerVersion){
+		Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
+		Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
+	}
 	if(Notification.permission !== "granted" && !Core.base.notificationsRequested){
 		// Notification.requestPermission()
 		Core.base.notificationsRequested = true
@@ -46,7 +48,7 @@ Core.stop = function(projectID){
 	Stats.companyValue += Core.projects[projectID].profit / 2
 	Core.updateHUD()
 	if(Core.hasImprovement('autoSaveOnProjectComplete')){
-		Core.save()
+		Core.save(true)
 	}else{
 		if(Stats.projects > 50 && !Core._('.startImprovement[data-type=autoSaveOnProjectComplete]')){
 			Core.showImprovementButton('autoSaveOnProjectComplete')
@@ -628,7 +630,7 @@ Core.pad = function(number){
 	return pad.substring(0, pad.length - str.length) + str
 }
 
-Core.save = function(){
+Core.save = function(silent){
 	if(!localStorage || !JSON || typeof JSON.stringify !== 'function') return false
 	localStorage.setItem('savedDate', new Date())
 	// Core.base
@@ -652,10 +654,14 @@ Core.save = function(){
 	// - Coffee (Saved in Stats.coffeeTimeLeft)
 	// - Energy Drink (Saved in Stats.energyDrinkTimeLeft)
 	// - Improvements (Saved in Stats['imp' + ty + 'timeleft'])
-	Core.showPopUp({
-		'title': 'Success!',
-		'description': 'Your game is saved in this browser!'
-	})
+	if(!silent){
+		Core.showPopUp({
+			'title': 'Success!',
+			'description': 'Your game is saved in this browser!'
+		})
+	}else{
+		console.info('Game saved: ' + new Date())
+	}
 	return true
 }
 
@@ -984,12 +990,13 @@ Core.toggleAchievementList = function(){
 // Quick projects
 
 Core.quickProjectFinder = function(){
+	clearInterval(window.quickProjectFinderTimeout)
 	var time = Math.floor(Math.random() * Core.base.quickProjectsMaxTime) + Core.base.quickProjectsMinTime
 		if(Core.base.quickProjectsFinderTimeMagnifier){
-			time += time + (Stats.projects / 3)
+			time += time * (Stats.projects / 3)
 		}
 		time *= 1000
-	setTimeout(function(){
+	window.quickProjectFinderTimeout = setTimeout(function(){
 		Core._('#takeQuickProject').removeAttribute('disabled')
 		document.title = 'Quick project available! | devLife'
 		setTimeout(function(){

@@ -116,7 +116,9 @@ Shop.items = {
 		'help': 'Launch a marketing campaign to increase opportunities for quick projects',
 		'cost': 2000,
 		'buy': function(button, secondsLeft){
+			var _item = this
 			Core.base.quickProjectsFinderTimeMagnifier = false
+			Core.quickProjectFinder()
 			Stats.marketingCampaignRunning = true
 			Stats.marketingCampaignTimeLeft = secondsLeft || 300 // 5m
 			button.setAttribute('disabled', true)
@@ -125,7 +127,7 @@ Shop.items = {
 			window.marketingCampaignInterval = setInterval(function(){
 				if(Stats.marketingCampaignTimeLeft <= 0){
 					Core.base.quickProjectsFinderTimeMagnifier = true
-					button.innerText = this.label + ' (' + Core.numberFormat(this.cost) + ')'
+					button.innerText = _item.label + ' (' + Core.numberFormat(_item.cost) + ')'
 					button.removeAttribute('disabled')
 					button.removeAttribute('data-running')
 					clearInterval(window.marketingCampaignInterval)
