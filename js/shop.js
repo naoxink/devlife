@@ -16,19 +16,19 @@ Shop.items = {
 			button.setAttribute('disabled', true)
 			button.setAttribute('data-running', 'true')
 			Stats.coffeeTimeLeft = secondsLeft || Core.base.coffeeEffectTime
-			button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
+			button.innerText = button.textContent = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
 			window.coffeeInterval = setInterval(function(){
 				if(Stats.coffeeTimeLeft <= 0){
 					Core.base.moneyIncPerPulse -= Stats.coffeeIncrement
 					Stats.isCoffeePowered = false
-					button.innerText = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+					button.innerText = button.textContent = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
 					button.removeAttribute('disabled')
 					button.removeAttribute('data-running')
 					clearInterval(window.coffeeInterval)
 					delete Stats.coffeeTimeLeft
 					Core.updateHUD()
 				}else{
-					button.innerText = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
+					button.innerText = button.textContent = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
 					Stats.coffeeTimeLeft--
 				}
 			}, 1000)
@@ -48,19 +48,19 @@ Shop.items = {
 			button.setAttribute('disabled', true)
 			button.setAttribute('data-running', 'true')
 			Stats.energyDrinkTimeLeft = secondsLeft || Core.base.energyDrinkEffectTime
-			button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
+			button.innerText = button.textContent = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
 			window.energyDrinkInterval = setInterval(function(){
 				if(Stats.energyDrinkTimeLeft <= 0){
 					Core.base.pulseDuration /= Core.base.energyDrinkInc
 					Stats.isEnergyDrinkPowered = false
-					button.innerText = 'Buy Energy Drink (' + Core.numberFormat(Core.base.energyDrinkPrice) + ')'
+					button.innerText = button.textContent = 'Buy Energy Drink (' + Core.numberFormat(Core.base.energyDrinkPrice) + ')'
 					button.removeAttribute('disabled')
 					button.removeAttribute('data-running')
 					clearInterval(window.energyDrinkInterval)
 					delete Stats.energyDrinkTimeLeft
 					Core.updateHUD()
 				}else{
-					button.innerText = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
+					button.innerText = button.textContent = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
 					Stats.energyDrinkTimeLeft--
 				}
 			}, 1000)
@@ -84,7 +84,7 @@ Shop.items = {
 		'cost': 20000,
 		'buy': function(){
 			Core.base.coffeePrice = 0
-			Core._('#shop-item-coffee').innerText = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+			Core._('#shop-item-coffee').innerText = Core._('#shop-item-coffee').textContent = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
 		}
 	},
 	'companyNameChange': {
@@ -106,7 +106,7 @@ Shop.items = {
 				'description': 'Your company name is now "' + Stats.companyName + '"'
 			})
 			document.title = Stats.companyName + ' intranet | devLife'
-			Core._('.navbar .brand').innerText = Stats.companyName + ' intranet'
+			Core._('.navbar .brand').innerText = Core._('.navbar .brand').textContent = Stats.companyName + ' intranet'
 		}
 	},
 	'marketingCampaign': {
@@ -123,18 +123,18 @@ Shop.items = {
 			Stats.marketingCampaignTimeLeft = secondsLeft || 300 // 5m
 			button.setAttribute('disabled', true)
 			button.setAttribute('data-running', 'true')
-			button.innerText = 'Marketing campaign time left: ' + Core.timeFormat(Stats.marketingCampaignTimeLeft * 1000)
+			button.innerText = button.textContent = 'Marketing campaign time left: ' + Core.timeFormat(Stats.marketingCampaignTimeLeft * 1000)
 			window.marketingCampaignInterval = setInterval(function(){
 				if(Stats.marketingCampaignTimeLeft <= 0){
 					Core.base.quickProjectsFinderTimeMagnifier = true
-					button.innerText = _item.label + ' (' + Core.numberFormat(_item.cost) + ')'
+					button.innerText = button.textContent = _item.label + ' (' + Core.numberFormat(_item.cost) + ')'
 					button.removeAttribute('disabled')
 					button.removeAttribute('data-running')
 					clearInterval(window.marketingCampaignInterval)
 					delete Stats.marketingCampaignTimeLeft
 				}else{
 					Stats.marketingCampaignTimeLeft--
-					button.innerText = 'Marketing campaign time left: ' + Core.timeFormat(Stats.marketingCampaignTimeLeft * 1000)
+					button.innerText = button.textContent = 'Marketing campaign time left: ' + Core.timeFormat(Stats.marketingCampaignTimeLeft * 1000)
 				}
 			}, 1000)
 		}
@@ -145,7 +145,7 @@ Shop.showItemButton = function(itemID){
 	if(!Shop.items[itemID]) return false
 	var item = Shop.items[itemID]
 	var button = document.createElement('BUTTON')
-		button.innerText = item.label + ' (' + Core.numberFormat(item.cost) + ')'
+		button.innerText = button.textContent = button.textContent = item.label + ' (' + Core.numberFormat(item.cost) + ')'
 		button.className = 'shopItem'
 		button.setAttribute('id', 'shop-item-' + itemID)
 		button.setAttribute('data-cost', item.cost)

@@ -4,9 +4,9 @@ Core.engine = {  }
 Core.projects = {  }
 
 Core.init = function(fromLoad){
-	Core.initRecruitingSection()
-	Core.initRentingSection()
-	Core.jobFinder()
+	// Core.initRecruitingSection()
+	// Core.initRentingSection()
+	// Core.jobFinder()
 	Core.quickProjectFinder()
 	if(!fromLoad){
 		Core.takeJob()
@@ -23,7 +23,7 @@ Core.init = function(fromLoad){
 	}
 	if(Stats.computerVersion < Core.base.maxComputerVersion){
 		Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
-		Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
+		Core._('#PCCost').innerText = Core._('#PCCost').textContent = Core.numberFormat(Core.base.nextComputerVersionCost)
 	}
 	if(Notification.permission !== "granted" && !Core.base.notificationsRequested){
 		// Notification.requestPermission()
@@ -31,6 +31,7 @@ Core.init = function(fromLoad){
 	}
 	document.title = Stats.companyName + ' intranet | devLife'
 	Core._('.navbar .brand').innerText = Stats.companyName + ' intranet'
+	Core.refreshAchievementList()
 	Core.updateHUD()
 }
 
@@ -119,41 +120,41 @@ Core.updateHUD = function(){
 	Core._('#incPerPulse').innerHTML = Core.numberFormat(Core.base.moneyIncPerPulse) + '/pulse'
 	Core._('#computerVersion').innerHTML = 'v' + Stats.computerVersion
 	Core._('#jobs').innerHTML = Stats.jobs.length
-	Core._('#employees').innerHTML = Stats.employees.length
+	// Core._('#employees').innerHTML = Stats.employees.length
 	Core._('#pulseSpeed').innerHTML = parseFloat(Core.base.pulseDuration || 0).toFixed(3) + ' ms'
-	Core._('#projects').innerText = Stats.projects
+	Core._('#projects').innerHTML = Stats.projects
 	// Core._('#companyValue').innerText = Core.numberFormat(Stats.companyValue)
 	// Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
 	// Edificios
-	Core._('#availableSpaces').innerText = Stats.availableSpaces
-	Core._('#rooms').innerText = Stats.rooms
-	Core._('#floors').innerText = Stats.floors
-	Core._('#buildings').innerText = Stats.buildings
-	Core._('#warehouses').innerText = Stats.warehouses
-	Core._('#rentsCost').innerText = Core.numberFormat(Core.calcRentCost())
+	// Core._('#availableSpaces').innerText = Stats.availableSpaces
+	// Core._('#rooms').innerText = Stats.rooms
+	// Core._('#floors').innerText = Stats.floors
+	// Core._('#buildings').innerText = Stats.buildings
+	// Core._('#warehouses').innerText = Stats.warehouses
+	// Core._('#rentsCost').innerText = Core.numberFormat(Core.calcRentCost())
 	// Lotería
-	Core._('#moneySpent').innerText = (Stats.ticketsBought * Core.base.lotteryTicketCost) + ' ' + Core.base.moneyChar
-	Core._('#moneyWon').innerText = Stats.moneyWon + ' ' + Core.base.moneyChar
-	Core._('#percentWon').innerText = Stats.percentWon + '%'
+	Core._('#moneySpent').innerHTML = (Stats.ticketsBought * Core.base.lotteryTicketCost) + ' ' + Core.base.moneyChar
+	Core._('#moneyWon').innerHTML = Stats.moneyWon + ' ' + Core.base.moneyChar
+	Core._('#percentWon').innerHTML = Stats.percentWon + '%'
 	// Empleados
 	// Controlar botones
-	Core._('#salariesCost').innerText = Core.numberFormat(Core.calcSalariesCost())
-	for(var type in employees){
-		if(employees.hasOwnProperty(type)){
-			Core._('#' + employees[type].id + 'Counter').innerText = Stats[type] || 0
-			if(employees[type].salary < Stats.money){
-				Core._('.hireEmployee[data-type=' + type + ']').removeAttribute('disabled')
-			}else{
-				Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
-			}
-			if(Stats[type] > 0){
-				Core._('.fireEmployee[data-type=' + type + ']').removeAttribute('disabled')
-			}
-            if(employees[type].label === 'Friend' && Stats.friend >= Core.base.maxFriendHiring) {
-				Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
-            }
-		}
-	}
+	// Core._('#salariesCost').innerText = Core.numberFormat(Core.calcSalariesCost())
+	// for(var type in employees){
+	// 	if(employees.hasOwnProperty(type)){
+	// 		Core._('#' + employees[type].id + 'Counter').innerText = Stats[type] || 0
+	// 		if(employees[type].salary < Stats.money){
+	// 			Core._('.hireEmployee[data-type=' + type + ']').removeAttribute('disabled')
+	// 		}else{
+	// 			Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
+	// 		}
+	// 		if(Stats[type] > 0){
+	// 			Core._('.fireEmployee[data-type=' + type + ']').removeAttribute('disabled')
+	// 		}
+ //            if(employees[type].label === 'Friend' && Stats.friend >= Core.base.maxFriendHiring) {
+	// 			Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
+ //            }
+	// 	}
+	// }
 	if(Core.base.maxComputerVersion > Stats.computerVersion){
 		if(Stats.money >= Core.base.nextComputerVersionCost){
 			Core._('#upgradePC').removeAttribute('disabled')
@@ -162,18 +163,18 @@ Core.updateHUD = function(){
 		}
 	}else{
 		Core._('#upgradePC').setAttribute('disabled', true)
-		Core._('#upgradePC').innerText = 'Computer version maxed (' + Core.base.maxComputerVersion + ')'
+		Core._('#upgradePC').innerText = Core._('#upgradePC').textContent = 'Computer version maxed (' + Core.base.maxComputerVersion + ')'
 	}
-	var rooms = Core._('.rentRoom', true)
-	for(var i = 0, len = rooms.length; i < len; i++){
-		var el = rooms[i]
-		if(el.className.indexOf('owned') !== -1) continue
-		if(el.getAttribute('data-cost') < Stats.money){
-			el.removeAttribute('disabled')
-		}else{
-			el.setAttribute('disabled', true)
-		}
-	}
+	// var rooms = Core._('.rentRoom', true)
+	// for(var i = 0, len = rooms.length; i < len; i++){
+	// 	var el = rooms[i]
+	// 	if(el.className.indexOf('owned') !== -1) continue
+	// 	if(el.getAttribute('data-cost') < Stats.money){
+	// 		el.removeAttribute('disabled')
+	// 	}else{
+	// 		el.setAttribute('disabled', true)
+	// 	}
+	// }
 	var imprvs = Core._('.startImprovement', true)
 	for(var i = 0, len = imprvs.length; i < len; i++){
 		if(imprvs[i].getAttribute('data-cost') < Stats.money && improvements[imprvs[i].getAttribute('data-type')].inProgress === false){
@@ -213,11 +214,11 @@ Core.upgradeComputer = function(){
 		Core.base.pulseDuration -= 10
 		if(Core.base.maxComputerVersion >= Stats.computerVersion + 1){
 			Core.base.nextComputerVersionCost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
-			Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
+			Core._('#PCCost').innerText = Core._('#PCCost').textContent = Core.numberFormat(Core.base.nextComputerVersionCost)
 			Core._('#upgradePC').setAttribute('disabled', true)
 		}else{
 			Core._('#upgradePC').setAttribute('disabled', true)
-			Core._('#PCCost').innerText = 'Computer version maxed (' + Core.base.maxComputerVersion + ')'
+			Core._('#PCCost').innerText = Core._('#PCCost').textContent = 'Computer version maxed (' + Core.base.maxComputerVersion + ')'
 			if(!Core.hasImprovement('computacionalTech')){
 				Core.showImprovementButton('computacionalTech')
 			}
@@ -254,7 +255,9 @@ Core.calcRentCost = function(){
 	return qty <= 0 || isNaN(qty) ? 0 : qty
 }
 
-Core.jobFinder = function(){
+Core.jobFinder = function(button){
+	button.setAttribute('disabled', true)
+	Core._('#job-finder-status').innerText = 'Searching'
 	var time = Math.floor(Math.random() * 60) + 25
 		time *= 1000
 	setTimeout(function(){
@@ -264,7 +267,10 @@ Core.jobFinder = function(){
 			Core._('#takeJob').setAttribute('disabled', true)
 			document.title = Stats.companyName + ' intranet | devLife'
 			if(Stats.jobs.length < Core.base.maxJobs){
-				Core.jobFinder()
+				button.removeAttribute('disabled')
+				Core._('#job-finder-status').innerText = 'Not searching'
+			}else{
+				Core.jobFinder(button)
 			}
 		}, 5000)
 	}, time)
@@ -273,11 +279,11 @@ Core.jobFinder = function(){
 Core.takeJob = function(button){
 	if(button) button.setAttribute('disabled', true)
 	if(Stats.jobs.length >= Core.base.maxJobs) return false
-	var job = jobs[(Math.floor(Math.random() * (jobs.length - 1)))]
-		job.id = 'job-' + new Date().getTime()
+	var job = JSON.parse(JSON.stringify(jobs[(Math.floor(Math.random() * (jobs.length - 1)))]))
+		job.id = 'job-' + new Date().getTime() + Stats.jobs.length
 	Core.base.moneyIncPerPulse += job.increment
 	document.title = Stats.companyName + ' intranet | devLife'
-	Stats.jobs.push(job)
+	Stats.jobs[Stats.jobs.length] = job
 	Core.addJobToList(job)
 }
 
@@ -285,7 +291,7 @@ Core.addJobToList = function(job){
 	var li = document.createElement('li')
 	var text = document.createTextNode(job.name + ' (+' + Core.numberFormat(job.increment) + '/pulse)')
 	var qjbutton = document.createElement('button')
-		qjbutton.innerText = 'Quit job'
+		qjbutton.innerText = qjbutton.textContent = 'Quit job'
 		qjbutton.setAttribute('id', job.id)
 		qjbutton.addEventListener('click', Core.quitJob)
 		li.appendChild(text)
@@ -320,7 +326,7 @@ Core.rentRoom = function(ty, button){
 	button.className += ' owned'
 	var dropButton = document.createElement('BUTTON')
 	dropButton.className = 'inline'
-	dropButton.innerText = ' Drop ' + ty
+	dropButton.innerText = dropButton.textContent = ' Drop ' + ty
 	dropButton.onclick = function(){ Core.dropRent(this) }
 	dropButton.setAttribute('data-type', ty)
 	button.appendChild(dropButton)
@@ -463,7 +469,7 @@ Core.startProject = function(button){
 			clearInterval(Core.projects[projectID].timer)
 			Core.stop(projectID)
 			button.removeAttribute('disabled')
-			button.innerText = 'Start project'
+			button.innerText = button.textContent = 'Start project'
 			button.setAttribute('data-profit', '')
 			Stats.projects++
 			Core.updateHUD()
@@ -484,7 +490,7 @@ Core.showImprovementButton = function(id){
 		}
 		button.setAttribute('data-type', id)
 		button.setAttribute('data-cost', improvements[id].cost)
-		button.innerText = improvements[id].label + ' (' + Core.numberFormat(improvements[id].cost) + ') (Development time: ' + Core.timeFormat(improvements[id].investigationTime) + ')'
+		button.innerText = button.textContent = improvements[id].label + ' (' + Core.numberFormat(improvements[id].cost) + ') (Development time: ' + Core.timeFormat(improvements[id].investigationTime) + ')'
 		button.addEventListener('click', function(){
 			Core.startImprovement(id, this)
 		})
@@ -497,7 +503,7 @@ Core.startImprovement = function(ty, button){
 	if(Stats.money < improvements[ty].cost) return false
 	Stats.money -= improvements[ty].cost
 	button.setAttribute('disabled', true)
-	button.innerText = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(improvements[ty].investigationTime) + ')'
+	button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(improvements[ty].investigationTime) + ')'
 	Stats['imp' + ty + 'timeleft'] = improvements[ty].investigationTime / 1000
 	window['interval' + ty] = setInterval(function(){
 		if(Stats['imp' + ty + 'timeleft'] <= 0){
@@ -508,7 +514,7 @@ Core.startImprovement = function(ty, button){
 			Stats.companyValue += improvements[ty].cost / 2
 		}else{
 			Stats['imp' + ty + 'timeleft']--
-			button.innerText = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Stats['imp' + ty + 'timeleft'] * 1000) + ')'
+			button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Stats['imp' + ty + 'timeleft'] * 1000) + ')'
 		}
 	}, 1000)
 }
@@ -542,12 +548,12 @@ Core.timeFormat = function(s){
 Core.buyTicket = function(button){
 	if(Stats.money < Core.base.lotteryTicketCost) return false
 	Stats.money -= Core.base.lotteryTicketCost
-	Core._('#lottery #winner').innerText = '-'
-	Core._('#lottery #owned').innerText = '-'
-	Core._('#lottery #info').innerText = '-'
+	Core._('#lottery #winner').innerText = Core._('#lottery #winner').textContent = '-'
+	Core._('#lottery #owned').innerText = Core._('#lottery #owned').textContent = '-'
+	Core._('#lottery #info').innerText = Core._('#lottery #info').textContent = '-'
 	Core._('#lottery #info').className = ''
 	Stats.numTicket = Core.pad(Math.floor((Math.random() * Core.base.numbersTickets) + 1))
-	Core._('#lottery #owned').innerText = Stats.numTicket
+	Core._('#lottery #owned').innerText = Core._('#lottery #owned').textContent = Stats.numTicket
 	button.setAttribute('disabled', true)
 	Stats.ticketsBought++
 	Core.startRaffle(button)
@@ -557,14 +563,14 @@ Core.buyTicket = function(button){
 Core.startRaffle = function(button){
 	Stats.raffleRunning = true
 	window.raffleInterval = setInterval(function(){
-		Core._('#lottery #winner').innerText = Math.floor((Math.random() * Core.base.numbersTickets) + 1)
+		Core._('#lottery #winner').innerText = Core._('#lottery #winner').textContent = Math.floor((Math.random() * Core.base.numbersTickets) + 1)
 	}, 1)
 	setTimeout(function(){
 		clearInterval(window.raffleInterval)
 		Stats.raffleRunning = false
 		// Generate winner
 		Stats.winnerTicket = Core.pad(Math.floor((Math.random() * Core.base.numbersTickets) + 1))
-		Core._('#lottery #winner').innerText = Stats.winnerTicket
+		Core._('#lottery #winner').innerText = Core._('#lottery #winner').textContent = Stats.winnerTicket
 		var prize = 0
 		var partial = false
 		var full = false
@@ -606,15 +612,15 @@ Core.startRaffle = function(button){
 			Stats.lotteryWon = true
 			Stats.lotteryWins++
 			Core._('#lottery #info').className += ' win'
-			Core._('#lottery #info').innerText = 'win: ' + Core.numberFormat(prize)
+			Core._('#lottery #info').innerText = Core._('#lottery #info').textContent = 'win: ' + Core.numberFormat(prize)
 		}else if(partial){
 			Stats.partialWon = true
 			Stats.lotteryWins++
 			Core._('#lottery #info').className += ' win'
-			Core._('#lottery #info').innerText = 'partial win: ' + Core.numberFormat(prize)
+			Core._('#lottery #info').innerText = Core._('#lottery #info').textContent = 'partial win: ' + Core.numberFormat(prize)
 		}else{
 			Core._('#lottery #info').className += ' lose'
-			Core._('#lottery #info').innerText = 'lose'
+			Core._('#lottery #info').innerText = Core._('#lottery #info').textContent = 'lose'
 		}
 		Stats.money += prize
 		Stats.moneyWon += prize
@@ -847,9 +853,9 @@ Core.initRecruitingSection = function(){
 }
 
 Core.addListeners = function(){
-	Core._('#toggle-achievement-list').addEventListener('click', function(){ Core.toggleAchievementList() })
 	Core._('#upgradePC').addEventListener('click', function(){ Core.upgradeComputer() })
 	Core._('#takeJob').addEventListener('click', function(){ Core.takeJob(this) })
+	Core._('#start-job-search').addEventListener('click', function(){ Core.jobFinder(this) })
 	Core._('#takeQuickProject').addEventListener('click', function(){ Core.takeQuickProject(this) })
 	Core._('.startProject').addEventListener('click', function(){ Core.startProject(this) })
 	Core._('#buyTicket').addEventListener('click', function(){ Core.buyTicket(this) })
@@ -860,24 +866,33 @@ Core.addListeners = function(){
 			Core.startImprovement(ty, this)
 		})
 	}
-	Core._('#shareTwitter').addEventListener('click', function(){
-		var text = 'I have ' + Core._('#money').innerText + ' and ' + Core._('#incPerPulse').innerText + ' of money rate in my DevLife. How much do you have?'
-		var url = 'https://twitter.com/intent/tweet?text=:text&url=:url&hashtags=:hashtags'
-			url = url.replace(':text', text)
-			url = url.replace(':url', document.URL)
-			url = url.replace(':hashtags', 'DevLife')
-		window.open(url, "Title", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=500, top="+((screen.height/2)-250)+", left="+((screen.width/2)-400))
-	})
+	// Core._('#shareTwitter').addEventListener('click', function(){
+	// 	var text = 'I have ' + Core._('#money').innerText + ' and ' + Core._('#incPerPulse').innerText + ' of money rate in my DevLife. How much do you have?'
+	// 	var url = 'https://twitter.com/intent/tweet?text=:text&url=:url&hashtags=:hashtags'
+	// 		url = url.replace(':text', text)
+	// 		url = url.replace(':url', document.URL)
+	// 		url = url.replace(':hashtags', 'DevLife')
+	// 	window.open(url, "Title", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=800, height=500, top="+((screen.height/2)-250)+", left="+((screen.width/2)-400))
+	// })
 	var sections = Core._('.button-section > .header', true)
 	for(var i = 0, len = sections.length; i < len; i++){
-		sections[i].addEventListener('click', function(){
-			if(this.parentNode.className.indexOf('compact') === -1){
-				Core.addClass(this.parentNode, 'compact')
-			}else{
-				Core.removeClass(this.parentNode, 'compact')
-			}
-		})
+		Core.addCompactFunctionality(sections[i])
 	}
+	Core._('#reset').addEventListener('click', function(){
+		if(confirm('ALL PROGRESS WILL BE LOST, are you sure you want to RESET?')){
+			window.location.reload()
+		}
+	})
+}
+
+Core.addCompactFunctionality = function(header){
+	header.addEventListener('click', function(){
+		if(this.parentNode.className.indexOf('compact') === -1){
+			Core.addClass(this.parentNode, 'compact')
+		}else{
+			Core.removeClass(this.parentNode, 'compact')
+		}
+	})
 }
 
 Core.addClass = function(element, cssClass){
@@ -909,6 +924,7 @@ Core.checkAchievements = function(silent){
 				}
 			}
 		}
+		Core.refreshAchievementList()
 	}
 }
 
@@ -922,13 +938,13 @@ Core.showPopUp = function(data){
 		container.className = 'container'
 	var title = document.createElement('P')
 		title.className = 'title'
-		title.innerText = data.title
+		title.innerText = title.textContent = data.title
 	var description = document.createElement('P')
 		description.className = 'description'
-		description.innerText = data.description
+		description.innerText = description.textContent = data.description
 	var close = document.createElement('BUTTON')
 		close.className = 'closeBtn'
-		close.innerText = 'Close'
+		close.innerText = close.textContent = 'Close'
 		close.onclick = function(){
 			Core._('.popup').remove()
 		}
@@ -949,42 +965,18 @@ Core.refreshAchievementList = function(){
 		var tdTitle = document.createElement('TD')
 		var tdStatus = document.createElement('TD')
 		var statusText = achievements[i].done ? 'Unlocked' : 'Locked'
-		tdTitle.innerText = achievements[i].title
+		tdTitle.innerText = tdTitle.textContent = achievements[i].title
 		if(!achievements[i].done && achievements[i].progress && typeof achievements[i].progress === 'function'){
 			tdTitle.innerHTML += ' <span class="achievement-progress-text">(' + achievements[i].progress() + ')</span>'
 		}
-		tdStatus.innerText = statusText
+		tdStatus.innerText = tdStatus.textContent = statusText
 		tr.className = statusText.toLowerCase()
 		tr.appendChild(tdTitle)
 		tr.appendChild(tdStatus)
 		table.appendChild(tr)
 	}
-	var closeBtn = document.createElement('BUTTON')
-		closeBtn.className = 'close'
-		closeBtn.innerText = 'Close'
-		closeBtn.onclick = function(){
-			Core.toggleAchievementList()
-		}
-	var lastTr = document.createElement('TR')
-	var lastTd = document.createElement('TD')
-		lastTd.setAttribute('colspan', 2)
-		lastTd.appendChild(closeBtn)
-	lastTr.appendChild(lastTd)
-	table.appendChild(lastTr)
 	Core._('#achievement-list').innerHTML =''
 	Core._('#achievement-list').appendChild(table)
-}
-
-Core.toggleAchievementList = function(){
-	var _list = Core._('#achievement-list')
-	if(Core.hasClass(_list, 'open')){
-		_list.style.display = 'none'
-		Core.removeClass(_list, 'open')
-	}else{
-		Core.refreshAchievementList()
-		_list.style.display = 'block'
-		Core.addClass(_list, 'open')
-	}
 }
 
 // Quick projects
@@ -1011,7 +1003,7 @@ Core.takeQuickProject = function(bthis){
 	document.title = Stats.companyName + ' intranet | devLife'
 	var button = document.createElement('BUTTON')
 		button.className = 'startProject'
-		button.innerText = 'Quick project (In progress)'
+		button.innerText = button.textContent = 'Quick project (In progress)'
 		button.setAttribute('disabled', true)
 	Core._('#projects-section').appendChild(button)
 	Core.startQuickProject(button)

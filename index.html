@@ -21,14 +21,13 @@
 				<button class="dropdown-button">Menu</button>
 				<div class="dropdown-content">
 					<ul>
-						<li id="toggle-achievement-list">Achievements</li>
-						<li id="save" onclick="Core.save()">Save</li>
-						<li id="load" onclick="Core.load()">Load</li>
+						<li id="save" class="disabled">Save (Unavailable)</li>
+						<li id="load" class="disabled">Load (Unavailable)</li>
 						<li class="disabled"><hr></li>
 						<li><a href="https://github.com/naoxink/devlife/issues" target="_blank">Issue tracker</a></li>
 						<li><a href="https://github.com/naoxink/devlife/wiki" target="_blank">Wiki</a></li>
 						<li class="disabled"><hr></li>
-						<li id="reset" onclick="javascript:location.reload()">! Reset game</li>
+						<li id="reset">! Reset game</li>
 						<li class="disabled"><hr></li>
 						<li class="disabled">Developed by naoxink</li>
 					</ul>
@@ -44,9 +43,9 @@
 			<div class="help stat" data-title="Pulse speed">Pulse speed: <span id="pulseSpeed"></span></div>
 			<div class="help stat" data-title="Your computer version. The higher the better.">Computer Version: <span id="computerVersion"></span></div>
 			<div class="help stat" data-title="Number of jobs you have. Maximum 4 jobs.">Jobs: <span id="jobs"></span></div>
-			<div class="help stat" data-title="People hired">Employees: <span id="employees"></span></div>
+			<!-- <div class="help stat" data-title="People hired">Employees: <span id="employees"></span></div> -->
 			<!-- <div class="help stat" data-title="This is the value of your company">Company value: <span id="companyValue"></span></div> -->
-			<button id="shareTwitter">Tweet my stats!</button>
+			<!-- <button id="shareTwitter">Tweet my stats!</button> -->
 		</div>
 
 		<div class="button-section" id="projects-section">
@@ -63,22 +62,27 @@
 			<p class="header">Upgrades</p>
 			<button id="upgradePC" disabled="disabled">Upgrade computer (<span id="PCCost"></span>)</button>
 		</div>
-		<div class="button-section compact" id="employees-section">
+		<!-- <div class="button-section compact" id="employees-section">
 			<p class="header">Recruiting</p>
 			<div class="help stat" data-title="Each minute your employees receive their salaries. This is the total cost.">Salaries cost: <span id="salariesCost"></span></div>
 			<div id="salaries-timer-bar-container">
 				<div class="salaries-timer-bar"></div>
 			</div>
 			<div id="employee-types"></div>
-		</div>
-		<div class="button-section">
-			<p class="header">Jobs</p>
-			<button id="takeJob" disabled="disabled">Take job oportunity</button>
+		</div> -->
+		<div class="button-section achievements compact">
+			<p class="header">Achievements</p>
+			<div class="container">
+				<div id="achievement-list"></div>
+			</div>
 		</div>
 	</div>
 	<div class="right">
 		<div class="button-section jobList">
-			<p class="header">Actual jobs</p>
+			<p class="header">Jobs</p>
+			<p class="stats">Job search status: <span id="job-finder-status">Not searching</span></p>
+			<button id="start-job-search">Start job search</button>
+			<button id="takeJob" disabled="disabled">Take job oportunity</button>
 			<ul class="job-list"></ul>
 		</div>
 		<div class="button-section" id="shop">
@@ -94,7 +98,7 @@
 			<div id="owned">-</div>
 			<div id="winner">-</div>
 		</div>
-		<div class="button-section buildings compact">
+		<!-- <div class="button-section buildings compact">
 			<p class="header">Space</p>
 			<div class="stat">Rooms: <span id="rooms"></span></div>
 			<div class="stat">Floors: <span id="floors"></span></div>
@@ -105,9 +109,8 @@
 			<div id="rents-timer-bar-container"><div class="rents-timer-bar"></div></div>
 			<div class="spaced thin"></div>
 			<div id="renting-list"></div>
-		</div>
+		</div> -->
 	</div>
-	<div id="achievement-list"></div>
 	
 	<script src="js/core.js"></script>
 	<script src="js/core.base.js"></script>
@@ -118,6 +121,7 @@
 	<script src="js/stats.js"></script>
 	<script src="js/jobs.js"></script>
 	<script src="js/shop.js"></script>
+	<script src="js/terminal.js"></script>
 	<script src="js/main.js"></script>
 </body>
 </html>
