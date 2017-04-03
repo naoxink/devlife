@@ -21,10 +21,14 @@ Core.init = function(fromLoad){
 	}else{
 		Core.checkAchievements(true)
 	}
+
 	if(Stats.computerVersion < Core.base.maxComputerVersion){
-		Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
-		Core._('#PCCost').innerText = Core._('#PCCost').textContent = Core.numberFormat(Core.base.nextComputerVersionCost)
+		// Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
+		improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
+		// Core._('#PCCost').innerText = Core._('#PCCost').textContent = Core.numberFormat(Core.base.nextComputerVersionCost)
 	}
+	Core.showImprovementButton('upgradeComputer')
+
 	if(Notification.permission !== "granted" && !Core.base.notificationsRequested){
 		// Notification.requestPermission()
 		Core.base.notificationsRequested = true
@@ -48,15 +52,18 @@ Core.stop = function(projectID){
 	Stats.money += Core.projects[projectID].profit
 	Stats.companyValue += Core.projects[projectID].profit / 2
 	Core.updateHUD()
-	if(Core.hasImprovement('autoSaveOnProjectComplete')){
-		Core.save(true)
-	}else{
-		if(Stats.projects > 50 && !Core._('.startImprovement[data-type=autoSaveOnProjectComplete]')){
-			Core.showImprovementButton('autoSaveOnProjectComplete')
-		}
-	}
+	// if(Core.hasImprovement('autoSaveOnProjectComplete')){
+	// 	Core.save(true)
+	// }else{
+	// 	if(Stats.projects > 50 && !Core._('.startImprovement[data-type=autoSaveOnProjectComplete]')){
+	// 		Core.showImprovementButton('autoSaveOnProjectComplete')
+	// 	}
+	// }
 	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
 		Core.showImprovementButton('addProject')
+	}
+	if(Stats.projects > 24 && !Shop.items.virtualPersonalAssistant.owned){ // Comprobar que no esté mostrado en la tienda
+		Shop.showItemButton('virtualPersonalAssistant')
 	}
 }
 
@@ -155,16 +162,6 @@ Core.updateHUD = function(){
  //            }
 	// 	}
 	// }
-	if(Core.base.maxComputerVersion > Stats.computerVersion){
-		if(Stats.money >= Core.base.nextComputerVersionCost){
-			Core._('#upgradePC').removeAttribute('disabled')
-		}else{
-			Core._('#upgradePC').setAttribute('disabled', true)
-		}
-	}else{
-		Core._('#upgradePC').setAttribute('disabled', true)
-		Core._('#upgradePC').innerText = Core._('#upgradePC').textContent = 'Computer version maxed (' + Core.base.maxComputerVersion + ')'
-	}
 	// var rooms = Core._('.rentRoom', true)
 	// for(var i = 0, len = rooms.length; i < len; i++){
 	// 	var el = rooms[i]
@@ -201,32 +198,6 @@ Core.updateHUD = function(){
 	}
 }
 
-Core.upgradeComputer = function(){
-	var cost = Core.base.nextComputerVersionCost
-	if(Stats.money >= cost && Stats.computerVersion < Core.base.maxComputerVersion){
-		Stats.money -= cost
-		Stats.companyValue += cost / 2
-		Stats.computerVersion++
-		if(Stats.computerVersion === 1){
-			Core.showImprovementButton('intranetCommandPrompt')
-		}
-		Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
-		Core.base.pulseDuration -= 10
-		if(Core.base.maxComputerVersion >= Stats.computerVersion + 1){
-			Core.base.nextComputerVersionCost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
-			Core._('#PCCost').innerText = Core._('#PCCost').textContent = Core.numberFormat(Core.base.nextComputerVersionCost)
-			Core._('#upgradePC').setAttribute('disabled', true)
-		}else{
-			Core._('#upgradePC').setAttribute('disabled', true)
-			Core._('#PCCost').innerText = Core._('#PCCost').textContent = 'Computer version maxed (' + Core.base.maxComputerVersion + ')'
-			if(!Core.hasImprovement('computacionalTech')){
-				Core.showImprovementButton('computacionalTech')
-			}
-		}
-		Core.updateHUD()
-	}
-}
-
 Core.calcSalariesCost = function(){
 	var qty = 0
 	for(var key in employees){
@@ -257,7 +228,7 @@ Core.calcRentCost = function(){
 
 Core.jobFinder = function(button){
 	button.setAttribute('disabled', true)
-	Core._('#job-finder-status').innerText = 'Searching'
+	Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Searching'
 	var time = Math.floor(Math.random() * 60) + 25
 		time *= 1000
 	setTimeout(function(){
@@ -268,9 +239,7 @@ Core.jobFinder = function(button){
 			document.title = Stats.companyName + ' intranet | devLife'
 			if(Stats.jobs.length < Core.base.maxJobs){
 				button.removeAttribute('disabled')
-				Core._('#job-finder-status').innerText = 'Not searching'
-			}else{
-				Core.jobFinder(button)
+				Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Not searching'
 			}
 		}, 5000)
 	}, time)
@@ -372,7 +341,7 @@ Core.quitJob = function(button){
 }
 
 Core._ = function(selector, multiple){
-	return multiple ? document.querySelectorAll(selector) : document.querySelector(selector)
+	return multiple ? [].slice.call(document.querySelectorAll(selector)) : document.querySelector(selector)
 }
 
 Core.addEmployeeToList = function(type, helpText){
@@ -444,6 +413,7 @@ Core.startProject = function(button){
 	var min = 10
 	var projectTime = Math.floor(Math.random() * max) + min
 		projectTime += projectTime * Math.round(Stats.projects / 10)
+		projectTime -= projectTime * Core.base.projectTimeReductionPercent
 	button.setAttribute('disabled', true)
 	// Botón con relleno de cuenta atrás
 	button.style.position = 'relative'
@@ -490,6 +460,9 @@ Core.showImprovementButton = function(id){
 		}
 		button.setAttribute('data-type', id)
 		button.setAttribute('data-cost', improvements[id].cost)
+		if(Stats.money < improvements[id].cost){
+			button.setAttribute('disabled', true)
+		}
 		button.innerText = button.textContent = improvements[id].label + ' (' + Core.numberFormat(improvements[id].cost) + ') (Development time: ' + Core.timeFormat(improvements[id].investigationTime) + ')'
 		button.addEventListener('click', function(){
 			Core.startImprovement(id, this)
@@ -513,8 +486,8 @@ Core.startImprovement = function(ty, button){
 			clearInterval(window['interval' + ty])
 			Stats.companyValue += improvements[ty].cost / 2
 		}else{
-			Stats['imp' + ty + 'timeleft']--
 			button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Stats['imp' + ty + 'timeleft'] * 1000) + ')'
+			Stats['imp' + ty + 'timeleft']--
 		}
 	}, 1000)
 }
@@ -853,7 +826,6 @@ Core.initRecruitingSection = function(){
 }
 
 Core.addListeners = function(){
-	Core._('#upgradePC').addEventListener('click', function(){ Core.upgradeComputer() })
 	Core._('#takeJob').addEventListener('click', function(){ Core.takeJob(this) })
 	Core._('#start-job-search').addEventListener('click', function(){ Core.jobFinder(this) })
 	Core._('#takeQuickProject').addEventListener('click', function(){ Core.takeQuickProject(this) })

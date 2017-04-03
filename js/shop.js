@@ -89,7 +89,7 @@ Shop.items = {
 	},
 	'companyNameChange': {
 		'oneuse': false,
-		'initial': true,
+		'initial': false,
 		'label': 'Company name change',
 		'help': '',
 		'cost': 5000,
@@ -138,6 +138,17 @@ Shop.items = {
 				}
 			}, 1000)
 		}
+	},
+	'virtualPersonalAssistant': {
+		'oneuse': true,
+		'initial': false,
+		'label': 'Y.A.A.',
+		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects',
+		'cost': 10000,
+		'buy': function(){
+			Core.base.projectTimeReductionPercent += 0.3
+			this.owned = true
+		}
 	}
 }
 
@@ -145,26 +156,29 @@ Shop.showItemButton = function(itemID){
 	if(!Shop.items[itemID]) return false
 	var item = Shop.items[itemID]
 	var button = document.createElement('BUTTON')
-		button.innerText = button.textContent = button.textContent = item.label + ' (' + Core.numberFormat(item.cost) + ')'
-		button.className = 'shopItem'
-		button.setAttribute('id', 'shop-item-' + itemID)
-		button.setAttribute('data-cost', item.cost)
-		if(item.help){
-			button.className += ' help'
-			button.setAttribute('data-title', item.help)
+	button.innerText = button.textContent = button.textContent = item.label + ' (' + Core.numberFormat(item.cost) + ')'
+	button.className = 'shopItem'
+	button.setAttribute('id', 'shop-item-' + itemID)
+	button.setAttribute('data-cost', item.cost)
+	if(Stats.money < item.cost){
+		button.setAttribute('disabled', true)
+	}
+	if(item.help){
+		button.className += ' help'
+		button.setAttribute('data-title', item.help)
+	}
+	button.onclick = function(){
+		if(Stats.money < item.cost){
+			this.setAttribute('disabled', true)
+			return false
 		}
-		button.onclick = function(){
-			if(Stats.money < item.cost){
-				this.setAttribute('disabled', true)
-				return false
-			}
-			Stats.money -= item.cost
-			item.buy(this)
-			if(item.oneuse){
-				this.parentNode.removeChild(this)
-			}
-			Core.updateHUD()
+		Stats.money -= item.cost
+		item.buy(this)
+		if(item.oneuse){
+			this.parentNode.removeChild(this)
 		}
-		Core._('#shop').appendChild(button)
 		Core.updateHUD()
+	}
+	Core._('#shop').appendChild(button)
+	Core.updateHUD()
 }

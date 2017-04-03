@@ -27,27 +27,27 @@ var achievements = [
 		},
 		'done': false
 	},
-	{
-		'title': 'Unlock the intranet skin',
-		'check': function(){
-			return Stats.improvements.indexOf('intranet') !== -1
-		},
-		'done': false
-	},
-	{
-		'title': 'Unlock the new intranet skin',
-		'check': function(){
-			return Stats.improvements.indexOf('intranet2') !== -1
-		},
-		'done': false
-	},
-	{
-		'title': 'Hire your first employee',
-		'check': function(){
-			return Stats.employees.length >= 1
-		},
-		'done': false
-	},
+	// {
+	// 	'title': 'Unlock the intranet skin',
+	// 	'check': function(){
+	// 		return Stats.improvements.indexOf('intranet') !== -1
+	// 	},
+	// 	'done': false
+	// },
+	// {
+	// 	'title': 'Unlock the new intranet skin',
+	// 	'check': function(){
+	// 		return Stats.improvements.indexOf('intranet2') !== -1
+	// 	},
+	// 	'done': false
+	// },
+	// {
+	// 	'title': 'Hire your first employee',
+	// 	'check': function(){
+	// 		return Stats.employees.length >= 1
+	// 	},
+	// 	'done': false
+	// },
 	{
 		'title': 'Upgrade your computer to version 20',
 		'check': function(){
@@ -55,34 +55,34 @@ var achievements = [
 		},
 		'done': false
 	},
-	{
-		'title': 'Rent your first room',
-		'check': function(){
-			return Stats.rooms >= 1
-		},
-		'done': false
-	},
-	{
-		'title': 'Rent your first floor',
-		'check': function(){
-			return Stats.floors >= 1
-		},
-		'done': false
-	},
-	{
-		'title': 'Rent your first building',
-		'check': function(){
-			return Stats.buildings >= 1
-		},
-		'done': false
-	},
-	{
-		'title': 'Rent your first warehouse',
-		'check': function(){
-			return Stats.warehouses >= 1
-		},
-		'done': false
-	},
+	// {
+	// 	'title': 'Rent your first room',
+	// 	'check': function(){
+	// 		return Stats.rooms >= 1
+	// 	},
+	// 	'done': false
+	// },
+	// {
+	// 	'title': 'Rent your first floor',
+	// 	'check': function(){
+	// 		return Stats.floors >= 1
+	// 	},
+	// 	'done': false
+	// },
+	// {
+	// 	'title': 'Rent your first building',
+	// 	'check': function(){
+	// 		return Stats.buildings >= 1
+	// 	},
+	// 	'done': false
+	// },
+	// {
+	// 	'title': 'Rent your first warehouse',
+	// 	'check': function(){
+	// 		return Stats.warehouses >= 1
+	// 	},
+	// 	'done': false
+	// },
 	{
 		'title': 'Drop all your jobs',
 		'check': function(){

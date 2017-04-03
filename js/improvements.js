@@ -64,11 +64,8 @@ var improvements = {
 				button.parentNode.removeChild(button)
 			}
 			Core.base.maxComputerVersion = 20
-			Core.base.nextComputerVersionCost = Core.base.nextComputerVersionCost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
-			if(!Core._('#PCCost')){
-				Core._('#upgradePC').innerHTML = 'Upgrade computer (<span id="PCCost">' + Core.numberFormat(Core.base.nextComputerVersionCost) + '</span>)'
-			}
-			Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
+			improvements.upgradeComputer.cost = improvements.upgradeComputer.cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
+			Core.showImprovementButton('upgradeComputer')
 			Core.updateHUD()
 		},
 		'inProgress': false
@@ -148,4 +145,82 @@ var improvements = {
 		},
 		'inProgress': false
 	},
+	'researchNewTorNetwork': {
+		'label': 'Research a new TOR Network',
+		'help': '',
+		'cost': 3000,
+		'investigationTime': 60000, // 1m
+		'effect': function(button){
+			if(button && button.parentNode){
+				button.parentNode.removeChild(button)
+			}
+			terminal.stats.torNetworkLevel++
+			this.cost += this.cost * 0.05 // Linear
+			this.investigationTime += 60000 // 1m más por cada nivel
+			Core.showImprovementButton('researchNewTorNetwork')
+		},
+		'inProgress': false
+	},
+	'upgradeAV': {
+		'label': 'Upgrade antivirus system',
+		'help': '',
+		'cost': 600,
+		'investigationTime': 180000, // 3m
+		'effect': function(button){
+			if(button && button.parentNode){
+				button.parentNode.removeChild(button)
+			}
+			terminal.stats.virusDetectionLevel++
+			this.cost += this.cost * 0.05 // Linear
+			Core.showImprovementButton('upgradeAV')
+		},
+		'inProgress': false
+	},
+	'upgradeToolkit': {
+		'label': 'Upgrade hacking toolkit',
+		'help': '',
+		'cost': 0,
+		'investigationTime': 600000, // 10m
+		'effect': function(button){
+			if(button && button.parentNode){
+				button.parentNode.removeChild(button)
+			}
+			terminal.stats.toolkitLevel++
+			this.investigationTime += this.investigationTime * 0.2
+			Core.showImprovementButton('upgradeToolkit')
+		},
+		'inProgress': false
+	},
+	'upgradeComputer': {
+		'label': 'Upgrade computer',
+		'help': '',
+		'cost': 0,
+		'investigationTime': 10000, // 10s
+		'effect': function(button){
+			if(button && button.parentNode){
+				button.parentNode.removeChild(button)
+			}
+			var cost = this.cost
+			if(Stats.money >= cost && Stats.computerVersion <= Core.base.maxComputerVersion){
+				Stats.money -= cost
+				Stats.companyValue += cost / 2
+				Stats.computerVersion++
+				if(Stats.computerVersion === 1){
+					Core.showImprovementButton('intranetCommandPrompt')
+				}
+				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
+				Core.base.pulseDuration -= 10
+				this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
+				if(Core.base.maxComputerVersion < Stats.computerVersion + 1){
+					if(!Core.hasImprovement('computacionalTech')){
+						Core.showImprovementButton('computacionalTech')
+					}
+				}else{
+					Core.showImprovementButton('upgradeComputer')
+					Core.updateHUD()
+				}
+			}
+		},
+		'inProgress': false
+	}
 }

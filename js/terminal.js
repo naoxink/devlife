@@ -2,7 +2,16 @@ var terminal = {
 	'_log': null,
 	'_section': null,
 	'_input': null,
-	'_multiplier': null
+	'_multiplier': null,
+	// Stats
+	'stats': {
+		'torNetworkLevel': 0,
+		'firewallSecurityLevel': 0,
+		'virusDetectionLevel': 0,
+		'toolkitLevel': 0,
+		'hackSkillLevel': 0,
+		'hacksSuccessfull': 0
+	}
 }
 
 terminal.cpNumberAnimation = function(){
@@ -32,8 +41,22 @@ terminal.cpNumberAnimation = function(){
 }
 
 terminal.addToLog = function(text){
+	// controlar líneas ya escritas para no mantener
+	// millones de líneas en el DOM
+	var MAX_LOG_LINES = 50
+	var lines = Core._('.terminal-log-line', true)
+	if(lines.length >= MAX_LOG_LINES){
+		var lines2Drop = lines.slice(0, lines.length - MAX_LOG_LINES)
+		for(var i = 0, len = lines2Drop.length; i < len; i++){
+			lines2Drop[i].parentNode.removeChild(lines2Drop[i])
+			lines2Drop[i] = null
+		}
+	}
+	lines = null
+	// Añadir la línea actual
 	var line = document.createElement('P')
-		line.innerText = '$ ' + text
+		line.className = 'terminal-log-line'
+		line.innerText = text
 	terminal._log.appendChild(line)
 	terminal._log.scrollTop = terminal._log.scrollHeight
 }
@@ -64,11 +87,8 @@ terminal.keyUp = function(e){
 	terminal.cpNumberAnimation() // Sobrecarga en algunas ocasiones (Firefox)
 	Stats.commandPrompt.moneyEarned += Core.base.commandPromptInc
 	if(this.value.length > Math.floor(Math.random() * 60) + 25 || e.keyCode === 13){
-		terminal.addToLog(this.value)
-		if(this.value === 'hack achievement'){
-			Stats.hackedAchievement = true
-			terminal.addToLog('! Achievement HACKED')
-		}
+		terminal.addToLog('$ ' + this.value)
+		terminal.checkCommand(this.value)
 		this.value = ''
 	}
 	Core.updateHUD()
@@ -104,4 +124,98 @@ terminal.init = function(){
 		'maxMultiplier': 5
 	}
 	Core._('#command-prompt > input[type=text]').addEventListener('keyup', terminal.keyUp)
+}
+
+terminal.enterDarkSide = function(){
+	var csstransition = document.createElement('STYLE')
+		csstransition.setAttribute('id', 'css-dark-side-transition')
+		csstransition.innerHTML = '* { transition: all .5s; }'
+	Core._('body').appendChild(csstransition)
+	Core._('#css-dark-side').setAttribute('href', 'css/terminal-dark-side.css?' + new Date().getTime())
+	setTimeout(function(){
+		csstransition.parentNode.removeChild(csstransition)
+		csstransition = null
+	}, 3000)
+	// Añadidos
+	Core.showImprovementButton('researchNewTorNetwork')
+	Core.showImprovementButton('upgradeToolkit')
+}
+
+terminal.checkCommand = function(text){
+	switch(text){
+		case 'hack achievement':
+			Stats.hackedAchievement = true
+			terminal.addToLog('! Achievement HACKED')
+			break
+		case 'activate dark-side':
+			terminal.enterDarkSide()
+			terminal.addToLog('! Dark side ACTIVATED')
+			terminal.addToLog('! Antivirus not installed, please install using: "install dl-avirus"')
+			break
+		case 'install dl-avirus':
+			if(terminal.stats.virusDetectionLevel > 0){
+				terminal.addToLog('! Cannot install "dl-avirus". Already installed.')
+				return false
+			}
+			terminal.stats.virusDetectionLevel = 1
+			terminal.addToLog('Downloading "dl-avirus"...')
+			terminal.addToLog('|####### | 94%')
+			setTimeout(function(){
+				terminal.addToLog('! Antivirus installed, you can now upgrade')
+				Core.showImprovementButton('upgradeAV')
+			}, 2000)
+			break
+		case 'start hack':
+		case 'init hack':
+			terminal.startHack()
+			break
+	}
+}
+
+terminal.startHack = function(){
+	var hackTime = Math.floor(Math.random() * 30) + 10 // Tiempo base (segundos)
+	var riskPercent = 100 // Porcentage de riesgo por defecto
+	var skill = terminal.stats.hackSkillLevel / 100 // Porcentage multiplicador de habilidad de hack
+	// Alteraciones según los modificadores
+	if(terminal.stats.torNetworkLevel > 0){
+		// Aumentar tiempo
+		hackTime += hackTime * (terminal.stats.torNetworkLevel / 100)
+		// Reducir porcentage de riesgo
+		riskPercent -= riskPercent * (terminal.stats.torNetworkLevel / 100)
+	}
+	if(terminal.stats.firewallSecurityLevel > 0){
+		// Tiempo igual
+		// Reducir porcentage de riesgo (muy poco)
+		riskPercent -= riskPercent * (terminal.stats.firewallSecurityLevel / 100)
+	}
+	if(terminal.stats.virusDetectionLevel > 0){
+		// Tiempo igual
+		// Riesgo igual
+	}
+	if(terminal.stats.toolkitLevel > 0){
+		// Reducir tiempo
+		hackTime -= hackTime * (terminal.stats.toolkitLevel / 100)
+		// Reducir porcentage de riesgo
+		riskPercent -= riskPercent * (terminal.stats.toolkitLevel / 100)
+	}
+	riskPercent -= riskPercent * skill // Añadir la habilidad
+	riskPercent -= riskPercent * (terminal.stats.hacksSuccessfull / 100) // Añadir la experiencia
+	hackTime -= hackTime * (terminal.stats.hacksSuccessfull / 100) // Reducir tiempo según la experiencia
+	terminal.addToLog('Hack time: ' + hackTime)
+	terminal.addToLog('Risk %: ' + riskPercent)
+	if(riskPercent >= 98){
+		terminal.addToLog('!!! Risk too high! You cannot hack this time!')
+	}else{
+		terminal.lauchHackAnimation(hackTime, riskPercent)
+	}
+}
+
+terminal.lauchHackAnimation = function(hackTime, riskPercent){
+	// Bloqueamos la terminal y vamos mostrando una pequeña "animación"
+	// línea por línea en la que va mostrando detalles del hackeo
+}
+
+terminal.hackBusted = function(secondsPassed, initialHacktime, riskPercent){
+	// Cuanto más tiempo lleve en el mismo hackeo es más probable que le pillen
+	// descontando por supuesto el porcentage de riesgo y su habilidad
 }

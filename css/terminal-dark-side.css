@@ -1,0 +1,143 @@
+body {
+	color:#F00;
+}
+
+button {
+	border:1px solid #F00;
+	color: #F00;
+}
+button.inline {
+	display: inline-block;
+	margin: 0 0 0 10px;
+}
+
+button:disabled,button:disabled:hover {
+	color:#750004;
+	background-color:#000;
+	border-color:#750004;
+}
+hr {
+	border-bottom: 1px solid rgba(255, 0, 0, .5);
+}
+.button-section {
+	border:1px dashed #F00;
+}
+.button-section > .header {
+	color: #F00;
+}
+.button-section.compact > .header {
+	background-color: rgba(255, 0, 0, .1);
+}
+.button-section:not(.compact) > .header:hover {
+	-webkit-text-shadow: 0 0 5px rgba(255, 0, 0, .7);
+	-moz-text-shadow: 0 0 5px rgba(255, 0, 0, .7);
+	-ms-text-shadow: 0 0 5px rgba(255, 0, 0, .7);
+	-o-text-shadow: 0 0 5px rgba(255, 0, 0, .7);
+	text-shadow: 0 0 5px rgba(255, 0, 0, .7);
+}
+.help.stat:hover {
+	background-color:rgba(255,0,0,.2);
+}
+
+.help:hover:before {
+	color:#F00;
+	background-color: rgba(55, 0, 0, .95);
+	border: 1px solid #F00;
+}
+
+.rentRoom.owned,
+.rentRoom.owned:hover {
+	color: #F00;
+}
+.rentRoom:disabled {
+	color:#750004;
+	border: 1px solid #750004;
+}
+
+button:hover, .rentRoom:hover {
+	background-color:#F00;
+}
+
+.jobList {
+
+}
+ul > li > button {
+	margin-left: 10px;
+}
+
+.projectProgress {
+	background-color: #F00;
+}
+#salaries-timer-bar-container .salaries-timer-bar,
+#rents-timer-bar-container .rents-timer-bar {
+	background-color: #F00;
+}
+#lottery #info {
+	background-color: rgba(255, 0, 0, .2);
+}
+.popup .container {
+	border: 1px solid #F00;
+}
+.popup .container .title {
+	color: #F00;
+}
+.popup .container .description {
+	color: #F00;
+}
+/* ACHIEVEMENTS */
+#achievement-list {
+	color: #F00;
+}
+#achievement-list table {
+	border: 1px dashed #F00;
+}
+#achievement-list table tr td {
+	color: #F00;
+}
+#achievement-list table tr.locked td {
+	border: 1px dashed rgba(255, 0, 0, .5);
+	color: rgba(255, 0, 0, .5);
+}
+#achievement-list table tr.unlocked td {
+	border: 1px dashed #F00;
+}
+#achievement-list table tr.locked td .achievement-progress-text {
+	color: rgba(255, 0, 0, .3);
+}
+
+/* navbar */
+.navbar {
+	border-bottom: 1px solid #F00;
+}
+
+/* dropdowns */
+.dropdown-content {
+    border: 1px solid #F00;
+}
+.dropdown:hover .dropdown-button {
+	background-color: #F00;
+}
+.dropdown-content ul > li.disabled {
+	color: rgba(255, 0, 0, .5);
+}
+.dropdown-content ul > li:not(.disabled):hover {
+	background-color: rgba(255, 0, 0, .2);
+}
+
+.dropdown-content a {
+	color: #F00;
+}
+
+/* Command prompt */
+#command-prompt {
+	border-top: 1px solid #F00;
+}
+#command-prompt > input[type=text] {
+	color: #F00;
+}
+#command-prompt:before {
+	color: #F00;
+}
+.command-prompt-number-key-up {
+	color: #F00;
+}

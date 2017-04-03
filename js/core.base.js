@@ -4,6 +4,7 @@ Core.base = {
 	'moneyIncPerPulse': 0,
 	'maxPulseDuration': 10000,
 	'minPulseDuration': 1E-10,
+	'projectTimeReductionPercent': 0,
 	'computerMultiplierCost': 114,
 	'maxComputerVersion': 10,
 	'nextComputerVersionCost': 0,
