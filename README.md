@@ -3,7 +3,7 @@
 Web browser game in pure JavaScript. I hope you like it ^^
 
 ### Play it now [HERE](http://naoxink.hol.es/devlife)!
-### [LAST VERSION HERE](https://cdn.rawgit.com/naoxink/devlife/d4114338bd8774177b5d7cc60bc9afb0044ef3ad/index.html)
+### [RAWGIT LAST COMMIT HERE](https://cdn.rawgit.com/naoxink/devlife/ee81637cd2b35df3db95a8ec83f3342813436dee/index.html)
 
 Check out the [wiki](https://github.com/naoxink/devlife/wiki) if you have any question! You don't find what you are looking for? Then [tell me](https://github.com/naoxink/devlife/issues) :)
 
