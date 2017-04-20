@@ -11,7 +11,9 @@ var terminal = {
 		'toolkitLevel': 0,
 		'hackSkillLevel': 0,
 		'hacksSuccessfull': 0
-	}
+	},
+	'hackEngine': null,
+	'hackingLottery': false
 }
 
 terminal.cpNumberAnimation = function(){
@@ -139,6 +141,9 @@ terminal.enterDarkSide = function(){
 	// Añadidos
 	Core.showImprovementButton('researchNewTorNetwork')
 	Core.showImprovementButton('upgradeToolkit')
+	var hackriskbar = document.createElement('SPAN')
+	hackriskbar.className = 'risk-percent-bar'
+	Core._('#command-prompt').appendChild(hackriskbar)
 }
 
 terminal.checkCommand = function(text){
@@ -147,7 +152,7 @@ terminal.checkCommand = function(text){
 			Stats.hackedAchievement = true
 			terminal.addToLog('! Achievement HACKED')
 			break
-		case 'activate dark-side':
+		case 'init dark-side':
 			terminal.enterDarkSide()
 			terminal.addToLog('! Dark side ACTIVATED')
 			terminal.addToLog('! Antivirus not installed, please install using: "install dl-avirus"')
@@ -165,16 +170,26 @@ terminal.checkCommand = function(text){
 				Core.showImprovementButton('upgradeAV')
 			}, 2000)
 			break
-		case 'start hack':
+		case 'renew ip -eth1':
+			terminal.addToLog('Assigning new IP address...')
+			terminal.addToLog('Current IP address: ' + terminal.newIP())
+			break
+		case 'exec erasetracelogs.dl':
+			terminal.eraseLogs()
+			break
+		case 'hack lottery':
+			terminal.hackingLottery = true
+			terminal.startHack(200)
+			break
 		case 'init hack':
 			terminal.startHack()
 			break
 	}
 }
 
-terminal.startHack = function(){
+terminal.startHack = function(riskPercent){
 	var hackTime = Math.floor(Math.random() * 30) + 10 // Tiempo base (segundos)
-	var riskPercent = 100 // Porcentage de riesgo por defecto
+	riskPercent = riskPercent || 100 // Porcentage de riesgo por defecto
 	var skill = terminal.stats.hackSkillLevel / 100 // Porcentage multiplicador de habilidad de hack
 	// Alteraciones según los modificadores
 	if(terminal.stats.torNetworkLevel > 0){
@@ -213,9 +228,88 @@ terminal.startHack = function(){
 terminal.lauchHackAnimation = function(hackTime, riskPercent){
 	// Bloqueamos la terminal y vamos mostrando una pequeña "animación"
 	// línea por línea en la que va mostrando detalles del hackeo
+	var input = Core._('#command-prompt > input[type=text]')
+	input.setAttribute('disabled', true)
+	Core._('#command-prompt > .risk-percent-bar').style.width = 0
+	Core._('#command-prompt > .risk-percent-bar').style.display = 'block'
+	var initialHackTime = hackTime
+	terminal.hackEngine = setInterval(function(){
+		input.value = input.value === '' ? Core.timeFormat(hackTime * 1000) : ''
+		if(hackTime >= 0){
+			if(terminal.hackBusted(-(hackTime - initialHackTime), initialHackTime, riskPercent)){
+				// ¡Te han pillado!
+				terminal.addToLog('YOU HAVE BEEN DETECTED ! DISCONNECTING !')
+				terminal.eraseLogs()
+				clearInterval(terminal.hackEngine)
+				terminal.hackEngine = null
+				terminal.stats.hackSkillLevel++
+				input.removeAttribute('disabled')
+				Core._('#command-prompt > .risk-percent-bar').style.display = 'none'
+				input.value = ''
+			}else{
+				// Continuamos para bingo
+				hackTime--
+			}
+		}else{
+			clearInterval(terminal.hackEngine)
+			terminal.hackEngine = null
+			// Recompensa random
+			var moneyHacked = 0
+			if(terminal.hackingLottery){
+				moneyHacked = Core.base.lotteryPrize
+			}else{
+				moneyHacked = (Math.floor(Math.random() * 20) + 10) * (terminal.stats.hacksSuccessfull + 1)
+			}
+			terminal.hackingLottery = false
+			terminal.stats.hacksSuccessfull++
+			terminal.stats.hackSkillLevel++
+			terminal.addToLog('Hack completed.')
+			terminal.addToLog('Transferring ' + moneyHacked + Core.base.moneyChar + ' to anonymous bank account...')
+			setTimeout(function(){
+				Stats.money += moneyHacked
+				Core.updateHUD()
+				terminal.addToLog('Transfer complete.')
+				terminal.addToLog('Desconnecting...')
+				input.removeAttribute('disabled')
+				input.value = ''
+				Core._('#command-prompt > .risk-percent-bar').style.display = 'none'
+				setTimeout(terminal.eraseLogs, 1000)
+			}, 5000)
+		}
+	}, 1000)
 }
 
-terminal.hackBusted = function(secondsPassed, initialHacktime, riskPercent){
+terminal.hackBusted = function(secondsPassed, initialHackTime, riskPercent){
 	// Cuanto más tiempo lleve en el mismo hackeo es más probable que le pillen
 	// descontando por supuesto el porcentage de riesgo y su habilidad
+	var percent = 0
+	percent += secondsPassed * 100 / initialHackTime
+	percent /= terminal.stats.hackSkillLevel + 1
+	percent -= Math.random() * 25
+	if(percent > 100) percent = 100
+	if(percent < 0) percent = 0
+	var bar = Core._('#command-prompt > .risk-percent-bar')
+	var barPercent = (percent * 100) / (100 - riskPercent)
+	if(barPercent > 100) barPercent = 100
+	if(barPercent < 0) barPercent = 0
+	bar.style.width = barPercent + '%'
+	bar.innerText = bar.textContent = 'Risk: ' + Math.floor(barPercent) + '%'
+	return percent > 100 - riskPercent
+}
+
+terminal.newIP = function(){
+	return [
+		Math.round(Math.random()*256),
+		Math.round(Math.random()*256),
+		Math.round(Math.random()*256),
+		Math.round(Math.random()*256)
+	].join('.')
+}
+
+terminal.eraseLogs = function(){
+	terminal.addToLog('ERASING ALL TRACE LOGS...')
+		setTimeout(function(){
+			terminal.addToLog('TRACE LOGS ERASED')
+			terminal.addToLog('Recommended: Refresh IP address with "renew ip -eth1"')
+		}, 300)
 }

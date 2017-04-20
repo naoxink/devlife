@@ -131,6 +131,7 @@ ul > li > button {
 /* Command prompt */
 #command-prompt {
 	border-top: 1px solid #F00;
+	overflow: hidden;
 }
 #command-prompt > input[type=text] {
 	color: #F00;
@@ -140,4 +141,16 @@ ul > li > button {
 }
 .command-prompt-number-key-up {
 	color: #F00;
+}
+#command-prompt > span.risk-percent-bar {
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	background-color: rgba(255, 0, 0, .5);
+	text-align: center;
+	overflow: visible;
+	color: #F00;
+	white-space: nowrap;
+	padding: 13px 0;
 }

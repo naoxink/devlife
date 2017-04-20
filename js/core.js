@@ -62,7 +62,7 @@ Core.stop = function(projectID){
 	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
 		Core.showImprovementButton('addProject')
 	}
-	if(Stats.projects > 24 && !Shop.items.virtualPersonalAssistant.owned){ // Comprobar que no esté mostrado en la tienda
+	if(Stats.projects > 24 && !Shop.items.virtualPersonalAssistant.owned && !Shop.items.virtualPersonalAssistant.showing){
 		Shop.showItemButton('virtualPersonalAssistant')
 	}
 }
@@ -227,6 +227,7 @@ Core.calcRentCost = function(){
 }
 
 Core.jobFinder = function(button){
+	Core.searchingJobs = true
 	button.setAttribute('disabled', true)
 	Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Searching'
 	var time = Math.floor(Math.random() * 60) + 25
@@ -235,6 +236,7 @@ Core.jobFinder = function(button){
 		Core._('#takeJob').removeAttribute('disabled')
 		document.title = 'JOB OPORTUNITY! | devLife'
 		setTimeout(function(){
+			Core.searchingJobs = false
 			Core._('#takeJob').setAttribute('disabled', true)
 			document.title = Stats.companyName + ' intranet | devLife'
 			if(Stats.jobs.length < Core.base.maxJobs){
@@ -335,8 +337,8 @@ Core.quitJob = function(button){
 	Core.base.moneyIncPerPulse -= Stats.jobs[i].increment
 	Stats.jobs.splice(j, 1)
 	button.parentNode.parentNode.removeChild(button.parentNode)
-	if(Stats.jobs === Core.base.maxJobs - 1){
-		Core.jobFinder()
+	if(Stats.jobs < Core.base.maxJobs && !Core.searchingJobs){
+		Core._('#start-job-search').removeAttribute('disabled')
 	}
 }
 

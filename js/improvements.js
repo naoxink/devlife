@@ -201,25 +201,30 @@ var improvements = {
 				button.parentNode.removeChild(button)
 			}
 			var cost = this.cost
-			if(Stats.money >= cost && Stats.computerVersion <= Core.base.maxComputerVersion){
-				Stats.money -= cost
-				Stats.companyValue += cost / 2
-				Stats.computerVersion++
-				if(Stats.computerVersion === 1){
-					Core.showImprovementButton('intranetCommandPrompt')
-				}
-				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
-				Core.base.pulseDuration -= 10
-				this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
-				if(Core.base.maxComputerVersion < Stats.computerVersion + 1){
-					if(!Core.hasImprovement('computacionalTech')){
-						Core.showImprovementButton('computacionalTech')
+			if(Stats.money >= cost){
+				if(Stats.computerVersion <= Core.base.maxComputerVersion){
+					Stats.money -= cost
+					Stats.companyValue += cost / 2
+					Stats.computerVersion++
+					if(Stats.computerVersion === 1){
+						Core.showImprovementButton('intranetCommandPrompt')
 					}
-				}else{
-					Core.showImprovementButton('upgradeComputer')
-					Core.updateHUD()
+					Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
+					Core.base.pulseDuration -= 10
+					this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
+					if(Core.base.maxComputerVersion < Stats.computerVersion + 1){
+						if(!Core.hasImprovement('computacionalTech')){
+							Core.showImprovementButton('computacionalTech')
+						}
+					}else{
+						Core.showImprovementButton('upgradeComputer')
+					}
 				}
+			}else{
+				Core.showImprovementButton('upgradeComputer')
 			}
+			Core.updateHUD()
+			console.log(improvements.upgradeComputer)
 		},
 		'inProgress': false
 	}

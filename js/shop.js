@@ -2,6 +2,7 @@ var Shop = {  }
 
 Shop.items = {
 	'coffee': {
+		'showing': false,
 		'oneuse': false,
 		'initial': true,
 		'label': 'Buy coffee',
@@ -35,6 +36,7 @@ Shop.items = {
 		}
 	},
 	'energyDrink': {
+		'showing': false,
 		'oneuse': false,
 		'initial': true,
 		'label': 'Buy energy drink',
@@ -67,6 +69,7 @@ Shop.items = {
 		}
 	},
 	'mechanicalKeyboard': {
+		'showing': false,
 		'oneuse': true,
 		'initial': false,
 		'label': 'Mechanical Keyboard',
@@ -77,6 +80,7 @@ Shop.items = {
 		}
 	},
 	'infiniteCoffeeContract': {
+		'showing': false,
 		'oneuse': true,
 		'initial': true,
 		'label': 'Infinite coffee contract',
@@ -88,6 +92,7 @@ Shop.items = {
 		}
 	},
 	'companyNameChange': {
+		'showing': false,
 		'oneuse': false,
 		'initial': false,
 		'label': 'Company name change',
@@ -110,6 +115,7 @@ Shop.items = {
 		}
 	},
 	'marketingCampaign': {
+		'showing': false,
 		'oneuse': false,
 		'initial': true,
 		'label': 'Marketing campaign',
@@ -140,12 +146,13 @@ Shop.items = {
 		}
 	},
 	'virtualPersonalAssistant': {
+		'showing': false,
 		'oneuse': true,
 		'initial': false,
 		'label': 'Y.A.A.',
 		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects',
 		'cost': 10000,
-		'buy': function(){
+		'buy': function(button){
 			Core.base.projectTimeReductionPercent += 0.3
 			this.owned = true
 		}
@@ -176,9 +183,11 @@ Shop.showItemButton = function(itemID){
 		item.buy(this)
 		if(item.oneuse){
 			this.parentNode.removeChild(this)
+			item.showing = false
 		}
 		Core.updateHUD()
 	}
 	Core._('#shop').appendChild(button)
+	item.showing = true
 	Core.updateHUD()
 }

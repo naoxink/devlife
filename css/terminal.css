@@ -403,6 +403,7 @@ ul > li > button {
 	padding: 10px;
 	border-top: 1px solid #0F0;
 	background-color: #000;
+	position: relative;
 }
 #command-prompt > input[type=text] {
 	background-color: #000;
