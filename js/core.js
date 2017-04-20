@@ -2,11 +2,13 @@ var Core = {  }
 
 Core.engine = {  }
 Core.projects = {  }
+Core.timers = {  }
 
 Core.init = function(fromLoad){
 	// Core.initRecruitingSection()
 	// Core.initRentingSection()
 	// Core.jobFinder()
+	Core.initOscilatingValue()
 	Core.quickProjectFinder()
 	if(!fromLoad){
 		Core.takeJob()
@@ -958,10 +960,10 @@ Core.refreshAchievementList = function(){
 Core.quickProjectFinder = function(){
 	clearInterval(window.quickProjectFinderTimeout)
 	var time = Math.floor(Math.random() * Core.base.quickProjectsMaxTime) + Core.base.quickProjectsMinTime
-		if(Core.base.quickProjectsFinderTimeMagnifier){
-			time += time * (Stats.projects / 3)
-		}
-		time *= 1000
+	if(Core.base.quickProjectsFinderTimeMagnifier){
+		time += time * (Stats.projects / 3)
+	}
+	time *= 1000
 	window.quickProjectFinderTimeout = setTimeout(function(){
 		Core._('#takeQuickProject').removeAttribute('disabled')
 		document.title = 'Quick project available! | devLife'
@@ -1022,3 +1024,68 @@ Core.startQuickProject = function(button){
 			button.setAttribute('data-profit', profitText)
 	}, 1000)
 }
+
+// Oscilating value
+Core.initOscilatingValue = function(){
+	Core.timers.oscilatingValue = setInterval(function(){
+		Core._('#moneyValue').innerHTML = '1 ' + Core.base.moneyChar + ' = ' + Core.numberFormat(1 + (Core.base.oscilatingValue / 10))
+		if(Core.base.historicOscilatingValues.length > 50){
+			Core.base.historicOscilatingValues.shift()
+		}
+		Core.base.historicOscilatingValues.push(Core.base.oscilatingValue)
+		var randBase = (Math.floor(Math.random() * Core.base.maxOscilatingValue) + Core.base.minOscilatingValue) + ((Core.base.maxOscilatingValue / 2) + 1)
+		if(randBase > 0 && Core.base.oscilatingValue < Core.base.maxOscilatingValue){
+			Core.base.oscilatingValue++
+		}else if(randBase < 0 && Core.base.oscilatingValue > Core.base.minOscilatingValue){
+			Core.base.oscilatingValue--
+		}
+		Core.printOscilatingValueChart()
+	}, 1000)
+}
+
+Core.printOscilatingValueChart = function(){
+	Core._('#oscilating-value-container').innerHTML = ''
+	for(var i = 0, len = Core.base.historicOscilatingValues.length; i < len; i++){
+		var n = Core.base.historicOscilatingValues[i]
+		Core.printBarChart(n)
+	}
+}
+
+Core.printBarChart = function(value){
+	var bar = document.createElement('DIV')
+	bar.className = 'bar help'
+	var abs = Math.abs(value)
+	var title = (value > 0 ? '+' : '') + (value / 10) + Core.base.moneyChar
+	bar.setAttribute('data-title', title)
+	var stringValue = '' + abs + '0px'
+	var barIntHeight = (parseInt(stringValue, 10) / 2)
+	bar.style.height = barIntHeight + 'px'
+	bar.style.left = (10 * Core._('#oscilating-value-container > .bar', true).length) + 'px'
+
+	bar.style.top = '50%'
+
+	if(value > 0){
+		bar.className += ' up'
+		bar.style['margin-top'] = (-barIntHeight +1) + 'px'
+	}else if(value < 0){
+		bar.className += ' down'
+	}else{
+		bar.className += ' flat'
+		bar.style.height = '1px'
+	}
+	Core._('#oscilating-value-container').appendChild(bar)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

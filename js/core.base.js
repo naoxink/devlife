@@ -3,7 +3,7 @@ Core.base = {
 	'pulseDuration': 1000,
 	'moneyIncPerPulse': 0,
 	'maxPulseDuration': 10000,
-	'minPulseDuration': 1E-10,
+	'minPulseDuration': 1,
 	'projectTimeReductionPercent': 0,
 	'computerMultiplierCost': 114,
 	'maxComputerVersion': 10,
@@ -33,6 +33,11 @@ Core.base = {
 
 	'quickProjectsMinTime': 5,
 	'quickProjectsMaxTime': 10,
-	'quickProjectsFinderTimeMagnifier': true
+	'quickProjectsFinderTimeMagnifier': true,
+
+	'oscilatingValue': 0.0,
+	'minOscilatingValue': -10,
+	'maxOscilatingValue': 10,
+	'historicOscilatingValues': [  ]
 
 }

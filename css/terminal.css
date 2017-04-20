@@ -428,3 +428,56 @@ ul > li > button {
 	position: fixed;
 	color: #0F0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+#oscilating-value-container {
+	padding: 5px;
+	border: 1px dashed #0F0;
+	height: 100px;
+	width: 500px;
+	position: relative;
+	margin-top: 5px;
+}
+#oscilating-value-container > .bar {
+	position: absolute;
+	width: 9px;
+	border-right: 1px solid black;
+	background-color: rgba(255, 255, 255, .5);
+}
+#oscilating-value-container > .bar.up {
+	background-color: rgba(0, 255, 0, .5);
+}
+#oscilating-value-container > .bar.down {
+	background-color: rgba(255, 0, 0, .5);
+}
+#oscilating-value-container > .bar.up:hover {
+	background-color: rgba(0, 255, 0, 1);
+}
+#oscilating-value-container > .bar.down:hover {
+	background-color: rgba(255, 0, 0, 1);
+}
+#oscilating-value-container .bar.help:hover:before {
+	width: 50px;
+	top: 0;
+	right: 0;
+}
+#oscilating-value-container .bar.flat.help:hover:before {
+	background-color: rgba(255, 255, 255, .5);
+	color: #FFF;
+	border: 1px solid #FFF;
+}
+#oscilating-value-container .bar.down.help:hover:before {
+	color:#F00;
+	background-color: rgba(55, 0, 0, .95);
+	border: 1px solid #F00;
+}
