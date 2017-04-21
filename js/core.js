@@ -25,9 +25,7 @@ Core.init = function(fromLoad){
 	}
 
 	if(Stats.computerVersion < Core.base.maxComputerVersion){
-		// Core.base.nextComputerVersionCost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 		improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
-		// Core._('#PCCost').innerText = Core._('#PCCost').textContent = Core.numberFormat(Core.base.nextComputerVersionCost)
 	}
 	Core.showImprovementButton('upgradeComputer')
 
@@ -251,7 +249,12 @@ Core.jobFinder = function(button){
 
 Core.takeJob = function(button){
 	if(button) button.setAttribute('disabled', true)
-	if(Stats.jobs.length >= Core.base.maxJobs) return false
+	if(Stats.jobs.length >= Core.base.maxJobs){
+		Core.searchingJobs = false
+		Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Not searching'
+		Core._('#start-job-search').setAttribute('disabled', true)
+		return false
+	}
 	var job = JSON.parse(JSON.stringify(jobs[(Math.floor(Math.random() * (jobs.length - 1)))]))
 		job.id = 'job-' + new Date().getTime() + Stats.jobs.length
 	Core.base.moneyIncPerPulse += job.increment
@@ -485,7 +488,8 @@ Core.startImprovement = function(ty, button){
 	window['interval' + ty] = setInterval(function(){
 		if(Stats['imp' + ty + 'timeleft'] <= 0){
 			Stats.improvements.push(ty)
-			improvements[ty].effect(button)
+			button.parentNode.removeChild(button)
+			improvements[ty].effect()
 			improvements[ty].inProgress = false
 			clearInterval(window['interval' + ty])
 			Stats.companyValue += improvements[ty].cost / 2
@@ -1028,7 +1032,6 @@ Core.startQuickProject = function(button){
 // Oscilating value
 Core.initOscilatingValue = function(){
 	Core.timers.oscilatingValue = setInterval(function(){
-		Core._('#moneyValue').innerHTML = '1 ' + Core.base.moneyChar + ' = ' + Core.numberFormat(1 + (Core.base.oscilatingValue / 10))
 		if(Core.base.historicOscilatingValues.length > 50){
 			Core.base.historicOscilatingValues.shift()
 		}
@@ -1040,7 +1043,7 @@ Core.initOscilatingValue = function(){
 			Core.base.oscilatingValue--
 		}
 		Core.printOscilatingValueChart()
-	}, 1000)
+	}, 30000)
 }
 
 Core.printOscilatingValueChart = function(){

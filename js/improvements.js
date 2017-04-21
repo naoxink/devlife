@@ -4,8 +4,7 @@ var improvements = {
 		'help': 'You will be able to start another project at the same time',
 		'cost': 8000,
 		'investigationTime': 600000, // 10m
-		'effect': function(button){
-			if(Core._('.startProject', true).length >= 2) return false
+		'effect': function(){
 			var cloned = document.createElement('button')
 				cloned.innerText = 'Start project'
 				cloned.className = 'startProject'
@@ -13,44 +12,6 @@ var improvements = {
 				Core.startProject(this)
 			})
 			Core._('#projects-section').appendChild(cloned)
-			if(button){
-				button.parentNode.removeChild(button)
-			}
-		},
-		'inProgress': false
-	},
-	'intranet': {
-		'label': 'Intranet design',
-		'help': 'Develop a new intranet design',
-		'cost': 0,
-		'investigationTime': 180000, // 3m
-		'effect': function(button){
-			if(button){
-				button.removeAttribute('disabled')
-				button.innerText = 'Activate new intranet'
-				button.onclick = function(){
-					Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
-					button.parentNode.removeChild(button)
-					Core.showImprovementButton('intranet2')
-				}
-			}
-		},
-		'inProgress': false
-	},
-	'intranet2': {
-		'label': 'Upgrade intranet design',
-		'help': 'Upgrade the intranet design',
-		'cost': 0,
-		'investigationTime': 540000, // 9m
-		'effect': function(button){
-			if(button){
-				button.removeAttribute('disabled')
-				button.innerText = 'Activate new intranet'
-				button.onclick = function(){
-					Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
-					button.parentNode.removeChild(button)
-				}
-			}
 		},
 		'inProgress': false
 	},
@@ -59,10 +20,7 @@ var improvements = {
 		'help': 'Increase the computer upgrade version up to 20',
 		'cost': 5000,
 		'investigationTime': 600000, // 10m
-		'effect': function(button){
-			if(button){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
 			Core.base.maxComputerVersion = 20
 			improvements.upgradeComputer.cost = improvements.upgradeComputer.cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
 			Core.showImprovementButton('upgradeComputer')
@@ -75,10 +33,7 @@ var improvements = {
 		'help': 'Project Managers auto start projects',
 		'cost': 10000,
 		'investigationTime': 1800000, // 30m,
-		'effect': function(button){
-			if(button){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
 			if(window.autoStartProjectsInterval){
 				clearInterval(window.autoStartProjectsInterval)
 				window.autoStartProjectsInterval = null
@@ -112,10 +67,8 @@ var improvements = {
 		'help': 'Save your stats each time a project is completed',
 		'cost': 100000,
 		'investigationTime': 900000, // 15m
-		'effect': function(button){
-			if(button){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
+			// Unavailable
 		},
 		'inProgress': false
 	},
@@ -124,11 +77,8 @@ var improvements = {
 		'help': 'Smash your keys without control to get some money. Some people do that, why not you?',
 		'cost': 500,
 		'investigationTime': 60000, // 1m
-		'effect': function(button){
+		'effect': function(){
 			if(Core._('#command-prompt')) return false
-			if(button && button.parentNode){
-				button.parentNode.removeChild(button)
-			}
 			terminal.init()
 		},
 		'inProgress': false
@@ -138,10 +88,8 @@ var improvements = {
 		'help': 'Renew your offices and create a better working environment to increase effectiveness',
 		'cost': 500000,
 		'investigationTime': 3600000, // 1h
-		'effect': function(button){
-			if(button){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
+			// Unavailable
 		},
 		'inProgress': false
 	},
@@ -150,10 +98,7 @@ var improvements = {
 		'help': '',
 		'cost': 3000,
 		'investigationTime': 60000, // 1m
-		'effect': function(button){
-			if(button && button.parentNode){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
 			terminal.stats.torNetworkLevel++
 			this.cost += this.cost * 0.05 // Linear
 			this.investigationTime += 60000 // 1m más por cada nivel
@@ -166,10 +111,7 @@ var improvements = {
 		'help': '',
 		'cost': 600,
 		'investigationTime': 180000, // 3m
-		'effect': function(button){
-			if(button && button.parentNode){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
 			terminal.stats.virusDetectionLevel++
 			this.cost += this.cost * 0.05 // Linear
 			Core.showImprovementButton('upgradeAV')
@@ -181,10 +123,7 @@ var improvements = {
 		'help': '',
 		'cost': 0,
 		'investigationTime': 600000, // 10m
-		'effect': function(button){
-			if(button && button.parentNode){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
 			terminal.stats.toolkitLevel++
 			this.investigationTime += this.investigationTime * 0.2
 			Core.showImprovementButton('upgradeToolkit')
@@ -196,17 +135,14 @@ var improvements = {
 		'help': '',
 		'cost': 0,
 		'investigationTime': 10000, // 10s
-		'effect': function(button){
-			if(button && button.parentNode){
-				button.parentNode.removeChild(button)
-			}
+		'effect': function(){
 			var cost = this.cost
 			if(Stats.money >= cost){
 				if(Stats.computerVersion <= Core.base.maxComputerVersion){
 					Stats.money -= cost
 					Stats.companyValue += cost / 2
 					Stats.computerVersion++
-					if(Stats.computerVersion === 1){
+					if(Stats.computerVersion === 1 && !Shop.items.devmx300.owned){
 						Core.showImprovementButton('intranetCommandPrompt')
 					}
 					Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
@@ -215,6 +151,8 @@ var improvements = {
 					if(Core.base.maxComputerVersion < Stats.computerVersion + 1){
 						if(!Core.hasImprovement('computacionalTech')){
 							Core.showImprovementButton('computacionalTech')
+						}else if(!Shop.items.devmx300.owned){
+							Shop.showItemButton('devmx300')
 						}
 					}else{
 						Core.showImprovementButton('upgradeComputer')
@@ -224,7 +162,6 @@ var improvements = {
 				Core.showImprovementButton('upgradeComputer')
 			}
 			Core.updateHUD()
-			console.log(improvements.upgradeComputer)
 		},
 		'inProgress': false
 	}

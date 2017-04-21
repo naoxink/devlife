@@ -9,7 +9,7 @@ Shop.items = {
 		'help': 'Have a coffee and temporarily increase your money rate',
 		'cost': 5,
 		'buy': function(button, secondsLeft){
-			Stats.coffeeIncrement = (Core.base.moneyIncPerPulse / (Stats.employees.length + 1)) * Core.base.coffeeInc
+			Stats.coffeeIncrement = Core.base.moneyIncPerPulse * Core.base.coffeeInc
 			Core.base.moneyIncPerPulse += Stats.coffeeIncrement
 			Stats.isCoffeePowered = true
 			Core.updateHUD()
@@ -21,6 +21,7 @@ Shop.items = {
 			window.coffeeInterval = setInterval(function(){
 				if(Stats.coffeeTimeLeft <= 0){
 					Core.base.moneyIncPerPulse -= Stats.coffeeIncrement
+					Stats.coffeeIncrement = 0
 					Stats.isCoffeePowered = false
 					button.innerText = button.textContent = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
 					button.removeAttribute('disabled')
@@ -84,11 +85,17 @@ Shop.items = {
 		'oneuse': true,
 		'initial': true,
 		'label': 'Infinite coffee contract',
-		'help': 'You make a contract with a coffee vendor to have coffee with no cost',
+		'help': 'You make a contract with a coffee vendor to have coffee with no cost and permanently',
 		'cost': 20000,
 		'buy': function(){
-			Core.base.coffeePrice = 0
-			Core._('#shop-item-coffee').innerText = Core._('#shop-item-coffee').textContent = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+			if(Stats.isCoffeePowered){
+				clearInterval(window.coffeeInterval)
+				delete Stats.coffeeTimeLeft
+			}else{
+				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * Core.base.coffeeInc
+				Stats.isCoffeePowered = true
+			}
+			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
 		}
 	},
 	'companyNameChange': {
@@ -156,6 +163,29 @@ Shop.items = {
 			Core.base.projectTimeReductionPercent += 0.3
 			this.owned = true
 		}
+	},
+	'devmx300': {
+		'showing': false,
+		'oneuse': true,
+		'initial': false,
+		'label': 'New PC Dev-MX300',
+		'help': '',
+		'cost': 15000,
+		'buy': function(){
+			this.owned = true
+			Stats.computerVersion = 1
+			Core.base.computerMultiplierCost = 228
+			Core.base.maxComputerVersion = 10
+			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
+			var realPulse = Core.base.pulseDuration
+			if(Stats.isEnergyDrinkPowered){
+				realPulse /= Core.base.energyDrinkInc
+			}
+			Core.base.pulseDuration -= realPulse * 0.30
+			Core.showImprovementButton('upgradeComputer')
+			Core.showImprovementButton('addProject')
+			Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
+		}
 	}
 }
 
@@ -174,7 +204,8 @@ Shop.showItemButton = function(itemID){
 		button.className += ' help'
 		button.setAttribute('data-title', item.help)
 	}
-	button.onclick = function(){
+	button.onclick = function(e){
+		e.preventDefault()
 		if(Stats.money < item.cost){
 			this.setAttribute('disabled', true)
 			return false
