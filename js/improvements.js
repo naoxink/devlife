@@ -9,7 +9,7 @@ var improvements = {
 				cloned.innerText = 'Start project'
 				cloned.className = 'startProject'
 			cloned.addEventListener('click', function(){
-				Core.startProject(this)
+				Projects.startProject(this)
 			})
 			Core._('#projects-section').appendChild(cloned)
 		},

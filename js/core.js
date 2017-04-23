@@ -2,14 +2,17 @@ var Core = {  }
 
 Core.engine = {  }
 Core.projects = {  }
-Core.timers = {  }
+Core.timers = {
+	'oscilatingValue': null,
+	'popup': null
+}
 
 Core.init = function(fromLoad){
 	// Core.initRecruitingSection()
 	// Core.initRentingSection()
 	// Core.jobFinder()
 	Core.initOscilatingValue()
-	Core.quickProjectFinder()
+	Projects.quickProjectFinder()
 	if(!fromLoad){
 		Core.takeJob()
 		Core.startMonthTimer()
@@ -37,49 +40,6 @@ Core.init = function(fromLoad){
 	Core._('.navbar .brand').innerText = Stats.companyName + ' intranet'
 	Core.refreshAchievementList()
 	Core.updateHUD()
-}
-
-Core.start = function(projectID, button){
-	Core.controlPulseDuration()
-	Core.projects[projectID].engine = setTimeout(function(){
-		Core.pulse(projectID, button)
-	}, Core.base.pulseDuration)
-}
-
-Core.stop = function(projectID){
-	clearTimeout(Core.projects[projectID].engine)
-	Core.projects[projectID].engine = null
-	Stats.money += Core.projects[projectID].profit
-	Stats.companyValue += Core.projects[projectID].profit / 2
-	Core.updateHUD()
-	// if(Core.hasImprovement('autoSaveOnProjectComplete')){
-	// 	Core.save(true)
-	// }else{
-	// 	if(Stats.projects > 50 && !Core._('.startImprovement[data-type=autoSaveOnProjectComplete]')){
-	// 		Core.showImprovementButton('autoSaveOnProjectComplete')
-	// 	}
-	// }
-	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
-		Core.showImprovementButton('addProject')
-	}
-	if(Stats.projects > 24 && !Shop.items.virtualPersonalAssistant.owned && !Shop.items.virtualPersonalAssistant.showing){
-		Shop.showItemButton('virtualPersonalAssistant')
-	}
-}
-
-Core.pulse = function(projectID, button){
-	Core.projects[projectID].profit += Core.base.moneyIncPerPulse + Core.projects[projectID].moneyPlus
-	var profitText = button.getAttribute('data-profit')
-	if(profitText){
-		profitText = profitText.replace(/Profit: ([0-9]+\.*.*)¢/, 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
-		button.setAttribute('data-profit', profitText)
-	}
-	Core.isRunning = false
-	Core.controlPulseDuration()
-	Core.updateHUD()
-	Core.projects[projectID].engine = setTimeout(function(){
-		Core.pulse(projectID, button)
-	}, Core.base.pulseDuration)
 }
 
 Core.startMonthTimer = function(secondsLeft){
@@ -413,49 +373,6 @@ Core.fireEmployee = function(button){
 	if(Stats[type] === 0){
 		Core._('.fireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
 	}
-}
-
-Core.startProject = function(button){
-	var max = 30
-	var min = 10
-	var projectTime = Math.floor(Math.random() * max) + min
-		projectTime += projectTime * Math.round(Stats.projects / 10)
-		projectTime -= projectTime * Core.base.projectTimeReductionPercent
-	button.setAttribute('disabled', true)
-	// Botón con relleno de cuenta atrás
-	button.style.position = 'relative'
-	var bar = document.createElement('div')
-		bar.className = 'projectProgress'
-		button.appendChild(bar)
-	var percent = 100
-	var projectID = 'project-' + new Date().getTime()
-	Core.projects[projectID] = {  }
-	// Plus de ganancia por trabajador
-	Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * Core.calcEmployeesMoneyInc()
-	Core.projects[projectID].profit = 0
-	Core.projects[projectID].secondsLeft = projectTime
-	button.setAttribute('data-profit', '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0' + Core.base.moneyChar + ')')
-	Core.start(projectID, button)
-	Core.projects[projectID].timer = setInterval(function(){
-		Core.projects[projectID].secondsLeft--
-		bar.setAttribute('data-percent', percent)
-		var profitSecondsText = button.getAttribute('data-profit')
-			profitSecondsText = profitSecondsText.replace(/Time left: \s*([0-9]+[h|m|s])*\s*([0-9]+[h|m|s])*\s*([0-9]+[h|m|s])*/g, 'Time left: ' + Core.timeFormat(Core.projects[projectID].secondsLeft * 1000))
-			button.setAttribute('data-profit', profitSecondsText)
-		if(Core.projects[projectID].secondsLeft <= 0){
-			clearInterval(Core.projects[projectID].timer)
-			Core.stop(projectID)
-			button.removeAttribute('disabled')
-			button.innerText = button.textContent = 'Start project'
-			button.setAttribute('data-profit', '')
-			Stats.projects++
-			Core.updateHUD()
-			Core.notification('Project finished', 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
-		}else{
-			percent = (Core.projects[projectID].secondsLeft / projectTime) * 100
-			bar.style.width = percent + '%'
-		}
-	}, 1000)
 }
 
 Core.showImprovementButton = function(id){
@@ -836,8 +753,8 @@ Core.initRecruitingSection = function(){
 Core.addListeners = function(){
 	Core._('#takeJob').addEventListener('click', function(){ Core.takeJob(this) })
 	Core._('#start-job-search').addEventListener('click', function(){ Core.jobFinder(this) })
-	Core._('#takeQuickProject').addEventListener('click', function(){ Core.takeQuickProject(this) })
-	Core._('.startProject').addEventListener('click', function(){ Core.startProject(this) })
+	Core._('#takeQuickProject').addEventListener('click', function(){ Projects.takeQuickProject(this) })
+	Core._('.startProject').addEventListener('click', function(){ Projects.startProject(this) })
 	Core._('#buyTicket').addEventListener('click', function(){ Core.buyTicket(this) })
 	var improvs = Core._('.startImprovement', true)
 	for(var i = 0, len = improvs.length; i < len; i++){
@@ -934,6 +851,16 @@ Core.showPopUp = function(data){
 	Core._('body')
 		.appendChild(bg)
 		.appendChild(container)
+	if(Core.timers.popup !== null){
+		clearTimeout(Core.timers.popup)
+		Core.timers.popup = null
+	}
+	var lastDocTitle = document.title
+	document.title = data.title
+	Core.timers.popup = setTimeout(function(){
+		Core._('.popup').remove()
+		document.title = lastDocTitle
+	}, 5000)
 	// Core.notification(data.title, data.description)
 }
 
@@ -959,75 +886,7 @@ Core.refreshAchievementList = function(){
 	Core._('#achievement-list').appendChild(table)
 }
 
-// Quick projects
 
-Core.quickProjectFinder = function(){
-	clearInterval(window.quickProjectFinderTimeout)
-	var time = Math.floor(Math.random() * Core.base.quickProjectsMaxTime) + Core.base.quickProjectsMinTime
-	if(Core.base.quickProjectsFinderTimeMagnifier){
-		time += time * (Stats.projects / 3)
-	}
-	time *= 1000
-	window.quickProjectFinderTimeout = setTimeout(function(){
-		Core._('#takeQuickProject').removeAttribute('disabled')
-		document.title = 'Quick project available! | devLife'
-		setTimeout(function(){
-			Core._('#takeQuickProject').setAttribute('disabled', true)
-			document.title = Stats.companyName + ' intranet | devLife'
-			Core.quickProjectFinder()
-		}, 15000)
-	}, time)
-}
-
-Core.takeQuickProject = function(bthis){
-	document.title = Stats.companyName + ' intranet | devLife'
-	var button = document.createElement('BUTTON')
-		button.className = 'startProject'
-		button.innerText = button.textContent = 'Quick project (In progress)'
-		button.setAttribute('disabled', true)
-	Core._('#projects-section').appendChild(button)
-	Core.startQuickProject(button)
-	bthis.setAttribute('disabled', true)
-}
-
-Core.startQuickProject = function(button){
-	// Calcular tiempo (corto)
-	var projectTime = Math.floor(Math.random() * 10) + 4
-		projectTime += projectTime * (Stats.projects / 100)
-	// Porcentage
-	// Iniciar interval actualizando la barra de siempre
-	button.style.position = 'relative'
-	var bar = document.createElement('div')
-		bar.className = 'projectProgress'
-		button.appendChild(bar)
-	var percent = 100
-	var projectID = 'qproject-' + new Date().getTime()
-	Core.projects[projectID] = {  }
-	// Plus de ganancia por trabajador
-	Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * (Core.calcEmployeesMoneyInc() || 1)
-	Core.projects[projectID].moneyPlus += Core.projects[projectID].moneyPlus * ((30 - projectTime) / 100)
-	Core.projects[projectID].profit = 0
-	Core.projects[projectID].secondsLeft = projectTime
-	button.setAttribute('data-profit', '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0' + Core.base.moneyChar + ')')
-	Core.projects[projectID].timer = setInterval(function(){
-		Core.projects[projectID].profit += Core.projects[projectID].moneyPlus
-		Core.projects[projectID].secondsLeft--
-		bar.setAttribute('data-percent', percent)
-		if(Core.projects[projectID].secondsLeft <= 0){
-			clearInterval(Core.projects[projectID].timer)
-			Core.stop(projectID)
-			button.parentNode.removeChild(button)
-			Stats.projects++
-			Core.updateHUD()
-			Core.notification('Project finished', 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
-		}else{
-			percent = (Core.projects[projectID].secondsLeft / projectTime) * 100
-			bar.style.width = percent + '%'
-		}
-		var profitText = '(Time left: '+ Core.timeFormat(Core.projects[projectID].secondsLeft * 1000) +') (Profit: ' + Core.numberFormat(Core.projects[projectID].profit) + ')'
-			button.setAttribute('data-profit', profitText)
-	}, 1000)
-}
 
 // Oscilating value
 Core.initOscilatingValue = function(){
@@ -1043,7 +902,7 @@ Core.initOscilatingValue = function(){
 			Core.base.oscilatingValue--
 		}
 		Core.printOscilatingValueChart()
-	}, 30000)
+	}, 10000)
 }
 
 Core.printOscilatingValueChart = function(){
@@ -1058,8 +917,6 @@ Core.printBarChart = function(value){
 	var bar = document.createElement('DIV')
 	bar.className = 'bar help'
 	var abs = Math.abs(value)
-	var title = (value > 0 ? '+' : '') + (value / 10) + Core.base.moneyChar
-	bar.setAttribute('data-title', title)
 	var stringValue = '' + abs + '0px'
 	var barIntHeight = (parseInt(stringValue, 10) / 2)
 	bar.style.height = barIntHeight + 'px'
@@ -1076,19 +933,6 @@ Core.printBarChart = function(value){
 		bar.className += ' flat'
 		bar.style.height = '1px'
 	}
+	bar.setAttribute('data-title', (value > 0 ? '+' : '') + (value * 10) + '%')
 	Core._('#oscilating-value-container').appendChild(bar)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

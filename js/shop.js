@@ -131,7 +131,7 @@ Shop.items = {
 		'buy': function(button, secondsLeft){
 			var _item = this
 			Core.base.quickProjectsFinderTimeMagnifier = false
-			Core.quickProjectFinder()
+			Projects.quickProjectFinder()
 			Stats.marketingCampaignRunning = true
 			Stats.marketingCampaignTimeLeft = secondsLeft || 300 // 5m
 			button.setAttribute('disabled', true)
@@ -176,6 +176,7 @@ Shop.items = {
 			Stats.computerVersion = 1
 			Core.base.computerMultiplierCost = 228
 			Core.base.maxComputerVersion = 10
+			Core.base.commandPromptInc *= 2
 			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 			var realPulse = Core.base.pulseDuration
 			if(Stats.isEnergyDrinkPowered){
