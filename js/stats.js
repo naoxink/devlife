@@ -2,6 +2,7 @@ var Stats = {
 	// General
 	'companyName': 'devlife',
 	'companyValue': 0,
+	'computerModel': 'dev II',
 	'computerVersion': 0,
 	'money': 10,
 	'jobs': [  ],

@@ -4,7 +4,8 @@ Core.engine = {  }
 Core.projects = {  }
 Core.timers = {
 	'oscilatingValue': null,
-	'popup': null
+	'popup': null,
+	'jobFinder': null
 }
 
 Core.init = function(fromLoad){
@@ -85,6 +86,7 @@ Core.updateHUD = function(){
 	Core.checkAchievements()
 	Core._('#money').innerHTML = Core.numberFormat(Stats.money)
 	Core._('#incPerPulse').innerHTML = Core.numberFormat(Core.base.moneyIncPerPulse) + '/pulse'
+	Core._('#pcmodel').innerHTML = Stats.computerModel
 	Core._('#computerVersion').innerHTML = 'v' + Stats.computerVersion
 	Core._('#jobs').innerHTML = Stats.jobs.length
 	// Core._('#employees').innerHTML = Stats.employees.length
@@ -192,35 +194,37 @@ Core.jobFinder = function(button){
 	Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Searching'
 	var time = Math.floor(Math.random() * 60) + 25
 		time *= 1000
-	setTimeout(function(){
+	Core.timers.jobFinder = setTimeout(function(){
 		Core._('#takeJob').removeAttribute('disabled')
 		document.title = 'JOB OPORTUNITY! | devLife'
 		setTimeout(function(){
-			Core.searchingJobs = false
+			clearTimeout(Core.timers.jobFinder)
+			Core.timers.jobFinder = null
 			Core._('#takeJob').setAttribute('disabled', true)
 			document.title = Stats.companyName + ' intranet | devLife'
 			if(Stats.jobs.length < Core.base.maxJobs){
 				button.removeAttribute('disabled')
-				Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Not searching'
 			}
+			Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Not searching'
 		}, 5000)
 	}, time)
 }
 
 Core.takeJob = function(button){
 	if(button) button.setAttribute('disabled', true)
-	if(Stats.jobs.length >= Core.base.maxJobs){
-		Core.searchingJobs = false
-		Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Not searching'
+	if(Stats.jobs.length < Core.base.maxJobs){
+		var job = JSON.parse(JSON.stringify(jobs[(Math.floor(Math.random() * (jobs.length - 1)))]))
+			job.id = 'job-' + new Date().getTime() + Stats.jobs.length
+		Core.base.moneyIncPerPulse += job.increment
+		document.title = Stats.companyName + ' intranet | devLife'
+		Stats.jobs[Stats.jobs.length] = job
+		Core.addJobToList(job)
+	}else{
+		clearTimeout(Core.timers.jobFinder)
+		Core.timers.jobFinder = null
 		Core._('#start-job-search').setAttribute('disabled', true)
-		return false
+		Core._('#job-finder-status').innerText = Core._('#job-finder-status').textContent = 'Not searching'
 	}
-	var job = JSON.parse(JSON.stringify(jobs[(Math.floor(Math.random() * (jobs.length - 1)))]))
-		job.id = 'job-' + new Date().getTime() + Stats.jobs.length
-	Core.base.moneyIncPerPulse += job.increment
-	document.title = Stats.companyName + ' intranet | devLife'
-	Stats.jobs[Stats.jobs.length] = job
-	Core.addJobToList(job)
 }
 
 Core.addJobToList = function(job){
@@ -302,7 +306,7 @@ Core.quitJob = function(button){
 	Core.base.moneyIncPerPulse -= Stats.jobs[i].increment
 	Stats.jobs.splice(j, 1)
 	button.parentNode.parentNode.removeChild(button.parentNode)
-	if(Stats.jobs < Core.base.maxJobs && !Core.searchingJobs){
+	if(Core._('#start-job-search').getAttribute('disabled') !== undefined && Core.timers.jobFinder === null){
 		Core._('#start-job-search').removeAttribute('disabled')
 	}
 }
@@ -410,6 +414,7 @@ Core.startImprovement = function(ty, button){
 			improvements[ty].inProgress = false
 			clearInterval(window['interval' + ty])
 			Stats.companyValue += improvements[ty].cost / 2
+			Core.updateHUD()
 		}else{
 			button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Stats['imp' + ty + 'timeleft'] * 1000) + ')'
 			Stats['imp' + ty + 'timeleft']--
@@ -891,16 +896,16 @@ Core.refreshAchievementList = function(){
 // Oscilating value
 Core.initOscilatingValue = function(){
 	Core.timers.oscilatingValue = setInterval(function(){
-		if(Core.base.historicOscilatingValues.length > 50){
-			Core.base.historicOscilatingValues.shift()
-		}
-		Core.base.historicOscilatingValues.push(Core.base.oscilatingValue)
 		var randBase = (Math.floor(Math.random() * Core.base.maxOscilatingValue) + Core.base.minOscilatingValue) + ((Core.base.maxOscilatingValue / 2) + 1)
 		if(randBase > 0 && Core.base.oscilatingValue < Core.base.maxOscilatingValue){
 			Core.base.oscilatingValue++
 		}else if(randBase < 0 && Core.base.oscilatingValue > Core.base.minOscilatingValue){
 			Core.base.oscilatingValue--
 		}
+		if(Core.base.historicOscilatingValues.length > 50){
+			Core.base.historicOscilatingValues.shift()
+		}
+		Core.base.historicOscilatingValues.push(Core.base.oscilatingValue)
 		Core.printOscilatingValueChart()
 	}, 10000)
 }

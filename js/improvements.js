@@ -153,6 +153,8 @@ var improvements = {
 							Core.showImprovementButton('computacionalTech')
 						}else if(!Shop.items.devmx300.owned){
 							Shop.showItemButton('devmx300')
+						}else if(!Shop.items.dev550sx.owned){
+							Shop.showItemButton('dev550sx')
 						}
 					}else{
 						Core.showImprovementButton('upgradeComputer')

@@ -95,6 +95,10 @@ Shop.items = {
 				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * Core.base.coffeeInc
 				Stats.isCoffeePowered = true
 			}
+			// Achievement Caffeine addict
+			if(Stats.coffeesBought < 500){
+				Stats.coffeesBought = 500
+			}
 			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
 		}
 	},
@@ -168,11 +172,12 @@ Shop.items = {
 		'showing': false,
 		'oneuse': true,
 		'initial': false,
-		'label': 'New PC Dev-MX300',
-		'help': '',
+		'label': 'PC Dev-MX300',
+		'help': 'A brand new PC in case you need more power!',
 		'cost': 15000,
 		'buy': function(){
 			this.owned = true
+			Stats.computerModel = 'Dev-MX300'
 			Stats.computerVersion = 1
 			Core.base.computerMultiplierCost = 228
 			Core.base.maxComputerVersion = 10
@@ -186,6 +191,31 @@ Shop.items = {
 			Core.showImprovementButton('upgradeComputer')
 			Core.showImprovementButton('addProject')
 			Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
+		}
+	},
+	'dev550sx': {
+		'showing': false,
+		'oneuse': true,
+		'initial': false,
+		'label': 'PC Dev-550sx PRO',
+		'help': '',
+		'cost': 45000,
+		'buy': function(){
+			this.owned = true
+			Stats.computerModel = 'Dev-550sx PRO'
+			Stats.computerVersion = 1
+			Core.base.computerMultiplierCost = 456
+			Core.base.maxComputerVersion = 20
+			Core.base.commandPromptInc *= 2
+			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
+			var realPulse = Core.base.pulseDuration
+			if(Stats.isEnergyDrinkPowered){
+				realPulse /= Core.base.energyDrinkInc
+			}
+			Core.base.pulseDuration -= realPulse * 0.50
+			Core.showImprovementButton('upgradeComputer')
+			Core.showImprovementButton('addProject')
+			Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
 		}
 	}
 }
