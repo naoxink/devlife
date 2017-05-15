@@ -261,26 +261,10 @@ ul > li > button {
 	overflow: hidden;
 }
 #achievement-list {
-/*	display: none;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;*/
 	color: #0F0;
-	overflow: auto;
-	max-height: 300px;
-	margin-right: -50px;
 }
 #achievement-list table {
-/*	position: absolute;
-	top: 10%;
-	left: 50%;
-	width: 400px;
-	margin-left: -200px;*/
-	border: 1px dashed #0F0;
+	width: 100%;
 	border-collapse: collapse;
 }
 #achievement-list table tr td {
@@ -289,7 +273,6 @@ ul > li > button {
 	background-color: #000;
 }
 #achievement-list table tr.locked td {
-	border: 1px dashed rgba(0, 255, 0, .5);
 	color: rgba(0, 255, 0, .5);
 }
 #achievement-list table tr.unlocked td {
@@ -469,4 +452,8 @@ ul > li > button {
 	color:#F00;
 	background-color: rgba(55, 0, 0, .95);
 	border: 1px solid #F00;
+}
+
+.diamond-plate:before {
+	content: '💎';
 }

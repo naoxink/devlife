@@ -302,40 +302,11 @@ ul > li > button {
 }
 /* ACHIEVEMENTS */
 #achievement-list {
-	display: none;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
 	color: #333;
 }
-#achievement-list table:before {
-	content: 'Achievements table';
-	padding: 10px;
-	display: block;
-	background-color: #d9edf7;
-	color: #31708f;
-	width: 200%;
-}
 #achievement-list table {
-	overflow: hidden;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	-ms-border-radius: 3px;
-	-o-border-radius: 3px;
-	-webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
-	box-shadow: 0 2px 2px rgba(0, 0, 0, .1);
-	border-radius: 3px;
-	position: absolute;
-	top: 10%;
-	left: 50%;
-	width: 400px;
-	margin-left: -200px;
+	width: 100%;
 	border-collapse: collapse;
-	background-color: #FFF;
 }
 #achievement-list table tr td {
 	padding: 5px 10px;
@@ -485,4 +456,55 @@ ul > li > button {
 .command-prompt-number-key-up {
 	position: fixed;
 	color: green;
+}
+
+#oscilating-value-container {
+	padding: 5px;
+	border: 1px solid #EEE;
+	height: 100px;
+	width: 100%;
+	position: relative;
+	margin-top: 5px;
+}
+#oscilating-value-container > .bar {
+	position: absolute;
+	width: 2%;
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+}
+#oscilating-value-container > .bar.up {
+	border-top: 1px solid green;
+	border-bottom: 1px solid #DDD;
+	background-color: rgba(0, 255, 0, .1);
+}
+#oscilating-value-container > .bar.down {
+	border-bottom: 1px solid red;
+	border-top: 1px solid #DDD;
+	background-color: rgba(255, 0, 0, .1);
+}
+#oscilating-value-container > .bar.up:hover {
+	background-color: rgba(0, 255, 0, .6)
+}
+#oscilating-value-container > .bar.down:hover {
+	background-color: rgba(255, 0, 0, .6)
+}
+#oscilating-value-container .bar.help:hover:before {
+	width: 50px;
+	top: 0;
+	right: 0;
+}
+#oscilating-value-container .bar.flat.help:hover:before {
+	background-color: #EEE;
+	color: #333;
+	border: 1px solid #AAA;
+}
+#oscilating-value-container .bar.up.help:hover:before {
+	color:green;
+	background-color: rgba(0, 255, 0, .5);
+	border: 1px solid green;
+}
+#oscilating-value-container .bar.down.help:hover:before {
+	color:red;
+	background-color: rgba(255, 0, 0, .5);
+	border: 1px solid red;
 }

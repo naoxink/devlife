@@ -237,13 +237,10 @@ ul > li > button {
 	overflow: hidden;
 }
 #achievement-list {
-	overflow: auto;
-	max-height: 300px;
-	margin-right: -50px;
 	color: #333;
 }
 #achievement-list table {
-	border: 1px solid #333;
+	width: 100%;
 	border-collapse: collapse;
 }
 #achievement-list table tr td {
@@ -383,7 +380,7 @@ ul > li > button {
 
 #oscilating-value-container {
 	padding: 5px;
-	border: 1px dashed #009;
+	border: 1px solid #000;
 	height: 100px;
 	width: 500px;
 	position: relative;
@@ -392,20 +389,20 @@ ul > li > button {
 #oscilating-value-container > .bar {
 	position: absolute;
 	width: 9px;
-	border-right: 1px solid #FFF;
-	background-color: rgba(255, 255, 255, .5);
+	border-right: 1px solid rgba(0, 0, 0, .2);
+	background-color: rgba(0, 0, 0, .5);
 }
 #oscilating-value-container > .bar.up {
-	background-color: rgba(0, 255, 0, .5);
+	background-color: rgba(0, 200, 0, .5);
 }
 #oscilating-value-container > .bar.down {
-	background-color: rgba(255, 0, 0, .5);
+	background-color: rgba(200, 0, 0, .5);
 }
 #oscilating-value-container > .bar.up:hover {
-	background-color: rgba(0, 255, 0, 1);
+	background-color: green;
 }
 #oscilating-value-container > .bar.down:hover {
-	background-color: rgba(255, 0, 0, 1);
+	background-color: red;
 }
 #oscilating-value-container .bar.help:hover:before {
 	width: 50px;
@@ -416,6 +413,11 @@ ul > li > button {
 	background-color: rgba(55, 55, 55, .5);
 	color: #000;
 	border: 1px solid #000;
+}
+#oscilating-value-container .bar.up.help:hover:before {
+	color:#0F0;
+	background-color: rgba(0, 55, 0, .95);
+	border: 1px solid #0F0;
 }
 #oscilating-value-container .bar.down.help:hover:before {
 	color:#F00;

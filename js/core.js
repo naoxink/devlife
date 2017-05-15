@@ -925,7 +925,7 @@ Core.printBarChart = function(value){
 	var stringValue = '' + abs + '0px'
 	var barIntHeight = (parseInt(stringValue, 10) / 2)
 	bar.style.height = barIntHeight + 'px'
-	bar.style.left = (10 * Core._('#oscilating-value-container > .bar', true).length) + 'px'
+	bar.style.left = (2 * Core._('#oscilating-value-container > .bar', true).length) + '%'
 
 	bar.style.top = '50%'
 

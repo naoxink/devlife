@@ -27,27 +27,6 @@ var achievements = [
 		},
 		'done': false
 	},
-	// {
-	// 	'title': 'Unlock the intranet skin',
-	// 	'check': function(){
-	// 		return Stats.improvements.indexOf('intranet') !== -1
-	// 	},
-	// 	'done': false
-	// },
-	// {
-	// 	'title': 'Unlock the new intranet skin',
-	// 	'check': function(){
-	// 		return Stats.improvements.indexOf('intranet2') !== -1
-	// 	},
-	// 	'done': false
-	// },
-	// {
-	// 	'title': 'Hire your first employee',
-	// 	'check': function(){
-	// 		return Stats.employees.length >= 1
-	// 	},
-	// 	'done': false
-	// },
 	{
 		'title': 'Upgrade your computer to version 20',
 		'check': function(){
@@ -55,34 +34,20 @@ var achievements = [
 		},
 		'done': false
 	},
-	// {
-	// 	'title': 'Rent your first room',
-	// 	'check': function(){
-	// 		return Stats.rooms >= 1
-	// 	},
-	// 	'done': false
-	// },
-	// {
-	// 	'title': 'Rent your first floor',
-	// 	'check': function(){
-	// 		return Stats.floors >= 1
-	// 	},
-	// 	'done': false
-	// },
-	// {
-	// 	'title': 'Rent your first building',
-	// 	'check': function(){
-	// 		return Stats.buildings >= 1
-	// 	},
-	// 	'done': false
-	// },
-	// {
-	// 	'title': 'Rent your first warehouse',
-	// 	'check': function(){
-	// 		return Stats.warehouses >= 1
-	// 	},
-	// 	'done': false
-	// },
+	{
+		'title': 'Buy the "Dev-MX300"',
+		'check': function(){
+			return Stats.computerModel === 'Dev-MX300'
+		},
+		'done': false
+	},
+	{
+		'title': 'Buy the "Dev-550sx PRO"',
+		'check': function(){
+			return Stats.computerModel === 'Dev-550sx PRO'
+		},
+		'done': false
+	},
 	{
 		'title': 'Drop all your jobs',
 		'check': function(){
@@ -142,40 +107,40 @@ var achievements = [
 	{
 		'title': 'Caffeine addict',
 		'check': function(){
-			return Stats.coffeesBought >= 500
+			return Stats.coffeesBought >= 200
 		},
 		'progress': function(){
-			return '' + Stats.coffeesBought + '/' + 500
+			return '' + Stats.coffeesBought + '/' + 200
 		},
 		'done': false
 	},
 	{
 		'title': 'Taurine addict',
 		'check': function(){
-			return Stats.energyDrinksBought >= 500
+			return Stats.energyDrinksBought >= 200
 		},
 		'progress': function(){
-			return '' + Stats.energyDrinksBought + '/' + 500
+			return '' + Stats.energyDrinksBought + '/' + 200
 		},
 		'done': false
 	},
 	{
 		'title': 'Lottery addict',
 		'check': function(){
-			return Stats.ticketsBought >= 500
+			return Stats.ticketsBought >= 200
 		},
 		'progress': function(){
-			return '' + Stats.ticketsBought + '/' + 500
+			return '' + Stats.ticketsBought + '/' + 200
 		},
 		'done': false
 	},
 	{
 		'title': 'Command prompt addict',
 		'check': function(){
-			return Stats.commandPrompt.keysPressed >= 500
+			return Stats.commandPrompt.keysPressed >= 200
 		},
 		'progress': function(){
-			return '' + Stats.commandPrompt.keysPressed + '/' + 500
+			return '' + Stats.commandPrompt.keysPressed + '/' + 200
 		},
 		'done': false
 	},
@@ -216,6 +181,13 @@ var achievements = [
 		},
 		'progress': function(){
 			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(1000000)
+		},
+		'done': false
+	},
+	{
+		'title': 'Buy the "I\'m a rich b**ch" diamond plate',
+		'check': function(){
+			return Shop.items.imRichDiamondPlate.owned
 		},
 		'done': false
 	}

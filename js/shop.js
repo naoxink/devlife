@@ -179,7 +179,7 @@ Shop.items = {
 			this.owned = true
 			Stats.computerModel = 'Dev-MX300'
 			Stats.computerVersion = 1
-			Core.base.computerMultiplierCost = 228
+			Core.base.computerMultiplierCost = 612
 			Core.base.maxComputerVersion = 10
 			Core.base.commandPromptInc *= 2
 			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
@@ -204,7 +204,7 @@ Shop.items = {
 			this.owned = true
 			Stats.computerModel = 'Dev-550sx PRO'
 			Stats.computerVersion = 1
-			Core.base.computerMultiplierCost = 456
+			Core.base.computerMultiplierCost = 961
 			Core.base.maxComputerVersion = 20
 			Core.base.commandPromptInc *= 2
 			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
@@ -212,10 +212,25 @@ Shop.items = {
 			if(Stats.isEnergyDrinkPowered){
 				realPulse /= Core.base.energyDrinkInc
 			}
-			Core.base.pulseDuration -= realPulse * 0.50
+			Core.base.pulseDuration -= realPulse * 0.40
 			Core.showImprovementButton('upgradeComputer')
 			Core.showImprovementButton('addProject')
 			Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
+		}
+	},
+	'imRichDiamondPlate': {
+		'showing': false,
+		'oneuse': true,
+		'initial': true,
+		'label': '"I\'m a rich b**ch" diamond plate',
+		'help': 'Show them you are SO RICH! at least before buying this useless plate',
+		'cost': 100000000,
+		'buy': function(){
+			this.owned = true
+			var plate = document.createElement('DIV')
+			plate.className = 'stat diamond-plate'
+			plate.innerText = plate.textContent = '"I\'m a rich b**ch" diamond plate'
+			Core._('#showcase').appendChild(plate)
 		}
 	}
 }
