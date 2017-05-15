@@ -832,7 +832,7 @@ Core.checkAchievements = function(silent){
 
 Core.showPopUp = function(data){
 	if(Core._('.popup')){
-		Core._('.popup').remove()
+		Core._('.popup').parentNode.removeChild(Core._('.popup'))
 	}
 	var bg = document.createElement('DIV')
 		bg.className = 'popup'
@@ -848,7 +848,7 @@ Core.showPopUp = function(data){
 		close.className = 'closeBtn'
 		close.innerText = close.textContent = 'Close'
 		close.onclick = function(){
-			Core._('.popup').remove()
+			Core._('.popup').parentNode.removeChild(Core._('.popup'))
 		}
 	container.appendChild(title)
 	container.appendChild(description)
@@ -863,7 +863,7 @@ Core.showPopUp = function(data){
 	var lastDocTitle = document.title
 	document.title = data.title
 	Core.timers.popup = setTimeout(function(){
-		Core._('.popup').remove()
+		Core._('.popup').parentNode.removeChild(Core._('.popup'))
 		document.title = lastDocTitle
 	}, 5000)
 	// Core.notification(data.title, data.description)
