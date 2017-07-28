@@ -197,7 +197,10 @@ Projects.startProject = function(button){
 Projects.calcProjectTime = function(max, min){
 	var projectTime = Math.floor(Math.random() * max) + min
 		projectTime += projectTime * Math.round(Stats.projects / 10)
-		projectTime -= projectTime * Core.base.projectTimeReductionPercent
+	console.info('% reducción de tiempo: ' + Core.base.projectTimeReductionPercent)
+	console.info('Tiempo inicial del proyecto: ' + projectTime)
+		projectTime -= projectTime * (Core.base.projectTimeReductionPercent / 100)
+	console.info('Tiempo final del proyecto: ' + projectTime)
 	return projectTime
 }
 
