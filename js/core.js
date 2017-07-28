@@ -831,7 +831,7 @@ Core.checkAchievements = function(silent){
 }
 
 Core.showPopUp = function(data){
-	if(Core._('.popup').length){
+	if(Core._('.popup', true).length){
 		Core._('.popup').parentNode.removeChild(Core._('.popup'))
 	}
 	var bg = document.createElement('DIV')
