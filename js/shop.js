@@ -164,7 +164,7 @@ Shop.items = {
 		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects',
 		'cost': 10000,
 		'buy': function(button){
-			Core.base.projectTimeReductionPercent += 0.3
+			Core.base.projectTimeReductionPercent += 1
 			this.owned = true
 		}
 	},
@@ -182,6 +182,7 @@ Shop.items = {
 			Core.base.computerMultiplierCost = 612
 			Core.base.maxComputerVersion = 10
 			Core.base.commandPromptInc *= 2
+			Core.base.projectTimeReductionPercent += 3
 			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 			var realPulse = Core.base.pulseDuration
 			if(Stats.isEnergyDrinkPowered){
@@ -207,6 +208,7 @@ Shop.items = {
 			Core.base.computerMultiplierCost = 961
 			Core.base.maxComputerVersion = 20
 			Core.base.commandPromptInc *= 2
+			Core.base.projectTimeReductionPercent += 3
 			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 			var realPulse = Core.base.pulseDuration
 			if(Stats.isEnergyDrinkPowered){
