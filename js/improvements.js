@@ -147,6 +147,7 @@ var improvements = {
 					}
 					Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
 					Core.base.pulseDuration -= 10
+					Core.base.projectTimeReductionPercent += 0.3
 					this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
 					if(Core.base.maxComputerVersion < Stats.computerVersion + 1){
 						if(!Core.hasImprovement('computacionalTech')){
