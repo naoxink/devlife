@@ -345,12 +345,15 @@ ul > li > button {
 	color: #FFF;
 }
 /* Command prompt */
+.command-prompt-log {
+	max-height: 200px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-right: -50px;
+}
 #command-prompt {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
 	padding: 10px;
+	position: relative;
 	border-top: 1px outset #000;
 	background-color: #FFF;
 }
@@ -367,6 +370,7 @@ ul > li > button {
 	content: '$';
 	color: #000;
 	float: left;
+	margin-top: 2px;
 	margin-right: 2px;
 }
 #command-prompt .multiplier {
