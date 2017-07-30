@@ -1,10 +1,11 @@
 Core.base = {
 	'moneyChar': '¢',
 	'pulseDuration': 1000,
-	'moneyIncPerPulse': 0,
+	'moneyIncPerPulse': 3,
 	'maxPulseDuration': 10000,
 	'minPulseDuration': 1,
 	'projectTimeReductionPercent': 0,
+	'improvementTimeReductionPercent': 0,
 	'computerMultiplierCost': 114,
 	'maxComputerVersion': 10,
 	'nextComputerVersionCost': 0,

@@ -44,32 +44,29 @@ Core.init = function(fromLoad){
 }
 
 Core.startMonthTimer = function(secondsLeft){
-	var sbar = Core._('.salaries-timer-bar')
-	var rbar = Core._('.rents-timer-bar')
+	var bar = Core._('.salaries-timer-bar')
 	var percent = 100
-	Stats.monthTimeLeft = 60
+	Stats.monthTimeLeft = 60 // Seconds
 	if(secondsLeft){
 		Stats.monthTimeLeft = secondsLeft
 		percent = (Stats.monthTimeLeft / 60) * 100
 	}
 	window.monthInterval = setInterval(function(){
-		var monthCost = (Core.calcSalariesCost() + Core.calcRentCost())
-		if(!monthCost){
-			if(sbar){ sbar.style.display = 'none' }
-			if(rbar){ rbar.style.display = 'none' }
-		}else{
-			if(sbar){ sbar.style.display = 'block' }
-			if(rbar){ rbar.style.display = 'block' }
-		}
 		if(Stats.monthTimeLeft <= 0){
 			clearInterval(window.monthInterval)
-			Stats.money -= monthCost
+			var mySalaries = 0
+			if(Stats.jobs && Stats.jobs.length){
+				for(var i = 0, len = Stats.jobs.length; i < len; i++){
+					mySalaries += Stats.jobs[i].increment
+				}
+			}
+			Stats.money += mySalaries
+			Core.updateHUD()
 			Core.startMonthTimer()
 		}else{
 			Stats.monthTimeLeft--
 			percent = (Stats.monthTimeLeft / 60) * 100
-			if(sbar){ sbar.style.width = percent + '%' }
-			if(rbar){ rbar.style.width = percent + '%' }
+			if(bar){ bar.style.width = percent + '%' }
 		}
 	}, 1000)
 }
@@ -215,7 +212,6 @@ Core.takeJob = function(button){
 	if(Stats.jobs.length < Core.base.maxJobs){
 		var job = JSON.parse(JSON.stringify(jobs[(Math.floor(Math.random() * (jobs.length - 1)))]))
 			job.id = 'job-' + new Date().getTime() + Stats.jobs.length
-		Core.base.moneyIncPerPulse += job.increment
 		document.title = Stats.companyName + ' intranet | devLife'
 		Stats.jobs[Stats.jobs.length] = job
 		Core.addJobToList(job)
@@ -229,7 +225,7 @@ Core.takeJob = function(button){
 
 Core.addJobToList = function(job){
 	var li = document.createElement('li')
-	var text = document.createTextNode(job.name + ' (+' + Core.numberFormat(job.increment, '/pulse)'))
+	var text = document.createTextNode(job.name + ' (+' + Core.numberFormat(job.increment, '/min)'))
 	var qjbutton = document.createElement('button')
 		qjbutton.innerText = qjbutton.textContent = 'Quit job'
 		qjbutton.setAttribute('id', job.id)
@@ -303,7 +299,6 @@ Core.quitJob = function(button){
 		}
 	}
 	if(j === null) return false
-	Core.base.moneyIncPerPulse -= Stats.jobs[i].increment
 	Stats.jobs.splice(j, 1)
 	button.parentNode.parentNode.removeChild(button.parentNode)
 	if(Core._('#start-job-search').getAttribute('disabled') !== undefined && Core.timers.jobFinder === null){
