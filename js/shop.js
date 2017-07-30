@@ -196,6 +196,7 @@ Shop.items = {
 			Core.base.commandPromptInc *= 2
 			Core.base.projectTimeReductionPercent += 3
 			Core.base.improvementTimeReductionPercent += 10
+			Core.base.commandPromptInc *= 2
 			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 			var realPulse = Core.base.pulseDuration
 			if(Stats.isEnergyDrinkPowered){
@@ -223,6 +224,7 @@ Shop.items = {
 			Core.base.commandPromptInc *= 2
 			Core.base.projectTimeReductionPercent += 3
 			Core.base.improvementTimeReductionPercent += 20
+			Core.base.commandPromptInc *= 2
 			Core.base.nextComputerVersionCost = improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
 			var realPulse = Core.base.pulseDuration
 			if(Stats.isEnergyDrinkPowered){
