@@ -142,6 +142,12 @@ ul > li > button {
 	background-color: blue;
 }
 
+.startProject:disabled {
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
 .startProject:disabled:after {
 	content: attr(data-profit);
 	margin-left: 5px;
@@ -210,7 +216,7 @@ ul > li > button {
 	border: 1px solid #333;
 	width: 300px;
 	z-index: 2;
-	top: 40%;
+	top: 10%;
 	left: 50%;
 	margin-left: -150px;
 }
@@ -427,4 +433,15 @@ ul > li > button {
 	color:#F00;
 	background-color: rgba(55, 0, 0, .95);
 	border: 1px solid #F00;
+}
+
+#showcase {
+    overflow: hidden;
+}
+#showcase .item {
+    float: left;
+    margin: 0 10px;
+    font-size: 26px;
+    line-height: 1.2em;
+    cursor: help;
 }

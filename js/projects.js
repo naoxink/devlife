@@ -44,7 +44,7 @@ Projects.pulse = function(projectID, button){
 	if(profitText){
 		profitText = profitText.replace(/Profit: ([0-9]+\.*.*)¢/, 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
 		if(oscilatingPlus > 0){
-			profitText += ' (+' + Core.numberFormat(Core.projects[projectID].moneyPlus + oscilatingPlus) + '/pulse)'
+			profitText += ' (+' + Core.numberFormat(Core.projects[projectID].moneyPlus + oscilatingPlus, '/pulse)')
 		}
 		button.setAttribute('data-profit', profitText)
 	}

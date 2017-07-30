@@ -454,6 +454,21 @@ ul > li > button {
 	border: 1px solid #F00;
 }
 
-.diamond-plate:before {
-	content: '💎';
+#showcase {
+    overflow: hidden;
+}
+#showcase .item {
+    float: left;
+    margin: 0 10px;
+    font-size: 26px;
+    line-height: 1.2em;
+    cursor: help;
+}
+p.disabled {
+	font-style: italic;
+	text-align: center;
+	color: rgba(0, 255, 0, .5);
+	padding: 0;
+	margin: 0;
+	font-weight: 100;
 }

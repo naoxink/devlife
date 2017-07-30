@@ -78,6 +78,10 @@ Shop.items = {
 		'cost': 1000,
 		'buy': function(){
 			Core.base.commandPromptInc *= 2
+			Core.addToShowcase({
+				'title': 'Brand new mechanical keyboard (Command prompt key value x2)',
+				'text': '⌨️'
+			})
 		}
 	},
 	'infiniteCoffeeContract': {
@@ -100,6 +104,10 @@ Shop.items = {
 				Stats.coffeesBought = 500
 			}
 			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
+			Core.addToShowcase({
+				'title': 'Infinite Coffee contract (Permanent coffee boosted)',
+				'text': '☕️'
+			})
 		}
 	},
 	'companyNameChange': {
@@ -166,7 +174,11 @@ Shop.items = {
 		'buy': function(button){
 			Core.base.projectTimeReductionPercent += 1
 			this.owned = true
-		}
+			Core.addToShowcase({
+				'title': 'Y.A.A. (Your Awesome Assistant) "What do you need?" (Project times reduction: 1%)',
+				'text': '🖲'
+			})
+		},
 	},
 	'devmx300': {
 		'showing': false,
@@ -229,10 +241,10 @@ Shop.items = {
 		'cost': 100000000,
 		'buy': function(){
 			this.owned = true
-			var plate = document.createElement('DIV')
-			plate.className = 'stat diamond-plate'
-			plate.innerText = plate.textContent = '"I\'m a rich b**ch" diamond plate'
-			Core._('#showcase').appendChild(plate)
+			Core.addToShowcase({
+				'title': '"I\'m a rich b**ch" diamond plate (Useless)',
+				'text': '💎'
+			})
 		}
 	}
 }

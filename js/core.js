@@ -85,7 +85,7 @@ Core.controlPulseDuration = function(){
 Core.updateHUD = function(){
 	Core.checkAchievements()
 	Core._('#money').innerHTML = Core.numberFormat(Stats.money)
-	Core._('#incPerPulse').innerHTML = Core.numberFormat(Core.base.moneyIncPerPulse) + '/pulse'
+	Core._('#incPerPulse').innerHTML = Core.numberFormat(Core.base.moneyIncPerPulse, '/pulse')
 	Core._('#pcmodel').innerHTML = Stats.computerModel
 	Core._('#computerVersion').innerHTML = 'v' + Stats.computerVersion
 	Core._('#jobs').innerHTML = Stats.jobs.length
@@ -229,7 +229,7 @@ Core.takeJob = function(button){
 
 Core.addJobToList = function(job){
 	var li = document.createElement('li')
-	var text = document.createTextNode(job.name + ' (+' + Core.numberFormat(job.increment) + '/pulse)')
+	var text = document.createTextNode(job.name + ' (+' + Core.numberFormat(job.increment, '/pulse)'))
 	var qjbutton = document.createElement('button')
 		qjbutton.innerText = qjbutton.textContent = 'Quit job'
 		qjbutton.setAttribute('id', job.id)
@@ -422,8 +422,31 @@ Core.startImprovement = function(ty, button){
 	}, 1000)
 }
 
-Core.numberFormat = function(number){
-	return parseFloat(number || 0).toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.') + ' ' + Core.base.moneyChar
+Core.numberFormat = function(number, append){
+	// /(\d)(?=(\d{3})+\,)/g, '$1.'
+	var THOUSAND = '.'
+	var DECIMAL = ','
+	var EXTRA = ''
+	var NUMBER_REGEX = new RegExp('(\\d)(?=(\\d{3})+' + DECIMAL + ')', 'g')
+	final = number
+	if(number > 999999){
+		final = parseFloat(number / 1000000)
+		EXTRA = ' Million '
+	}else{
+		final = parseFloat(number || 0)
+	}
+	final = final.toFixed(2)
+			.replace(THOUSAND, DECIMAL)
+	final = final.replace(NUMBER_REGEX, '$1' + THOUSAND)
+	if(final.indexOf(DECIMAL + '00') !== -1){
+		final = final.replace(DECIMAL + '00', '')
+	}
+	if(!append){
+		append = Core.base.moneyChar
+	}else{
+		append = Core.base.moneyChar + append
+	}
+	return final + EXTRA + append
 }
 
 Core.timeFormat = function(s){
@@ -865,7 +888,9 @@ Core.showPopUp = function(data){
 	var lastDocTitle = document.title
 	document.title = data.title
 	Core.timers.popup = setTimeout(function(){
-		Core._('.popup').parentNode.removeChild(Core._('.popup'))
+		if(Core._('.popup')){
+			Core._('.popup').parentNode.removeChild(Core._('.popup'))
+		}
 		document.title = lastDocTitle
 	}, 5000)
 	// Core.notification(data.title, data.description)
@@ -943,3 +968,15 @@ Core.printBarChart = function(value){
 	bar.setAttribute('data-title', (value > 0 ? '+' : '') + (value * 10) + '%')
 	Core._('#oscilating-value-container').appendChild(bar)
 }
+
+
+Core.addToShowcase = function(data){
+	if(Core._('#showcase .empty')){
+		Core._('#showcase .empty').parentNode.removeChild(Core._('#showcase .empty'))
+	}
+	var item = document.createElement('div')
+	item.className = 'item'
+	item.title = data.title
+	item.innerText = item.textContent = data.text
+	Core._('#showcase').appendChild(item)
+} 

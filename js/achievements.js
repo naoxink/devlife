@@ -7,21 +7,21 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Raise your money up to 1.000.000' + Core.base.moneyChar,
+		'title': 'Raise your money up to ' + Core.numberFormat(1000000),
 		'check': function(){
 			return Stats.money >= 1000000
 		},
 		'done': false
 	},
 	{
-		'title': 'Raise your money up to 10.000.000' + Core.base.moneyChar,
+		'title': 'Raise your money up to ' + Core.numberFormat(10000000),
 		'check': function(){
 			return Stats.money >= 10000000
 		},
 		'done': false
 	},
 	{
-		'title': 'Raise your money up to 100.000.000' + Core.base.moneyChar,
+		'title': 'Raise your money up to ' + Core.numberFormat(100000000),
 		'check': function(){
 			return Stats.money >= 100000000
 		},
@@ -77,7 +77,7 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Spend 100' +  Core.base.moneyChar + ' in the lottery',
+		'title': 'Spend ' +  Core.numberFormat(100) + ' in the lottery',
 		'check': function(){
 			return Stats.ticketsBought * Core.base.lotteryTicketCost >= 100
 		},
@@ -145,7 +145,7 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Make 1.000¢ with the command prompt',
+		'title': 'Make ' + Core.numberFormat(1000) + ' with the command prompt',
 		'check': function(){
 			return Stats.commandPrompt.moneyEarned >= 1000
 		},
@@ -155,7 +155,7 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Make 10.000¢ with the command prompt',
+		'title': 'Make ' + Core.numberFormat(10000) + ' with the command prompt',
 		'check': function(){
 			return Stats.commandPrompt.moneyEarned >= 10000
 		},
@@ -165,7 +165,7 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Make 100.000¢ with the command prompt',
+		'title': 'Make ' + Core.numberFormat(100000) + ' with the command prompt',
 		'check': function(){
 			return Stats.commandPrompt.moneyEarned >= 100000
 		},
@@ -175,7 +175,7 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Make 1.000.000¢ with the command prompt',
+		'title': 'Make ' + Core.numberFormat(1000000) + ' with the command prompt',
 		'check': function(){
 			return Stats.commandPrompt.moneyEarned >= 1000000
 		},

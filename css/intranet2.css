@@ -200,6 +200,12 @@ ul > li > button {
 	height: 20px;
 }
 
+.startProject:disabled {
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
 .startProject:disabled:after {
 	content: attr(data-profit);
 	margin-left: 5px;
@@ -425,12 +431,15 @@ ul > li > button {
 	display: block;
 }
 /* Command prompt */
+.command-prompt-log {
+	max-height: 200px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-right: -50px;
+}
 #command-prompt {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
 	padding: 10px;
+	position: relative;
 	border-top: 1px solid #2e6da4;
 	background-color: #FFF;
 }
@@ -507,4 +516,15 @@ ul > li > button {
 	color:red;
 	background-color: rgba(255, 0, 0, .5);
 	border: 1px solid red;
+}
+
+#showcase {
+    overflow: hidden;
+}
+#showcase .item {
+    float: left;
+    margin: 0 10px;
+    font-size: 26px;
+    line-height: 1.2em;
+    cursor: help;
 }
