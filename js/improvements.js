@@ -137,32 +137,26 @@ var improvements = {
 		'investigationTime': 10000, // 10s
 		'effect': function(){
 			var cost = this.cost
-			if(Stats.money >= cost){
-				if(Stats.computerVersion <= Core.base.maxComputerVersion){
-					Stats.money -= cost
-					Stats.companyValue += cost / 2
-					Stats.computerVersion++
-					if(Stats.computerVersion === 1 && !Shop.items.devmx300.owned){
-						Core.showImprovementButton('intranetCommandPrompt')
-					}
-					Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
-					Core.base.pulseDuration -= 10
-					Core.base.projectTimeReductionPercent += 0.3
-					this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
-					if(Core.base.maxComputerVersion < Stats.computerVersion + 1){
-						if(!Core.hasImprovement('computacionalTech')){
-							Core.showImprovementButton('computacionalTech')
-						}else if(!Shop.items.devmx300.owned){
-							Shop.showItemButton('devmx300')
-						}else if(!Shop.items.dev550sx.owned){
-							Shop.showItemButton('dev550sx')
-						}
-					}else{
-						Core.showImprovementButton('upgradeComputer')
-					}
+			if(Stats.computerVersion <= Core.base.maxComputerVersion){
+				Stats.computerVersion++
+				if(Stats.computerVersion === 1 && !Shop.items.devmx300.owned){
+					Core.showImprovementButton('intranetCommandPrompt')
 				}
-			}else{
-				Core.showImprovementButton('upgradeComputer')
+				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
+				Core.base.pulseDuration -= 10
+				Core.base.projectTimeReductionPercent += 0.3
+				this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
+				if(Core.base.maxComputerVersion < Stats.computerVersion + 1){
+					if(!Core.hasImprovement('computacionalTech')){
+						Core.showImprovementButton('computacionalTech')
+					}else if(!Shop.items.devmx300.owned){
+						Shop.showItemButton('devmx300')
+					}else if(!Shop.items.dev550sx.owned){
+						Shop.showItemButton('dev550sx')
+					}
+				}else{
+					Core.showImprovementButton('upgradeComputer')
+				}
 			}
 			Core.updateHUD()
 		},
