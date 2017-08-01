@@ -167,7 +167,7 @@ Shop.items = {
 	'virtualPersonalAssistant': {
 		'showing': false,
 		'oneuse': true,
-		'initial': false,
+		'initial': true,
 		'label': 'Y.A.A.',
 		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects',
 		'cost': 10000,
