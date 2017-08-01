@@ -15,6 +15,8 @@ Projects.stop = function(projectID, isCancelled){
 	if(!isCancelled){
 		Stats.money += Core.projects[projectID].profit
 		Stats.companyValue += Core.projects[projectID].profit / 2
+	}else{
+		Stats.money += Core.projects[projectID].profit / 2
 	}
 	Core.updateHUD()
 	// if(Core.hasImprovement('autoSaveOnProjectComplete')){
@@ -26,9 +28,6 @@ Projects.stop = function(projectID, isCancelled){
 	// }
 	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
 		Core.showImprovementButton('addProject')
-	}
-	if(Stats.projects > 24 && !Shop.items.virtualPersonalAssistant.owned && !Shop.items.virtualPersonalAssistant.showing){
-		Shop.showItemButton('virtualPersonalAssistant')
 	}
 }
 
@@ -197,18 +196,13 @@ Projects.startProject = function(button){
 Projects.calcProjectTime = function(max, min){
 	var projectTime = Math.floor(Math.random() * max) + min
 		projectTime += projectTime * Math.round(Stats.projects / 10)
-	console.info('% reducción de tiempo: ' + Core.base.projectTimeReductionPercent)
-	console.info('Tiempo inicial del proyecto: ' + projectTime)
 		projectTime -= projectTime * (Core.base.projectTimeReductionPercent / 100)
-	console.info('Tiempo final del proyecto: ' + projectTime)
 	return projectTime
 }
 
 Projects.isCancelled = function(){
 	if(Core.base.oscilatingValue >= 0) return false
-	var failPercent = Math.abs(Core.base.oscilatingValue) * 10
-	var randomPercent = Math.floor(Math.random() * 100)
-	// var experienceReduction = Stats.projects / 100
-	// randomPercent -= randomPercent * experienceReduction
-	return failPercent < randomPercent
+	var fail = Math.abs(Core.base.oscilatingValue) / 100
+	var shot = Math.random()
+	return fail > shot
 }
