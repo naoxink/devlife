@@ -202,7 +202,7 @@ Shop.items = {
 			if(Stats.isEnergyDrinkPowered){
 				realPulse /= Core.base.energyDrinkInc
 			}
-			Core.base.pulseDuration -= realPulse * 0.30
+			Core.base.pulseDuration -= realPulse * 0.15
 			Core.showImprovementButton('upgradeComputer')
 			Core.showImprovementButton('addProject')
 			Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
@@ -230,7 +230,7 @@ Shop.items = {
 			if(Stats.isEnergyDrinkPowered){
 				realPulse /= Core.base.energyDrinkInc
 			}
-			Core.base.pulseDuration -= realPulse * 0.40
+			Core.base.pulseDuration -= realPulse * 0.20
 			Core.showImprovementButton('upgradeComputer')
 			Core.showImprovementButton('addProject')
 			Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
