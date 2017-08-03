@@ -153,6 +153,8 @@ Projects.startProject = function(button){
 	}
 	Core.projects[projectID].profit = 0
 	Core.projects[projectID].secondsLeft = projectTime
+	Core.projects[projectID].dateStart = new Date()
+	Core.projects[projectID].dateEnd = new Date(Date.now() + (projectTime * 1000))
 
 	var profitText = '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0' + Core.base.moneyChar + ')'
 	if(Core.projects[projectID].moneyPlus > 0){
@@ -172,6 +174,7 @@ Projects.startProject = function(button){
 				'title': 'Your project has been cancelled',
 				'description': 'Try again when the projects demand is possitive'
 			})
+			return
 		}
 		Core.projects[projectID].secondsLeft--
 		bar.setAttribute('data-percent', percent)
