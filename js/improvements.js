@@ -161,5 +161,15 @@ var improvements = {
 			Core.updateHUD()
 		},
 		'inProgress': false
-	}
+	},
+	'personalBussinessWebsite': {
+		'label': 'Create your own personal bussiness website',
+		'help': 'Creating this website will help to increase trust with your clients',
+		'cost': 1000,
+		'investigationTime': 3600000, // 1h
+		'effect': function(){
+			Core.base.minOscilatingValue += 5
+		},
+		'inProgress': false
+	},
 }
