@@ -401,6 +401,7 @@ Core.startImprovement = function(ty, button){
 	button.setAttribute('disabled', true)
 	button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(improvements[ty].investigationTime) + ')'
 	Stats['imp' + ty + 'timeleft'] = improvements[ty].investigationTime / 1000
+	Core.updateHUD()
 	window['interval' + ty] = setInterval(function(){
 		if(Stats['imp' + ty + 'timeleft'] <= 0){
 			Stats.improvements.push(ty)
@@ -974,4 +975,11 @@ Core.addToShowcase = function(data){
 	item.title = data.title
 	item.innerText = item.textContent = data.text
 	Core._('#showcase').appendChild(item)
-} 
+}
+
+Core.secondsDiff = function(date1, date2){
+	var dif = date1.getTime() - date2.getTime()
+	var seconds_from_T1_to_T2 = dif / 1000
+	return Math.abs(seconds_from_T1_to_T2)
+
+}
