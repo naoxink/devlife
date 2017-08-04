@@ -104,6 +104,7 @@ Shop.items = {
 				Stats.coffeesBought = 500
 			}
 			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
+			Shop.items.coffee.showing = false
 			Core.addToShowcase({
 				'title': 'Infinite Coffee contract (Permanent coffee boosted)',
 				'text': '☕️'
