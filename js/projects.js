@@ -19,13 +19,6 @@ Projects.stop = function(projectID, isCancelled){
 		Stats.money += Core.projects[projectID].profit / 2
 	}
 	Core.updateHUD()
-	// if(Core.hasImprovement('autoSaveOnProjectComplete')){
-	// 	Core.save(true)
-	// }else{
-	// 	if(Stats.projects > 50 && !Core._('.startImprovement[data-type=autoSaveOnProjectComplete]')){
-	// 		Core.showImprovementButton('autoSaveOnProjectComplete')
-	// 	}
-	// }
 	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
 		Core.showImprovementButton('addProject')
 	}
@@ -55,6 +48,26 @@ Projects.pulse = function(projectID, button){
 	}, Core.base.pulseDuration)
 }
 
+Projects.createProjectButton = function(){
+	var startProjectButton = document.createElement('button')
+		startProjectButton.innerText = 'Start project'
+		startProjectButton.className = 'startProject'
+	startProjectButton.addEventListener('click', function(){
+		Projects.startProject(this)
+	})
+	Core._('#projects-section').appendChild(startProjectButton)
+	return startProjectButton
+}
+
+Projects.createQuickProjectButton = function(){
+	var button = document.createElement('BUTTON')
+		button.className = 'startProject'
+		button.innerText = button.textContent = 'Quick project '
+		button.setAttribute('disabled', true)
+	Core._('#projects-section').appendChild(button)
+	return button
+}
+
 // Quick projects
 Projects.quickProjectFinder = function(){
 	clearInterval(window.quickProjectFinderTimeout)
@@ -76,11 +89,7 @@ Projects.quickProjectFinder = function(){
 
 Projects.takeQuickProject = function(bthis){
 	document.title = Stats.companyName + ' intranet | devLife'
-	var button = document.createElement('BUTTON')
-		button.className = 'startProject'
-		button.innerText = button.textContent = 'Quick project '
-		button.setAttribute('disabled', true)
-	Core._('#projects-section').appendChild(button)
+	var button = Projects.createQuickProjectButton()
 	Projects.startQuickProject(button)
 	bthis.setAttribute('disabled', true)
 }
@@ -90,13 +99,6 @@ Projects.startQuickProject = function(button){
 	var max = 10
 	var min = 4
 	var projectTime = Projects.calcQuickProjectTime(max, min)
-	// Porcentage
-	// Iniciar interval actualizando la barra de siempre
-	button.style.position = 'relative'
-	var bar = document.createElement('div')
-		bar.className = 'projectProgress'
-		button.appendChild(bar)
-	var percent = 100
 	var projectID = 'qproject-' + new Date().getTime()
 	Core.projects[projectID] = {  }
 	// Plus de ganancia por trabajador
@@ -104,25 +106,10 @@ Projects.startQuickProject = function(button){
 	Core.projects[projectID].moneyPlus += Core.projects[projectID].moneyPlus * ((30 - projectTime) / 100)
 	Core.projects[projectID].profit = 0
 	Core.projects[projectID].secondsLeft = projectTime
-	button.setAttribute('data-profit', '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0' + Core.base.moneyChar + ')')
-	Core.projects[projectID].timer = setInterval(function(){
-		Core.projects[projectID].profit += Core.projects[projectID].moneyPlus
-		Core.projects[projectID].secondsLeft--
-		bar.setAttribute('data-percent', percent)
-		if(Core.projects[projectID].secondsLeft <= 0){
-			clearInterval(Core.projects[projectID].timer)
-			Projects.stop(projectID)
-			button.parentNode.removeChild(button)
-			Stats.projects++
-			Core.updateHUD()
-			Core.notification('Project finished', 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
-		}else{
-			percent = (Core.projects[projectID].secondsLeft / projectTime) * 100
-			bar.style.width = percent + '%'
-		}
-		var profitText = '(Time left: '+ Core.timeFormat(Core.projects[projectID].secondsLeft * 1000) +') (Profit: ' + Core.numberFormat(Core.projects[projectID].profit) + ')'
-			button.setAttribute('data-profit', profitText)
-	}, 1000)
+	Core.projects[projectID].dateStart = new Date()
+	Core.projects[projectID].dateEnd = new Date(Date.now() + (projectTime * 1000))
+
+	Projects.resumeQuickProject(projectID, button)
 }
 
 Projects.calcQuickProjectTime = function(max, min){
@@ -136,14 +123,6 @@ Projects.startProject = function(button){
 	var max = 30
 	var min = 10
 	var projectTime = Projects.calcProjectTime(max, min)
-	button.setAttribute('disabled', true)
-	button.innerText = button.textContent = 'Project'
-	// Botón con relleno de cuenta atrás
-	button.style.position = 'relative'
-	var bar = document.createElement('div')
-		bar.className = 'projectProgress'
-		button.appendChild(bar)
-	var percent = 100
 	var projectID = 'project-' + new Date().getTime()
 	Core.projects[projectID] = {  }
 	// Plus de ganancia
@@ -156,6 +135,40 @@ Projects.startProject = function(button){
 	Core.projects[projectID].dateStart = new Date()
 	Core.projects[projectID].dateEnd = new Date(Date.now() + (projectTime * 1000))
 
+	Projects.resumeProject(projectID, button)
+}
+
+Projects.calcProjectTime = function(max, min){
+	var projectTime = Math.floor(Math.random() * max) + min
+		projectTime += projectTime * Math.round(Stats.projects / 10)
+		projectTime -= projectTime * (Core.base.projectTimeReductionPercent / 100)
+	return projectTime
+}
+
+Projects.isCancelled = function(){
+	if(Core.base.oscilatingValue >= 0) return false
+	var fail = Math.abs(Core.base.oscilatingValue) / 100
+	var shot = Math.random()
+	return fail > shot
+}
+
+Projects.resumeProject = function(projectID, button, isQuickProject){
+	Projects.calcDiffPercent(projectID)
+	var projectTime = Core.projects[projectID].secondsLeft
+	button.setAttribute('disabled', true)
+	if(!isQuickProject){
+		button.innerText = button.textContent = 'Project'
+	}else{
+		button.innerText = button.textContent = 'Quick Project'
+	}
+	// Botón con relleno de cuenta atrás
+	button.style.position = 'relative'
+	var bar = document.createElement('div')
+		bar.className = 'projectProgress'
+		button.appendChild(bar)
+	// Calcular % con la diferencia de las fechas
+	var percent = Projects.calcDiffPercent(projectID)
+	bar.style.width = percent + '%'
 	var profitText = '(Time left: '+ Core.timeFormat(projectTime * 1000) +') (Profit: 0' + Core.base.moneyChar + ')'
 	if(Core.projects[projectID].moneyPlus > 0){
 		profitText += ' (+' + Core.numberFormat(Core.projects[projectID].moneyPlus ) + ')'
@@ -163,7 +176,7 @@ Projects.startProject = function(button){
 	button.setAttribute('data-profit', profitText)
 	Projects.start(projectID, button)
 	Core.projects[projectID].timer = setInterval(function(){
-		if(Projects.isCancelled()){
+		if(!isQuickProject && Projects.isCancelled()){
 			Projects.stop(projectID, true)
 			button.removeAttribute('disabled')
 			button.innerText = button.textContent = 'Start project'
@@ -183,29 +196,32 @@ Projects.startProject = function(button){
 			button.setAttribute('data-profit', profitSecondsText)
 		if(Core.projects[projectID].secondsLeft <= 0){
 			Projects.stop(projectID)
-			button.removeAttribute('disabled')
-			button.innerText = button.textContent = 'Start project'
-			button.setAttribute('data-profit', '')
+			if(!isQuickProject){
+				button.removeAttribute('disabled')
+				button.innerText = button.textContent = 'Start project'
+				button.setAttribute('data-profit', '')
+			}else{
+				button.parentNode.removeChild(button)
+			}
 			Stats.projects++
 			Core.updateHUD()
 			Core.notification('Project finished', 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
+			delete Core.projects[projectID]
 		}else{
-			percent = (Core.projects[projectID].secondsLeft / projectTime) * 100
+			percent = Projects.calcDiffPercent(projectID)
 			bar.style.width = percent + '%'
 		}
 	}, 1000)
 }
 
-Projects.calcProjectTime = function(max, min){
-	var projectTime = Math.floor(Math.random() * max) + min
-		projectTime += projectTime * Math.round(Stats.projects / 10)
-		projectTime -= projectTime * (Core.base.projectTimeReductionPercent / 100)
-	return projectTime
+Projects.resumeQuickProject = function(projectID, button){
+	Projects.resumeProject(projectID, button, true)
 }
 
-Projects.isCancelled = function(){
-	if(Core.base.oscilatingValue >= 0) return false
-	var fail = Math.abs(Core.base.oscilatingValue) / 100
-	var shot = Math.random()
-	return fail > shot
+Projects.calcDiffPercent = function(projectID){
+	var dateStart = Core.projects[projectID].dateStart
+	var dateEnd = Core.projects[projectID].dateEnd
+	var secondsLeft = Core.projects[projectID].secondsLeft
+	var diffSeconds = Core.secondsDiff(dateStart, dateEnd)
+	return (secondsLeft * 100) / diffSeconds
 }
