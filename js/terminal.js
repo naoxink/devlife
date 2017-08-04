@@ -117,7 +117,9 @@ terminal.init = function(){
 	container.appendChild(div)
 	Core._('.right').appendChild(container)
 	Core.addCompactFunctionality(header)
-	Shop.showItemButton('mechanicalKeyboard')
+	if(!Shop.items.mechanicalKeyboard.showing && !Shop.items.mechanicalKeyboard.owned){
+		Shop.showItemButton('mechanicalKeyboard')
+	}
 	// keyup
 	window.commandPrompt = {
 		'multiplier': 1,
