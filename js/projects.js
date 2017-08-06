@@ -187,6 +187,7 @@ Projects.resumeProject = function(projectID, button, isQuickProject){
 				'title': 'Your project has been cancelled',
 				'description': 'Try again when the projects demand is possitive'
 			})
+			delete Core.projects[projectID]
 			return
 		}
 		Core.projects[projectID].secondsLeft--
