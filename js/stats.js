@@ -44,5 +44,6 @@ var Stats = {
 		'keysPressed': 0,
 		'moneyEarned': 0
 	},
-	'showCase': [  ]
+	'showCase': [  ],
+	'activePixels': [  ]
 }

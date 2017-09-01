@@ -32,6 +32,8 @@ Core.base = {
 	'commandPromptInc': 1,
 	'notificationsRequested': false,
 
+	'projectProfitMultiplier': 0,
+
 	'quickProjectsMinTime': 5,
 	'quickProjectsMaxTime': 10,
 	'quickProjectsFinderTimeMagnifier': true,
@@ -39,6 +41,78 @@ Core.base = {
 	'oscilatingValue': 0.0,
 	'minOscilatingValue': -10,
 	'maxOscilatingValue': 10,
-	'historicOscilatingValues': [  ]
+	'historicOscilatingValues': [  ],
 
+	'wildPixelTypes': {
+		'lucky': {
+			'name': 'Lucky Pixel',
+			'odds': [ 1, 30 ], // 30%
+			'effect': function(callback){
+				var inc = Math.floor(Stats.money * 1)
+				Stats.money += inc
+				return callback(this.name + ' increased your money with ' + Core.numberFormat(inc))
+			}
+		},
+		'rushy' : {
+			'name': 'Rushy Pixel',
+			'odds': [ 31, 60 ], // 30%
+			'effect': function(callback){
+				var multiplier = 2
+				var secs = 15
+				var oldMultiplier = Core.base.projectProfitMultiplier
+				Core.base.projectProfitMultiplier = multiplier
+				setTimeout(function(){
+						Core.base.projectProfitMultiplier = oldMultiplier
+						Core.updateHUD()
+				}, secs * 1000)
+				return callback(this.name + ' increased your proyect profits by ' + (multiplier * 100) + '% for ' + secs + ' seconds!')
+			}
+		},
+		'cursed': {
+			'name': 'Cursed Pixel',
+			'odds': [ 61, 75 ], // 15%
+			'effect': function(callback){
+				var multiplier = -1
+				var secs = 15
+				var oldMultiplier = Core.base.projectProfitMultiplier
+				Core.base.projectProfitMultiplier = multiplier
+				setTimeout(function(){
+						Core.base.projectProfitMultiplier = oldMultiplier
+						Core.updateHUD()
+				}, secs * 1000)
+				return callback(this.name + ' reduced your proyect profits by ' + (multiplier * 100) + '% for ' + secs + ' seconds!')
+			}
+		},
+		'???': {
+			'name': '???',
+			'odds': [ 76, 90 ], // 15%
+			'effect': function(callback){
+				return callback()
+			}
+		},
+		'???': {
+			'name': '???',
+			'odds': [ 91, 95 ], // 5%
+			'effect': function(callback){
+				return callback()
+			}
+		},
+		'???': {
+			'name': '???',
+			'odds': [ 96, 98 ], // 3%
+			'effect': function(callback){
+				return callback()
+			}
+		},
+		'???': {
+			'name': '???',
+			'odds': [ 98, 100 ], // 2%
+			'effect': function(callback){
+				return callback()
+			}
+		}
+	},
+	'wildPixelMinSpawnTime': 60,
+	'wildPixelMaxSpawnTime': 120,
+	'wildPixelShowtime': 20
 }

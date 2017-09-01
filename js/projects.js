@@ -19,8 +19,11 @@ Projects.stop = function(projectID, isCancelled){
 		Stats.money += Core.projects[projectID].profit / 2
 	}
 	Core.updateHUD()
-	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !Core._('.startImprovement[data-type=addProject]')){
+	if(Stats.projects > 4 && !Core.hasImprovement('addProject') && !improvements['addProject'].showing){
 		Core.showImprovementButton('addProject')
+	}
+	if(Stats.projects > 4 && !Core.hasImprovement('autoStartProjects') && !improvements['autoStartProjects'].showing){
+		Core.showImprovementButton('autoStartProjects')
 	}
 }
 
@@ -32,6 +35,9 @@ Projects.pulse = function(projectID, button){
 
 	Core.projects[projectID].profit += Core.base.moneyIncPerPulse + Core.projects[projectID].moneyPlus
 	Core.projects[projectID].profit += oscilatingPlus
+	if(Core.base.projectProfitMultiplier){
+		Core.projects[projectID].profit += Core.projects[projectID].profit * (Core.base.projectProfitMultiplier / 100)
+	}
 	var profitText = button.getAttribute('data-profit')
 	if(profitText){
 		profitText = profitText.replace(/Profit: ([0-9]+\.*.*)¢/, 'Profit: ' + Core.numberFormat(Core.projects[projectID].profit))
@@ -201,6 +207,9 @@ Projects.resumeProject = function(projectID, button, isQuickProject){
 				button.removeAttribute('disabled')
 				button.innerText = button.textContent = 'Start project'
 				button.setAttribute('data-profit', '')
+				if(Core.hasImprovement('autoStartProjects')){
+					Projects.startProject(button)
+				}
 			}else{
 				button.parentNode.removeChild(button)
 			}

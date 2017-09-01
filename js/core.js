@@ -6,14 +6,16 @@ Core.improvements = {  }
 Core.timers = {
 	'oscilatingValue': null,
 	'popup': null,
-	'jobFinder': null
+	'jobFinder': null,
+	'wildPixel': null
 }
 
 Core.init = function(fromLoad){
 	// Core.initRecruitingSection()
 	// Core.initRentingSection()
 	// Core.jobFinder()
-	Core.initOscilatingValue()
+	// Core.initOscilatingValue()
+	Core.initWildPixelSpawner()
 	Projects.quickProjectFinder()
 	if(Stats.computerVersion < Core.base.maxComputerVersion){
 		improvements.upgradeComputer.cost = Core.base.computerMultiplierCost * (Stats.computerVersion + 1)
@@ -48,12 +50,9 @@ Core.init = function(fromLoad){
 }
 
 Core.startMonthTimer = function(secondsLeft){
-	var bar = Core._('.salaries-timer-bar')
-	var percent = 100
 	Stats.monthTimeLeft = 60 // Seconds
 	if(secondsLeft){
 		Stats.monthTimeLeft = secondsLeft
-		percent = (Stats.monthTimeLeft / 60) * 100
 	}
 	window.monthInterval = setInterval(function(){
 		if(Stats.monthTimeLeft <= 0){
@@ -69,8 +68,6 @@ Core.startMonthTimer = function(secondsLeft){
 			Core.startMonthTimer()
 		}else{
 			Stats.monthTimeLeft--
-			percent = (Stats.monthTimeLeft / 60) * 100
-			if(bar){ bar.style.width = percent + '%' }
 		}
 	}, 1000)
 }
@@ -87,6 +84,9 @@ Core.updateHUD = function(){
 	Core.checkAchievements()
 	Core._('#money').innerHTML = Core.numberFormat(Stats.money)
 	Core._('#incPerPulse').innerHTML = Core.numberFormat(Core.base.moneyIncPerPulse, '/pulse')
+	if(Core.base.projectProfitMultiplier){
+		Core._('#incPerPulse').innerHTML += ' <small>(Multiplier ' + (Core.base.projectProfitMultiplier > 0 ? '+' : '') +  (Core.base.projectProfitMultiplier * 100) + '%)</small>'
+	}
 	Core._('#pcmodel').innerHTML = Stats.computerModel
 	Core._('#computerVersion').innerHTML = 'v' + Stats.computerVersion
 	Core._('#jobs').innerHTML = Stats.jobs.length
@@ -606,6 +606,7 @@ Core.save = function(silent){
 	}
 	// Core.base
 	for(var k in Core.base){
+		if(k !== 'wildPixelTypes') continue
 		if(typeof Core.base[k] === 'object'){
 			localStorage.setItem('core.base.' + k, JSON.stringify(Core.base[k]))
 		}else{
@@ -966,6 +967,23 @@ Core.addListeners = function(){
 			window.location.reload()
 		}
 	})
+	Core.tooltip = document.createElement('span')
+	Core.tooltip.id = "tooltip"
+	Core._('body').appendChild(Core.tooltip)
+	document.onmousemove = function(event){
+		if(Core.hasClass(event.target, 'help')){
+			Core.tooltip.innerHTML = event.target.getAttribute('data-title')
+			Core.tooltip.style.display = 'block'
+			Core.tooltip.style.top = event.clientY + 15 + 'px'
+			Core.tooltip.style.left = event.clientX + 15 + 'px'
+			console.log(event.clientX + 300, window.innerWidth)
+			if((event.clientX + 300) > window.innerWidth){
+				Core.tooltip.style.left = event.clientX - 430 + 'px'
+			}
+		}else{
+			Core.tooltip.style.display = 'none'
+		}
+	}
 }
 
 Core.addCompactFunctionality = function(header){
@@ -1145,4 +1163,57 @@ Core.secondsDiff = function(date1, date2){
 	var seconds_from_T1_to_T2 = dif / 1000
 	return Math.abs(seconds_from_T1_to_T2)
 
+}
+
+// Wild Pixel
+Core.initWildPixelSpawner = function(){
+	var seconds = Math.floor(Math.random() * (Core.base.wildPixelMaxSpawnTime - Core.base.wildPixelMinSpawnTime + 1) + Core.base.wildPixelMinSpawnTime)
+	Core.timers.wildPixel = setTimeout(function(){
+		Core.spawWildPixel()
+		Core.initWildPixelSpawner()
+		setTimeout(function(){
+			var p = Core._('.wild-pixel')
+			if(p){
+				p.parentNode.removeChild(p)
+			}
+		}, Core.base.wildPixelShowtime * 1000)
+	}, seconds * 1000)
+}
+
+Core.popWildPixel = function(){
+	// this = DOM pixel element
+	var DOMPixel = this
+	DOMPixel.style.padding = '10px'
+	DOMPixel.style.opacity = 0
+	setTimeout(function(){
+		DOMPixel.parentNode.removeChild(DOMPixel)
+	}, 250)
+	var rand = Math.floor(Math.random() * 100) + 1
+	var pixel = null
+	// Elegir según las probabilidades de cada uno
+	for(var p in Core.base.wildPixelTypes){
+		if(rand >= Core.base.wildPixelTypes[p].odds[0] && rand <= Core.base.wildPixelTypes[p].odds[1]){
+			pixel = Core.base.wildPixelTypes[p]
+		}
+	}
+	if(pixel === null) return false
+	pixel.effect(function(text){
+		Core.showPopUp({
+			'title': pixel.name + '!',
+			'description': text
+		})
+		Core.updateHUD()
+	})
+}
+
+Core.spawWildPixel = function(){
+	var pixel = document.createElement('div')
+	pixel.className = 'wild-pixel help'
+	pixel.setAttribute('data-title','???')
+	pixel.style.top = (Math.floor(Math.random() * window.innerHeight) + 1) + 'px'
+	pixel.style.left = (Math.floor(Math.random() * window.innerWidth) + 1) + 'px'
+	if(pixel.style.top + pixel.height > window.innerHeight) pixel.style.top = (window.innerHeight - pixel.height) + 'px'
+	if(pixel.style.left + pixel.width > window.innerWidth) pixel.style.left = (window.innerWidth - pixel.width) + 'px'
+	pixel.onclick = Core.popWildPixel
+	Core._('body').appendChild(pixel)
 }

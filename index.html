@@ -39,12 +39,6 @@
 	</div>
 	<div class="left">
 		<div class="button-section">
-			<p class="header">Showcase</p>
-			<div id="showcase">
-				<p class="disabled empty">Your showcase is still empty</p>
-			</div>
-		</div>
-		<div class="button-section">
 			<p class="header">Stats</p>
 			<div class="help stat" data-title="The amount of money you have.">Money: <span id="money"></span></div>
 			<div class="help stat" data-title="The money per pulse you earn while a project in progress">Money per pulse: <span id="incPerPulse"></span></div>
@@ -55,8 +49,8 @@
 			<!-- <div class="help stat" data-title="People hired">Employees: <span id="employees"></span></div> -->
 			<!-- <div class="help stat" data-title="This is the value of your company">Company value: <span id="companyValue"></span></div> -->
 			<!-- <button id="shareTwitter">Tweet my stats!</button> -->
-			<div class="help stat" data-title="This chart shows the projects demand in the market. If this value is below zero your projects can be cancelled at any point but if it's possitive you will earn more money with your project.">Projects demand Chart</div>
-			<div id="oscilating-value-container"></div>
+			<!-- <div class="help stat" data-title="This chart shows the projects demand in the market. If this value is below zero your projects can be cancelled at any point but if it's possitive you will earn more money with your project.">Projects demand Chart</div>
+			<div id="oscilating-value-container"></div> -->
 		</div>
 
 		<div class="button-section" id="projects-section">
@@ -77,6 +71,12 @@
 			</div>
 			<div id="employee-types"></div>
 		</div> -->
+		<div class="button-section">
+			<p class="header">Showcase</p>
+			<div id="showcase">
+				<p class="disabled empty">Your showcase is still empty</p>
+			</div>
+		</div>
 		<div class="button-section achievements compact">
 			<p class="header">Achievements</p>
 			<div class="container">
@@ -87,9 +87,6 @@
 	<div class="right">
 		<div class="button-section jobList">
 			<p class="header">Jobs</p>
-			<div id="salaries-timer-bar-container">
-				<div class="salaries-timer-bar"></div>
-			</div>
 			<p class="stats">Job search status: <span id="job-finder-status">Not searching</span></p>
 			<button id="start-job-search">Start job search</button>
 			<button id="takeJob" disabled="disabled">Take job oportunity</button>

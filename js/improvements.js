@@ -34,38 +34,12 @@ var improvements = {
 		'showing': false
 	},
 	'autoStartProjects': {
-		'label': 'Project managers independency',
-		'help': 'Project Managers auto start projects',
-		'cost': 10000,
-		'investigationTime': 1800000, // 30m,
+		'label': 'Click no more',
+		'help': 'Your projects no longer need to start manually',
+		'cost': 1000,
+		'investigationTime': 180000, // 30m,
 		'load': function () {  },
-		'effect': function(){
-			if(window.autoStartProjectsInterval){
-				clearInterval(window.autoStartProjectsInterval)
-				window.autoStartProjectsInterval = null
-			}
-			window.autoStartProjectsInterval = setInterval(function(){
-				if(Stats['project-manager'] <= 0){
-					return
-				}else{
-					var availableProjects = Core._('.startProject', true)
-					var clicks = 0
-					var done = false
-					var i = 0
-					var len = availableProjects.length
-					while(!done && i < len){
-						if(!availableProjects[i].getAttribute('disabled')){
-							availableProjects[i].click()
-							clicks++
-							if(clicks >= Stats['project-manager']){
-								done = true
-							}
-						}
-						i++;
-					}
-				}
-			}, 1000)
-		},
+		'effect': function(){  },
 		'inProgress': false,
 		'showing': false
 	},
@@ -184,12 +158,13 @@ var improvements = {
 	},
 	'personalBussinessWebsite': {
 		'label': 'Create your own personal bussiness website',
-		'help': 'Creating this website will help to increase trust with your clients',
+		'help': 'Creating this website will help to increase trust with your clients and earn more with projects (<strong>+1%</strong> to your money per pulse)',
 		'cost': 1000,
 		'investigationTime': 3600000, // 1h
 		'load': function () {  },
 		'effect': function(){
-			Core.base.minOscilatingValue += 5
+			// Core.base.minOscilatingValue += 5
+			Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * 1
 		},
 		'inProgress': false,
 		'showing': false

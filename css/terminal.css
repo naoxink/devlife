@@ -100,7 +100,7 @@ button:disabled,button:disabled:hover {
 }
 
 .help {
-	cursor:pointer;
+	cursor: pointer;
 	position: relative;
 }
 
@@ -108,7 +108,7 @@ button:disabled,button:disabled:hover {
 	background-color:rgba(0,255,0,.2);
 }
 
-.help:hover:before {
+/*.help:hover:before {
 	content:attr(data-title);
 	color:#0F0;
 	position: absolute;
@@ -122,7 +122,7 @@ button:disabled,button:disabled:hover {
 	z-index: 2;
 	width: 200px;
 	border: 1px solid #0F0;
-}
+}*/
 .right .help:hover:before {
 	left: 0;
 	margin-left: -222px;
@@ -400,18 +400,6 @@ ul > li > button {
 	position: fixed;
 	color: #0F0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
 #oscilating-value-container {
 	padding: 5px;
 	border: 1px dashed #0F0;
@@ -453,7 +441,6 @@ ul > li > button {
 	background-color: rgba(55, 0, 0, .95);
 	border: 1px solid #F00;
 }
-
 #showcase {
     overflow: hidden;
 }
@@ -471,4 +458,24 @@ p.disabled {
 	padding: 0;
 	margin: 0;
 	font-weight: 100;
+}
+#tooltip {
+	border: 1px solid #0F0;
+	padding: 10px;
+	color: #0F0;
+	background-color: #000;
+	position: fixed;
+	display: none;
+	font-weight: normal;
+	max-width: 400px;
+}
+.wild-pixel {
+	position: fixed;
+	background-color: #0F0;
+	height: 10px;
+	width: 10px;
+	cursor: pointer;
+	-webkit-transition: all .2s;
+	-o-transition: all .2s;
+	transition: all .2s;
 }
