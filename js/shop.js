@@ -6,7 +6,7 @@ Shop.items = {
 		'oneuse': false,
 		'initial': true,
 		'label': 'Buy coffee',
-		'help': 'Have a coffee and temporarily increase your money rate',
+		'help': 'Have a coffee and temporarily increase your money rate<hr>Money +' + (Core.base.coffeeInc * 100) + '% ' + Core.base.moneyChar + '/pulse',
 		'cost': 5,
 		'buy': function(button, secondsLeft){
 			Stats.coffeeIncrement = Core.base.moneyIncPerPulse * Core.base.coffeeInc
@@ -41,7 +41,7 @@ Shop.items = {
 		'oneuse': false,
 		'initial': true,
 		'label': 'Buy energy drink',
-		'help': 'Have an energy drink to boost your pulse speed',
+		'help': 'Have an energy drink to boost your pulse speed<hr>Pulse speed +' + (Core.base.energyDrinkInc) + '%',
 		'cost': 15,
 		'buy': function(button, secondsLeft){
 			Core.base.pulseDuration *= Core.base.energyDrinkInc
@@ -74,7 +74,7 @@ Shop.items = {
 		'oneuse': true,
 		'initial': false,
 		'label': 'Mechanical Keyboard',
-		'help': 'Buy a better keyboard to increase the money you make with the command prompt',
+		'help': 'Buy a better keyboard to increase the money you make with the command prompt<hr>Command prompt key value x2',
 		'cost': 1000,
 		'buy': function(){
 			Core.base.commandPromptInc *= 2
@@ -89,7 +89,7 @@ Shop.items = {
 		'oneuse': true,
 		'initial': true,
 		'label': 'Infinite coffee contract',
-		'help': 'You make a contract with a coffee vendor to have coffee with no cost and permanently',
+		'help': 'You make a contract with a coffee vendor to have coffee with no cost and permanently<hr>Permanent +' + (Core.base.coffeeInc * 100) + '% ' + Core.base.moneyChar + '/pulse',
 		'cost': 20000,
 		'buy': function(){
 			if(Stats.isCoffeePowered){
@@ -106,7 +106,7 @@ Shop.items = {
 			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
 			Shop.items.coffee.showing = false
 			Core.addToShowcase({
-				'title': 'Infinite Coffee contract (Permanent coffee boosted)',
+				'title': 'Infinite Coffee contract (Permanent +' + (Core.base.coffeeInc * 100) + '% ' + Core.base.moneyChar + '/pulse)',
 				'text': '☕️'
 			})
 		}
@@ -170,13 +170,13 @@ Shop.items = {
 		'oneuse': true,
 		'initial': true,
 		'label': 'Y.A.A.',
-		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects',
+		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects<hr>Project time reduction: 1%',
 		'cost': 10000,
 		'buy': function(button){
 			Core.base.projectTimeReductionPercent += 1
 			this.owned = true
 			Core.addToShowcase({
-				'title': 'Y.A.A. (Your Awesome Assistant) "What do you need?" (Project times reduction: 1%)',
+				'title': 'Y.A.A. (Your Awesome Assistant) "What do you need?" (Project time reduction: 1%)',
 				'text': '🖲'
 			})
 		},
@@ -186,7 +186,7 @@ Shop.items = {
 		'oneuse': true,
 		'initial': false,
 		'label': 'PC Dev-MX300',
-		'help': 'A brand new PC in case you need more power!',
+		'help': 'You got the power!<hr>Project time reduction: 3%<br>Improvement time reduction: 10%<br>Command prompt key value: x2<br>Pulse speed increase: 0.15%',
 		'cost': 15000,
 		'buy': function(){
 			this.owned = true
@@ -206,7 +206,7 @@ Shop.items = {
 			Core.base.pulseDuration -= realPulse * 0.15
 			Core.showImprovementButton('upgradeComputer')
 			Core.showImprovementButton('addProject')
-			Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
+			// Core._('#css').setAttribute('href', 'css/intranet.css?' + new Date().getTime())
 		}
 	},
 	'dev550sx': {
@@ -214,7 +214,7 @@ Shop.items = {
 		'oneuse': true,
 		'initial': false,
 		'label': 'PC Dev-550sx PRO',
-		'help': '',
+		'help': 'Can\'t stop you now.<hr>Project time reduction: 3%<br>Improvement time reduction: 20%<br>Command prompt key value: x2<br>Pulse speed increase: 0.2%',
 		'cost': 45000,
 		'buy': function(){
 			this.owned = true
@@ -234,7 +234,7 @@ Shop.items = {
 			Core.base.pulseDuration -= realPulse * 0.20
 			Core.showImprovementButton('upgradeComputer')
 			Core.showImprovementButton('addProject')
-			Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
+			// Core._('#css').setAttribute('href', 'css/intranet2.css?' + new Date().getTime())
 		}
 	},
 	'imRichDiamondPlate': {
@@ -242,7 +242,7 @@ Shop.items = {
 		'oneuse': true,
 		'initial': true,
 		'label': '"I\'m a rich b**ch" diamond plate',
-		'help': 'Show them you are SO RICH! at least before buying this useless plate',
+		'help': 'Show them you are SO RICH! at least before buying this useless plate<hr>Totally <b>useless</b>',
 		'cost': 100000000,
 		'buy': function(){
 			this.owned = true

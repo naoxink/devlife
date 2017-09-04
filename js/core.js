@@ -646,14 +646,14 @@ Core.save = function(silent){
 	}
 
 	localStorage.setItem('css', Core._('#css').getAttribute('href'))
-	// if(!silent){
-	// 	Core.showPopUp({
-	// 		'title': 'Success!',
-	// 		'description': 'Your game is saved in this browser!'
-	// 	})
-	// }else{
-	// 	console.info('Game saved: ' + new Date())
-	// }
+	if(!silent){
+		Core.showPopUp({
+			'title': 'Success!',
+			'description': 'Your game is saved in this browser!'
+		})
+	}else{
+		console.info('Game saved: ' + new Date())
+	}
 	return true
 }
 
@@ -838,10 +838,10 @@ Core.load = function(){
 
 	Core.init(true) // Evitamos algunas líneas necesarias sólo al principio (Sin cargar)
 
-	// Core.showPopUp({
-	// 	'title': 'Success!',
-	// 	'description': 'Your game is loaded!'
-	// })
+	Core.showPopUp({
+		'title': 'Success!',
+		'description': 'Your game is loaded!'
+	})
 	return true
 }
 
@@ -962,6 +962,8 @@ Core.addListeners = function(){
 	for(var i = 0, len = sections.length; i < len; i++){
 		Core.addCompactFunctionality(sections[i])
 	}
+	Core._('#save').addEventListener('click', Core.save)
+	Core._('#load').addEventListener('click', Core.load)
 	Core._('#reset').addEventListener('click', function(){
 		if(confirm('ALL PROGRESS WILL BE LOST, are you sure you want to RESET?')){
 			window.location.reload()
@@ -976,7 +978,6 @@ Core.addListeners = function(){
 			Core.tooltip.style.display = 'block'
 			Core.tooltip.style.top = event.clientY + 15 + 'px'
 			Core.tooltip.style.left = event.clientX + 15 + 'px'
-			console.log(event.clientX + 300, window.innerWidth)
 			if((event.clientX + 300) > window.innerWidth){
 				Core.tooltip.style.left = event.clientX - 430 + 'px'
 			}

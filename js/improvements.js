@@ -121,7 +121,7 @@ var improvements = {
 	},
 	'upgradeComputer': {
 		'label': 'Upgrade computer',
-		'help': '',
+		'help': 'Everyone needs an upgrade<hr>Money per pulse: +(Computer version / 100)%<br>Pulse speed: -10ms<br>Project time: -0.3%',
 		'cost': 0,
 		'investigationTime': 10000, // 10s
 		'load': function () {
@@ -149,6 +149,7 @@ var improvements = {
 				Stats.computerVersion++
 				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
 				Core.base.pulseDuration -= 10
+				// Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * 0.1
 				Core.base.projectTimeReductionPercent += 0.3
 				this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
 			}
@@ -158,13 +159,13 @@ var improvements = {
 	},
 	'personalBussinessWebsite': {
 		'label': 'Create your own personal bussiness website',
-		'help': 'Creating this website will help to increase trust with your clients and earn more with projects (<strong>+1%</strong> to your money per pulse)',
+		'help': 'Creating this website will help to increase trust with your clients and earn more with projects<hr>Money per pulse: +100%',
 		'cost': 1000,
 		'investigationTime': 3600000, // 1h
 		'load': function () {  },
 		'effect': function(){
 			// Core.base.minOscilatingValue += 5
-			Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * 1
+			Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse
 		},
 		'inProgress': false,
 		'showing': false

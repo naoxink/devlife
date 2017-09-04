@@ -50,7 +50,7 @@ Core.base = {
 			'effect': function(callback){
 				var inc = Math.floor(Stats.money * 1)
 				Stats.money += inc
-				return callback(this.name + ' increased your money with ' + Core.numberFormat(inc))
+				return callback('+' + Core.numberFormat(inc))
 			}
 		},
 		'rushy' : {
@@ -65,7 +65,7 @@ Core.base = {
 						Core.base.projectProfitMultiplier = oldMultiplier
 						Core.updateHUD()
 				}, secs * 1000)
-				return callback(this.name + ' increased your proyect profits by ' + (multiplier * 100) + '% for ' + secs + ' seconds!')
+				return callback('Increased your proyect profits by ' + (multiplier * 100) + '% for ' + secs + ' seconds!')
 			}
 		},
 		'cursed': {
@@ -80,35 +80,35 @@ Core.base = {
 						Core.base.projectProfitMultiplier = oldMultiplier
 						Core.updateHUD()
 				}, secs * 1000)
-				return callback(this.name + ' reduced your proyect profits by ' + (multiplier * 100) + '% for ' + secs + ' seconds!')
+				return callback('Reduced your proyect profits by ' + (multiplier * 100) + '% for ' + secs + ' seconds!')
 			}
 		},
 		'???': {
 			'name': '???',
 			'odds': [ 76, 90 ], // 15%
 			'effect': function(callback){
-				return callback()
+				return callback('')
 			}
 		},
 		'???': {
 			'name': '???',
 			'odds': [ 91, 95 ], // 5%
 			'effect': function(callback){
-				return callback()
+				return callback('')
 			}
 		},
 		'???': {
 			'name': '???',
 			'odds': [ 96, 98 ], // 3%
 			'effect': function(callback){
-				return callback()
+				return callback('')
 			}
 		},
 		'???': {
 			'name': '???',
 			'odds': [ 98, 100 ], // 2%
 			'effect': function(callback){
-				return callback()
+				return callback('')
 			}
 		}
 	},
