@@ -45,5 +45,5 @@ var Stats = {
 		'moneyEarned': 0
 	},
 	'showCase': [  ],
-	'activePixels': [  ]
+	'wildPixelsClicked': 0
 }

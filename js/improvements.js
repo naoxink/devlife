@@ -121,7 +121,7 @@ var improvements = {
 	},
 	'upgradeComputer': {
 		'label': 'Upgrade computer',
-		'help': 'Everyone needs an upgrade<hr>Money per pulse: +(Computer version / 100)%<br>Pulse speed: -10ms<br>Project time: -0.3%',
+		'help': 'Everyone needs an upgrade<hr>Money per pulse: +0.1%<br>Pulse speed: -10ms<br>Project time: -0.3%',
 		'cost': 0,
 		'investigationTime': 10000, // 10s
 		'load': function () {
@@ -136,6 +136,8 @@ var improvements = {
 						Shop.showItemButton('devmx300')
 					}else if(!Shop.items.dev550sx.owned){
 						Shop.showItemButton('dev550sx')
+					}else if(!Shop.items.devmainframe.owned){
+						Shop.showItemButton('devmainframe')
 					}
 				}else{
 					Core.showImprovementButton('upgradeComputer')
@@ -147,9 +149,9 @@ var improvements = {
 			var cost = this.cost
 			if(Stats.computerVersion <= Core.base.maxComputerVersion){
 				Stats.computerVersion++
-				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
+				// Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * (Stats.computerVersion / 100)
 				Core.base.pulseDuration -= 10
-				// Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * 0.1
+				Core.base.moneyIncPerPulse += Core.base.moneyIncPerPulse * 0.1
 				Core.base.projectTimeReductionPercent += 0.3
 				this.cost = cost + (Core.base.computerMultiplierCost * (Stats.computerVersion + 1))
 			}

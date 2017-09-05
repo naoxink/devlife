@@ -267,10 +267,18 @@ ul > li > button {
 	width: 100%;
 	border-collapse: collapse;
 }
+#achievement-list table tr td.header {
+	padding-bottom: 20px;
+	font-weight: normal;
+}
 #achievement-list table tr td {
 	padding: 5px 10px;
 	color: #0F0;
 	background-color: #000;
+}
+#achievement-list table tr.unlocked.hidden td {
+	border: 1px dashed #70A;
+	color: #70A;
 }
 #achievement-list table tr.locked td {
 	color: rgba(0, 255, 0, .5);
@@ -446,10 +454,12 @@ ul > li > button {
 }
 #showcase .item {
     float: left;
-    margin: 0 10px;
+    margin: 0 5px;
     font-size: 26px;
     line-height: 1.2em;
     cursor: help;
+    height: 30px;
+    width: 30px;
 }
 p.disabled {
 	font-style: italic;

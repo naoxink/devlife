@@ -606,7 +606,7 @@ Core.save = function(silent){
 	}
 	// Core.base
 	for(var k in Core.base){
-		if(k !== 'wildPixelTypes') continue
+		if(k === 'wildPixelTypes') continue
 		if(typeof Core.base[k] === 'object'){
 			localStorage.setItem('core.base.' + k, JSON.stringify(Core.base[k]))
 		}else{
@@ -644,9 +644,15 @@ Core.save = function(silent){
 			'owned': Shop.items[itemID].owned
 		}))
 	}
+	// Logros
+	achievements = ''
+	for(var i = 0, len = achievements.length; i < len; i++){
+		achievements += achievements[i].done ? '1' : '0'
+	}
+	localStorage.setItem('achievements', achievements)
 
 	localStorage.setItem('css', Core._('#css').getAttribute('href'))
-	if(!silent){
+	if(silent === false){
 		Core.showPopUp({
 			'title': 'Success!',
 			'description': 'Your game is saved in this browser!'
@@ -707,6 +713,13 @@ Core.load = function(){
 			improvements[key].investigationTime = value.investigationTime
 			improvements[key].inProgress = value.inProgress
 			improvements[key].showing = value.showing
+		}else if(key === 'achievements'){
+			value = value.split('')
+			for(var i = 0, len = value.length; i < len; i++){
+				if(achievements[i]){
+					achievements[i].done = value[i] === '1'
+				}
+			}
 		}
 	}
 
@@ -1076,22 +1089,40 @@ Core.showPopUp = function(data){
 Core.refreshAchievementList = function(){
 	if(!achievements || !achievements.length) return false
 	var table = document.createElement('TABLE')
+	var tr = document.createElement('tr')
+	var td = document.createElement('td')
+		td.setAttribute('colspan', 2)
+	var completed = 0
+	td.className = 'header'
+	tr.appendChild(td)
+	table.appendChild(tr)
 	for(var i = 0, len = achievements.length; i < len; i++){
+		var title = achievements[i].title
+		if(achievements[i].hidden === true && !achievements[i].done){
+			title = '???'
+		}
 		var tr = document.createElement('TR')
 		var tdTitle = document.createElement('TD')
 		var tdStatus = document.createElement('TD')
 		var statusText = achievements[i].done ? 'Unlocked' : 'Locked'
-		tdTitle.innerText = tdTitle.textContent = achievements[i].title
-		if(!achievements[i].done && achievements[i].progress && typeof achievements[i].progress === 'function'){
+		tdTitle.innerText = tdTitle.textContent =  title
+		if(!achievements[i].hidden && !achievements[i].done && achievements[i].progress && typeof achievements[i].progress === 'function'){
 			tdTitle.innerHTML += ' <span class="achievement-progress-text">(' + achievements[i].progress() + ')</span>'
 		}
 		tdStatus.innerText = tdStatus.textContent = statusText
 		tr.className = statusText.toLowerCase()
+		if(achievements[i].hidden){
+			tr.className += ' hidden'
+		}
 		tr.appendChild(tdTitle)
 		tr.appendChild(tdStatus)
 		table.appendChild(tr)
+		if(achievements[i].done){
+			completed++
+		}
 	}
 	Core._('#achievement-list').innerHTML =''
+	td.innerHTML = 'Completed ' + ((completed * achievements.length) / 100) + '% (' + completed + '/' + achievements.length + ')'
 	Core._('#achievement-list').appendChild(table)
 }
 
@@ -1151,10 +1182,10 @@ Core.addToShowcase = function(data){
 	if(Core._('#showcase .empty')){
 		Core._('#showcase .empty').parentNode.removeChild(Core._('#showcase .empty'))
 	}
-	var item = document.createElement('div')
-	item.className = 'item'
-	item.title = data.title
-	item.innerText = item.textContent = data.text
+	var item = document.createElement('img')
+	item.className = 'item help'
+	item.setAttribute('data-title', data.title)
+	item.src = 'img/' + data.image
 	Stats.showCase.push(data)
 	Core._('#showcase').appendChild(item)
 }
@@ -1193,12 +1224,14 @@ Core.popWildPixel = function(){
 	var pixel = null
 	// Elegir según las probabilidades de cada uno
 	for(var p in Core.base.wildPixelTypes){
+		Core.base.wildPixelTypes[p]
 		if(rand >= Core.base.wildPixelTypes[p].odds[0] && rand <= Core.base.wildPixelTypes[p].odds[1]){
 			pixel = Core.base.wildPixelTypes[p]
 		}
 	}
 	if(pixel === null) return false
 	pixel.effect(function(text){
+		Stats.wildPixelsClicked++
 		Core.showPopUp({
 			'title': pixel.name + '!',
 			'description': text

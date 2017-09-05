@@ -100,14 +100,41 @@ Shop.items = {
 				Stats.isCoffeePowered = true
 			}
 			// Achievement Caffeine addict
-			if(Stats.coffeesBought < 500){
-				Stats.coffeesBought = 500
+			if(Stats.coffeesBought < 200){
+				Stats.coffeesBought = 200
 			}
 			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
 			Shop.items.coffee.showing = false
 			Core.addToShowcase({
 				'title': 'Infinite Coffee contract (Permanent +' + (Core.base.coffeeInc * 100) + '% ' + Core.base.moneyChar + '/pulse)',
-				'text': '☕️'
+				'image': 'items/coffee-contract.png'
+			})
+		}
+	},
+	'energyPartner': {
+		'showing': false,
+		'oneuse': true,
+		'initial': true,
+		'label': 'Energy Partner',
+		'help': 'You become partner of "Lightning|Devs S.A."<hr>Permanent pulse speed: +' + (Core.base.energyDrinkInc) + '%',
+		'cost': 20000,
+		'buy': function(){
+			if(Stats.isEnergyDrinkPowered){
+				clearInterval(window.energyDrinkInterval)
+				delete Stats.energyDrinkTimeLeft
+			}else{
+				Core.base.pulseDuration *= Core.base.energyDrinkInc
+				Stats.isEnergyDrinkPowered = true
+			}
+			// Achievement Caffeine addict
+			if(Stats.energyDrinksBought < 200){
+				Stats.energyDrinksBought = 200
+			}
+			Core._('#shop-item-energyDrink').parentNode.removeChild(Core._('#shop-item-energyDrink'))
+			Shop.items.energyDrink.showing = false
+			Core.addToShowcase({
+				'title': 'Energy Partner (Permanent pulse speed: +' + (Core.base.energyDrinkInc) + '%',
+				'image': 'items/energy-partner.png'
 			})
 		}
 	},
@@ -177,7 +204,7 @@ Shop.items = {
 			this.owned = true
 			Core.addToShowcase({
 				'title': 'Y.A.A. (Your Awesome Assistant) "What do you need?" (Project time reduction: 1%)',
-				'text': '🖲'
+				'image': 'items/yaa.png'
 			})
 		},
 	},
@@ -248,8 +275,27 @@ Shop.items = {
 			this.owned = true
 			Core.addToShowcase({
 				'title': '"I\'m a rich b**ch" diamond plate (Useless)',
-				'text': '💎'
+				'image': 'items/diamond-plate.png'
 			})
+		}
+	},
+	'devmainframe': {
+		'showing': false,
+		'oneuse': true,
+		'initial': false,
+		'label': 'dev-mainframe',
+		'help': 'This is the ultimate computer. The ONE and only.<hr>Pulse speed: minimum<br>Command prompt key value: x2<br>Project time reduction: 3%',
+		'cost': 1000000,
+		'buy': function(){
+			this.owned = true
+			Core.base.commandPromptInc *= 2
+			if(Stats.isEnergyDrinkPowered){
+				Core.base.energyDrinkInc = 0
+			}
+			Core.base.pulseDuration = 1
+			Core.base.projectTimeReductionPercent += 3
+			Stats.computerModel = 'dev-mainframe'
+			Stats.computerVersion = 1
 		}
 	}
 }

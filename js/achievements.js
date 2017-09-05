@@ -14,20 +14,6 @@ var achievements = [
 		'done': false
 	},
 	{
-		'title': 'Raise your money up to ' + Core.numberFormat(10000000),
-		'check': function(){
-			return Stats.money >= 10000000
-		},
-		'done': false
-	},
-	{
-		'title': 'Raise your money up to ' + Core.numberFormat(100000000),
-		'check': function(){
-			return Stats.money >= 100000000
-		},
-		'done': false
-	},
-	{
 		'title': 'Upgrade your computer to version 20',
 		'check': function(){
 			return Stats.computerVersion >= 20
@@ -37,14 +23,21 @@ var achievements = [
 	{
 		'title': 'Buy the "Dev-MX300"',
 		'check': function(){
-			return Shop.items['Dev-MX300'].owned
+			return Shop.items['devmx300'].owned
 		},
 		'done': false
 	},
 	{
 		'title': 'Buy the "Dev-550sx PRO"',
 		'check': function(){
-			return Shop.items['Dev-550sx PRO'].owned
+			return Shop.items['dev550sx'].owned
+		},
+		'done': false
+	},
+	{
+		'title': 'Get the ultimate dev-mainframe',
+		'check': function(){
+			return Shop.items['devmainframe'].owned
 		},
 		'done': false
 	},
@@ -52,13 +45,6 @@ var achievements = [
 		'title': 'Drop all your jobs',
 		'check': function(){
 			return Stats.jobs.length <= 0
-		},
-		'done': false
-	},
-	{
-		'title': 'Get the maximum jobs',
-		'check': function(){
-			return Stats.jobs.length === Core.base.maxJobs
 		},
 		'done': false
 	},
@@ -162,6 +148,58 @@ var achievements = [
 		'done': false
 	},
 	{
+		'title': 'Buy the "I\'m a rich b**ch" diamond plate',
+		'check': function(){
+			return Shop.items.imRichDiamondPlate.owned
+		},
+		'done': false
+	},
+
+
+
+
+
+	{
+		'title': 'Multiemployed',
+		'check': function(){
+			return Stats.jobs.length === Core.base.maxJobs
+		},
+		'done': false,
+		'hidden': true
+	},
+	{
+		'title': 'Complete 10 projects',
+		'check': function(){
+			return Stats.projects >= 10
+		},
+		'done': false,
+		'hidden': true
+	},
+	{
+		'title': 'Complete 100 projects',
+		'check': function(){
+			return Stats.projects >= 100
+		},
+		'done': false,
+		'hidden': true
+	},
+	{
+		'title': 'Raise your money up to ' + Core.numberFormat(10000000),
+		'check': function(){
+			return Stats.money >= 10000000
+		},
+		'done': false,
+		'hidden': true
+	},
+	{
+		'title': 'Raise your money up to ' + Core.numberFormat(100000000),
+		'check': function(){
+			return Stats.money >= 100000000
+		},
+		'done': false,
+		'hidden': true
+	},
+	{
 		'title': 'Make ' + Core.numberFormat(10000) + ' with the command prompt',
 		'check': function(){
 			return Stats.commandPrompt.moneyEarned >= 10000
@@ -169,7 +207,8 @@ var achievements = [
 		'progress': function(){
 			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(10000)
 		},
-		'done': false
+		'done': false,
+		'hidden': true
 	},
 	{
 		'title': 'Make ' + Core.numberFormat(100000) + ' with the command prompt',
@@ -179,7 +218,8 @@ var achievements = [
 		'progress': function(){
 			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(100000)
 		},
-		'done': false
+		'done': false,
+		'hidden': true
 	},
 	{
 		'title': 'Make ' + Core.numberFormat(1000000) + ' with the command prompt',
@@ -189,14 +229,40 @@ var achievements = [
 		'progress': function(){
 			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(1000000)
 		},
-		'done': false
+		'done': false,
+		'hidden': true
 	},
 	{
-		'title': 'Buy the "I\'m a rich b**ch" diamond plate',
+		'title': 'Click 1 wild pixel',
 		'check': function(){
-			return Shop.items.imRichDiamondPlate.owned
+			return Stats.wildPixelsClicked >= 1
 		},
-		'done': false
-	}
+		'done': false,
+		'hidden': true
+	},
+	{
+		'title': 'Click 10 wild pixels',
+		'check': function(){
+			return Stats.wildPixelsClicked >= 10
+		},
+		'done': false,
+		'hidden': true
+	},
+	{
+		'title': 'Click 100 wild pixel',
+		'check': function(){
+			return Stats.wildPixelsClicked >= 100
+		},
+		'done': false,
+		'hidden': true
+	},
+	{
+		'title': 'Lazyness',
+		'check': function(){
+			return Core.hasImprovement('autoStartProjects')
+		},
+		'done': false,
+		'hidden': true
+	},
 
 ]
