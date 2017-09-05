@@ -19,7 +19,7 @@ Projects.stop = function(projectID, isCancelled){
 		Stats.money += Core.projects[projectID].profit / 2
 	}
 	Core.updateHUD()
-	if([4, 24, 49, 99].indexOf(Stats.projects)){
+	if([4, 24, 49, 99].indexOf(Stats.projects) !== -1){
 		Core.showImprovementButton('addProject')
 	}
 	if(Stats.projects > 4 && !Core.hasImprovement('autoStartProjects') && !improvements['autoStartProjects'].showing){
