@@ -37,14 +37,14 @@ var achievements = [
 	{
 		'title': 'Buy the "Dev-MX300"',
 		'check': function(){
-			return Stats.computerModel === 'Dev-MX300'
+			return Shop.items['Dev-MX300'].owned
 		},
 		'done': false
 	},
 	{
 		'title': 'Buy the "Dev-550sx PRO"',
 		'check': function(){
-			return Stats.computerModel === 'Dev-550sx PRO'
+			return Shop.items['Dev-550sx PRO'].owned
 		},
 		'done': false
 	},
@@ -52,6 +52,13 @@ var achievements = [
 		'title': 'Drop all your jobs',
 		'check': function(){
 			return Stats.jobs.length <= 0
+		},
+		'done': false
+	},
+	{
+		'title': 'Get the maximum jobs',
+		'check': function(){
+			return Stats.jobs.length === Core.base.maxJobs
 		},
 		'done': false
 	},
