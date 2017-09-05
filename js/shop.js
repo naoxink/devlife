@@ -80,7 +80,7 @@ Shop.items = {
 			Core.base.commandPromptInc *= 2
 			Core.addToShowcase({
 				'title': 'Brand new mechanical keyboard (Command prompt key value x2)',
-				'text': '⌨️'
+				'image': 'items/mec-keyboard.png'
 			})
 		}
 	},
