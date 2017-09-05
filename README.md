@@ -1,9 +1,9 @@
-# devlife ![version 1.8.7](https://d25lcipzij17d.cloudfront.net/badge.svg?id=gh&type=6&v=1.8.7&x2=0) ![license MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=102)
+# devlife ![version 1.8.8](https://d25lcipzij17d.cloudfront.net/badge.svg?id=gh&type=6&v=1.8.8&x2=0) ![license MIT](https://badges.frapsoft.com/os/mit/mit.svg?v=102)
 
 Web browser game in pure JavaScript. I hope you like it ^^
 
 ### Play it now [HERE](http://naoxink.hol.es/devlife)!
-**NOTE** Due to problems with hosting, to play the **latest version** it is advisable to download the ZIP and play locally by opening `index.html` or use **[rawgit link](https://cdn.rawgit.com/naoxink/devlife/e7434a033e148ae75e62e230e3159ccb6cf06108/index.html)**
+**NOTE** Due to problems with hosting, to play the **latest version** it is advisable to download the ZIP and play locally by opening `index.html` or use **[rawgit link](https://cdn.rawgit.com/naoxink/devlife/f0128b736eea70df2a4575df5f5335ee9e049b1a/index.html)**
 
 Check out the [wiki](https://github.com/naoxink/devlife/wiki) if you have any question! You don't find what you are looking for? Then [tell me](https://github.com/naoxink/devlife/issues) :)
 
