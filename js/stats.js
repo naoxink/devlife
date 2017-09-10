@@ -45,5 +45,8 @@ var Stats = {
 		'moneyEarned': 0
 	},
 	'showCase': [  ],
-	'wildPixelsClicked': 0
+	'wildPixelsClicked': 0,
+	'achievementsUnlocked': 0,
+	'achievementsHiddenUnlocked': 0,
+	'achievementsCount': 0
 }

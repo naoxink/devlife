@@ -141,7 +141,7 @@ Shop.items = {
 	'companyNameChange': {
 		'showing': false,
 		'oneuse': false,
-		'initial': false,
+		'initial': true,
 		'label': 'Company name change',
 		'help': '',
 		'cost': 5000,

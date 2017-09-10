@@ -6,6 +6,8 @@ body {
 	background-color:#000;
 	color:#0F0;
 	font-family:monospace;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 .left, .right {
 	float:left;
@@ -264,7 +266,7 @@ ul > li > button {
 	color: #0F0;
 }
 #achievement-list table {
-	width: 100%;
+	width: 99.9%;
 	border-collapse: collapse;
 }
 #achievement-list table tr td.header {
@@ -276,9 +278,15 @@ ul > li > button {
 	color: #0F0;
 	background-color: #000;
 }
+#achievement-list table tr:hover td {
+	background-color: rgba(0, 255, 0, .2);
+}
+#achievement-list table tr.hidden.unlocked:hover td {
+	background-color: rgba(255, 255, 0, .2);
+}
 #achievement-list table tr.unlocked.hidden td {
-	border: 1px dashed #70A;
-	color: #70A;
+	border: 1px dashed #FF0;
+	color: #FF0;
 }
 #achievement-list table tr.locked td {
 	color: rgba(0, 255, 0, .5);
@@ -488,4 +496,18 @@ p.disabled {
 	-webkit-transition: all .2s;
 	-o-transition: all .2s;
 	transition: all .2s;
+}
+
+#news {
+	position: relative;
+	padding: 10px;
+	height: 15px;
+	border-bottom: 1px solid #0F0;
+	z-index: -1;
+}
+
+#news #news-content {
+	position: absolute;
+	left: 100%;
+	white-space: nowrap;
 }

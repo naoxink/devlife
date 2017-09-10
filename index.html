@@ -37,6 +37,7 @@
 			</div>
 		</div>
 	</div>
+	<div id="news" direction="right" behavior="scroll" scrollamount="60" scrolldelay="1000" loop="1"></div>
 	<div class="left">
 		<div class="button-section">
 			<p class="header">Stats</p>
@@ -46,11 +47,8 @@
 			<div class="help stat" data-title="This is the computer model you have at the moment">Computer Model: <span id="pcmodel"></span></div>
 			<div class="help stat" data-title="Your computer version. The higher the better.">Computer Version: <span id="computerVersion"></span></div>
 			<div class="help stat" data-title="Number of jobs you have. Maximum 4 jobs.">Jobs: <span id="jobs"></span></div>
-			<!-- <div class="help stat" data-title="People hired">Employees: <span id="employees"></span></div> -->
-			<!-- <div class="help stat" data-title="This is the value of your company">Company value: <span id="companyValue"></span></div> -->
-			<!-- <button id="shareTwitter">Tweet my stats!</button> -->
-			<!-- <div class="help stat" data-title="This chart shows the projects demand in the market. If this value is below zero your projects can be cancelled at any point but if it's possitive you will earn more money with your project.">Projects demand Chart</div>
-			<div id="oscilating-value-container"></div> -->
+			<div class="help stat" data-title="">Achievements unlocked: <span id="achievement-resume"></span></div>
+			<div class="help stat">Wild pixels poped: <span id="wild-pixels-poped"></span></div>
 		</div>
 
 		<div class="button-section" id="projects-section">
@@ -58,24 +56,9 @@
 			<div class="help stat" data-title="Projects completed. You earn money by completing projects">Projects completed: <span id="projects">0</span></div>
 			<div class="spaced thin"></div>
 			<button id="takeQuickProject" disabled="disabled">Take quick project</button>
-			<button class="startProject">Start project</button>
 		</div>
 		<div class="button-section" id="improvements-section">
 			<p class="header">Improvements</p>
-		</div>
-		<!-- <div class="button-section compact" id="employees-section">
-			<p class="header">Recruiting</p>
-			<div class="help stat" data-title="Each minute your employees receive their salaries. This is the total cost.">Salaries cost: <span id="salariesCost"></span></div>
-			<div id="salaries-timer-bar-container">
-				<div class="salaries-timer-bar"></div>
-			</div>
-			<div id="employee-types"></div>
-		</div> -->
-		<div class="button-section">
-			<p class="header">Showcase</p>
-			<div id="showcase">
-				<p class="disabled empty">Your showcase is still empty</p>
-			</div>
 		</div>
 		<div class="button-section achievements compact">
 			<p class="header">Achievements</p>
@@ -85,6 +68,12 @@
 		</div>
 	</div>
 	<div class="right">
+		<div class="button-section">
+			<p class="header">Showcase</p>
+			<div id="showcase">
+				<p class="disabled empty">Your showcase is still empty</p>
+			</div>
+		</div>
 		<div class="button-section jobList">
 			<p class="header">Jobs</p>
 			<p class="stats">Job search status: <span id="job-finder-status">Not searching</span></p>
@@ -105,21 +94,10 @@
 			<div id="owned">-</div>
 			<div id="winner">-</div>
 		</div>
-		<!-- <div class="button-section buildings compact">
-			<p class="header">Space</p>
-			<div class="stat">Rooms: <span id="rooms"></span></div>
-			<div class="stat">Floors: <span id="floors"></span></div>
-			<div class="stat">Buildings: <span id="buildings"></span></div>
-			<div class="stat">Warehouses: <span id="warehouses"></span></div>
-			<div class="help stat" data-title="Available seats you have for hiring people">Available spaces: <span id="availableSpaces"></span></div>
-			<div class="help stat" data-title="Each minute you have to pay the rent of all of your properties. This is the total cost.">Rents cost: <span id="rentsCost"></span></div>
-			<div id="rents-timer-bar-container"><div class="rents-timer-bar"></div></div>
-			<div class="spaced thin"></div>
-			<div id="renting-list"></div>
-		</div> -->
 	</div>
 	
 	<script src="js/core.js"></script>
+	<script src="js/marquee.js"></script>
 	<script src="js/core.base.js"></script>
 	<script src="js/projects.js"></script>
 	<script src="js/achievements.js"></script>

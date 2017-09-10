@@ -47,6 +47,7 @@ Core.base = {
 		'lucky': {
 			'name': 'Lucky Pixel',
 			'odds': [ 1, 30 ], // 30%
+			'poped': 0,
 			'effect': function(callback){
 				var inc = Math.floor(Stats.money * 1)
 				Stats.money += inc
@@ -56,6 +57,7 @@ Core.base = {
 		'rushy' : {
 			'name': 'Rushy Pixel',
 			'odds': [ 31, 60 ], // 30%
+			'poped': 0,
 			'effect': function(callback){
 				var multiplier = 2
 				var secs = 15
@@ -71,6 +73,7 @@ Core.base = {
 		'cursed': {
 			'name': 'Cursed Pixel',
 			'odds': [ 61, 75 ], // 15%
+			'poped': 0,
 			'effect': function(callback){
 				var multiplier = -1
 				var secs = 15
@@ -83,32 +86,50 @@ Core.base = {
 				return callback('Reduced your proyect profits by ' + (multiplier * 100) + '% for ' + secs + ' seconds!')
 			}
 		},
-		'???': {
-			'name': '???',
-			'odds': [ 76, 90 ], // 15%
+		'passive': {
+			'name': 'Passive Pixel',
+			'odds': [ 76, 95 ], // 20%
+			'poped': 0,
 			'effect': function(callback){
-				return callback('')
+				return callback('Absolutelly nothing happened')
 			}
 		},
-		'???': {
-			'name': '???',
-			'odds': [ 91, 95 ], // 5%
-			'effect': function(callback){
-				return callback('')
-			}
-		},
-		'???': {
-			'name': '???',
+		'rage': {
+			'name': 'Rage pixel',
 			'odds': [ 96, 98 ], // 3%
+			'poped': 0,
 			'effect': function(callback){
-				return callback('')
+				// Cancela todos los proyectos activos
+				for(var pid in Core.projects){
+					Projects.stop(pid, true)
+				}
+				// Elimina los botones de los proyectos
+				var buttons = Core._('#projects-section .project', true)
+				console.log(buttons)
+				var totalButtons = buttons.length
+				for(var i = 0; i < totalButtons; i++){
+					buttons[i].parentNode.removeChild(buttons[i])
+				}
+				// Los recrea
+				for(var i = 0; i < totalButtons; i++){
+					Projects.createProjectButton()
+				}
+				// Elimina los quickprojects activos
+				var qp = Core._('#projects-section .quickProject', true)
+				for(var i = 0, len = qp.length; i < len; i++){
+					qp[i].parentNode.removeChild(qp[i])
+				}
+				return callback('All active projects stopped')
 			}
 		},
-		'???': {
-			'name': '???',
+		'glorius': { // 
+			'name': 'Glorius pixel',
 			'odds': [ 98, 100 ], // 2%
+			'poped': 0,
 			'effect': function(callback){
-				return callback('')
+				var inc = Math.floor(Stats.money * 10)
+				Stats.money += inc
+				return callback('+' + Core.numberFormat(inc) + '!')
 			}
 		}
 	},

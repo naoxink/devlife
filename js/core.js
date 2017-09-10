@@ -15,6 +15,7 @@ Core.init = function(fromLoad){
 	// Core.initRentingSection()
 	// Core.jobFinder()
 	// Core.initOscilatingValue()
+	Stats.achievementsCount = achievements.length
 	Core.initWildPixelSpawner()
 	Projects.quickProjectFinder()
 	if(Stats.computerVersion < Core.base.maxComputerVersion){
@@ -24,6 +25,7 @@ Core.init = function(fromLoad){
 		Core.takeJob()
 		Core.startMonthTimer()
 		Core.addListeners()
+		Projects.createProjectButton()
 		// Mostrar los items iniciales de la tienda
 		for(var key in Shop.items){
 			if(Shop.items.hasOwnProperty(key) && Shop.items[key].initial){
@@ -45,8 +47,10 @@ Core.init = function(fromLoad){
 	}
 	document.title = Stats.companyName + ' intranet | devLife'
 	Core._('.navbar .brand').innerText = Stats.companyName + ' intranet'
-	Core.refreshAchievementList()
+	// Core.refreshAchievementList()
+	Core.buildAchievementsList()
 	Core.updateHUD()
+	Marquee.show('Welcome to devlife. You can now become the richest rich in the world.')
 }
 
 Core.startMonthTimer = function(secondsLeft){
@@ -57,19 +61,23 @@ Core.startMonthTimer = function(secondsLeft){
 	window.monthInterval = setInterval(function(){
 		if(Stats.monthTimeLeft <= 0){
 			clearInterval(window.monthInterval)
-			var mySalaries = 0
-			if(Stats.jobs && Stats.jobs.length){
-				for(var i = 0, len = Stats.jobs.length; i < len; i++){
-					mySalaries += Stats.jobs[i].increment
-				}
-			}
-			Stats.money += mySalaries
-			Core.updateHUD()
+			Stats.money += Core.calcSalaries()
 			Core.startMonthTimer()
 		}else{
 			Stats.monthTimeLeft--
 		}
+		Core.updateHUD()
 	}, 1000)
+}
+
+Core.calcSalaries = function(){
+	var mySalaries = 0
+	if(Stats.jobs && Stats.jobs.length){
+		for(var i = 0, len = Stats.jobs.length; i < len; i++){
+			mySalaries += Stats.jobs[i].increment
+		}
+	}
+	return mySalaries
 }
 
 Core.controlPulseDuration = function(){
@@ -82,59 +90,37 @@ Core.controlPulseDuration = function(){
 
 Core.updateHUD = function(){
 	Core.checkAchievements()
+	// Dinero actual
 	Core._('#money').innerHTML = Core.numberFormat(Stats.money)
+	// Desglose dinero actual
+	var moneyDetail = { 'Jobs': Core.numberFormat(Core.calcSalaries(), '/m') }
+	Core.setHelp(Core._('#money').parentNode, 'Current money', moneyDetail)
+	// Dinero por pulso
+	var pulseDetail = {  }
+	if(Stats.isCoffeePowered){
+		pulseDetail['Coffee'] = '+' + Core.numberFormat(Stats.coffeeIncrement)
+	}
 	Core._('#incPerPulse').innerHTML = Core.numberFormat(Core.base.moneyIncPerPulse, '/pulse')
+	Core.setHelp(Core._('#incPerPulse').parentNode, 'Money per pulse while active project', pulseDetail)
+
 	if(Core.base.projectProfitMultiplier){
 		Core._('#incPerPulse').innerHTML += ' <small>(Multiplier ' + (Core.base.projectProfitMultiplier > 0 ? '+' : '') +  (Core.base.projectProfitMultiplier * 100) + '%)</small>'
 	}
 	Core._('#pcmodel').innerHTML = Stats.computerModel
 	Core._('#computerVersion').innerHTML = 'v' + Stats.computerVersion
 	Core._('#jobs').innerHTML = Stats.jobs.length
-	// Core._('#employees').innerHTML = Stats.employees.length
+	// Velocidad de pulso
 	Core._('#pulseSpeed').innerHTML = parseFloat(Core.base.pulseDuration || 0).toFixed(3) + ' ms'
+	var pulseSpeedDetail = {  }
+	if(Stats.isEnergyDrinkPowered){
+		pulseSpeedDetail['Energy drink'] = '-' + Math.abs(Core.base.pulseDuration - (Core.base.pulseDuration / Core.base.energyDrinkInc)) + 'ms'
+	}
+	Core.setHelp(Core._('#pulseSpeed').parentNode, 'Speed of making money during projects', pulseSpeedDetail)
 	Core._('#projects').innerHTML = Stats.projects
-	// Core._('#companyValue').innerText = Core.numberFormat(Stats.companyValue)
-	// Core._('#PCCost').innerText = Core.numberFormat(Core.base.nextComputerVersionCost)
-	// Edificios
-	// Core._('#availableSpaces').innerText = Stats.availableSpaces
-	// Core._('#rooms').innerText = Stats.rooms
-	// Core._('#floors').innerText = Stats.floors
-	// Core._('#buildings').innerText = Stats.buildings
-	// Core._('#warehouses').innerText = Stats.warehouses
-	// Core._('#rentsCost').innerText = Core.numberFormat(Core.calcRentCost())
 	// Lotería
 	Core._('#moneySpent').innerHTML = (Stats.ticketsBought * Core.base.lotteryTicketCost) + ' ' + Core.base.moneyChar
 	Core._('#moneyWon').innerHTML = Stats.moneyWon + ' ' + Core.base.moneyChar
 	Core._('#percentWon').innerHTML = Stats.percentWon + '%'
-	// Empleados
-	// Controlar botones
-	// Core._('#salariesCost').innerText = Core.numberFormat(Core.calcSalariesCost())
-	// for(var type in employees){
-	// 	if(employees.hasOwnProperty(type)){
-	// 		Core._('#' + employees[type].id + 'Counter').innerText = Stats[type] || 0
-	// 		if(employees[type].salary < Stats.money){
-	// 			Core._('.hireEmployee[data-type=' + type + ']').removeAttribute('disabled')
-	// 		}else{
-	// 			Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
-	// 		}
-	// 		if(Stats[type] > 0){
-	// 			Core._('.fireEmployee[data-type=' + type + ']').removeAttribute('disabled')
-	// 		}
- //            if(employees[type].label === 'Friend' && Stats.friend >= Core.base.maxFriendHiring) {
-	// 			Core._('.hireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
- //            }
-	// 	}
-	// }
-	// var rooms = Core._('.rentRoom', true)
-	// for(var i = 0, len = rooms.length; i < len; i++){
-	// 	var el = rooms[i]
-	// 	if(el.className.indexOf('owned') !== -1) continue
-	// 	if(el.getAttribute('data-cost') < Stats.money){
-	// 		el.removeAttribute('disabled')
-	// 	}else{
-	// 		el.setAttribute('disabled', true)
-	// 	}
-	// }
 	var imprvs = Core._('.startImprovement', true)
 	for(var i = 0, len = imprvs.length; i < len; i++){
 		if(imprvs[i].getAttribute('data-cost') < Stats.money && improvements[imprvs[i].getAttribute('data-type')].inProgress === false){
@@ -159,34 +145,18 @@ Core.updateHUD = function(){
 			}
 		}
 	}
-}
-
-Core.calcSalariesCost = function(){
-	var qty = 0
-	for(var key in employees){
-		if(employees.hasOwnProperty(key)){
-			qty += employees[key].salary * Stats[key]
+	// Logros
+	Core._('#achievement-resume').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * Stats.achievementsCount) / 10).toFixed(1) + '%)'
+	// Desglose de logros
+	Core.setHelp(Core._('#achievement-resume').parentNode, 'Achievements unlocked', { 'Hidden': Stats.achievementsHiddenUnlocked })
+	Core._('#wild-pixels-poped').innerHTML = Stats.wildPixelsClicked
+	var wppDetail = {  }
+	for(var p in Core.base.wildPixelTypes){
+		if(typeof Core.base.wildPixelTypes[p].poped === 'number'){
+			wppDetail[Core.base.wildPixelTypes[p].name] = Core.base.wildPixelTypes[p].poped
 		}
 	}
-	return qty <= 0 || isNaN(qty) ? 0 : qty
-}
-
-Core.calcEmployeesMoneyInc = function(){
-	var qty = 0
-		qty += employees['programmer-junior'].increment * Stats['programmer-junior']
-		qty += employees['programmer-senior'].increment * Stats['programmer-senior']
-		qty += employees['designer-web'].increment * Stats['designer-web']
-		qty += employees['friend'].increment * Stats['friend']
-	return qty <= 0 || isNaN(qty) ? 0 : qty
-}
-
-Core.calcRentCost = function(){
-	var qty = 0
-		qty += Rents.room.price * Stats.rooms
-		qty += Rents.floor.price * Stats.floors
-		qty += Rents.building.price * Stats.buildings
-		qty += Rents.warehouse.price * Stats.warehouses
-	return qty <= 0 || isNaN(qty) ? 0 : qty
+	Core.setHelp(Core._('#wild-pixels-poped').parentNode, 'Wild pixels poped', wppDetail)
 }
 
 Core.jobFinder = function(button){
@@ -239,58 +209,6 @@ Core.addJobToList = function(job){
 	Core._('ul.job-list').appendChild(li)
 }
 
-Core.rentRoom = function(ty, button){
-	var room = Rents[ty] || false
-	if(room === false) return false
-	if(Stats.money < room.price) return false
-	switch(ty){
-		case 'room':
-			if(Core.base.maxRooms <= Stats.rooms) return false
-			break
-		case 'floor':
-			if(Core.base.maxFloors <= Stats.floors || Stats.rooms < 2) return false
-			break
-		case 'building':
-			if(Core.base.maxBuildings <= Stats.buildings || Stats.floors < 2) return false
-			break
-		case 'warehouse':
-			if(Core.base.maxWarehouses <= Stats.warehouses || Stats.buildings < 2) return false
-			break
-	}
-	Stats[ty + 's']++
-	Stats.money -= room.price
-	Stats.companyValue += room.price / 2
-	Stats.availableSpaces += room.spaces
-	button.removeAttribute('data-cost')
-	button.removeAttribute('data-type')
-	button.className += ' owned'
-	var dropButton = document.createElement('BUTTON')
-	dropButton.className = 'inline'
-	dropButton.innerText = dropButton.textContent = ' Drop ' + ty
-	dropButton.onclick = function(){ Core.dropRent(this) }
-	dropButton.setAttribute('data-type', ty)
-	button.appendChild(dropButton)
-	Core.updateHUD()
-}
-
-Core.dropRent = function(button){
-	var ty = button.getAttribute('data-type')
-	if(!ty || !Rents[ty]) return false
-	// El edificio tiene que estar vacío para poder dropearlo
-	if(Rents[ty].spaces > Stats.availableSpaces){
-		Core.showPopUp({
-			'title': 'You can\'t drop this ' + ty,
-			'description': 'There are people working there!'
-		})
-		return false
-	}
-	Stats[ty + 's']--
-	Stats.companyValue -= Rents[ty].price / 2
-	Stats.availableSpaces -= Rents[ty].spaces
-	Core.initRentingSection()
-	Core.updateHUD()
-}
-
 Core.quitJob = function(button){
 	button = button.srcElement
 	var jobID = button.getAttribute('id')
@@ -312,70 +230,6 @@ Core.quitJob = function(button){
 
 Core._ = function(selector, multiple){
 	return multiple ? [].slice.call(document.querySelectorAll(selector)) : document.querySelector(selector)
-}
-
-Core.addEmployeeToList = function(type, helpText){
-	var name = Core.employeeNames[(Math.floor(Math.random() * (Core.employeeNames.length - 1)))]
-	var li = document.createElement('li')
-	if(helpText){
-		li.className = 'help'
-		li.setAttribute('data-title', helpText)
-	}
-	var text = document.createTextNode(type + ': ' + name)
-	var qjbutton = document.createElement('button')
-		qjbutton.innerText = 'Fire'
-		qjbutton.addEventListener('click', function(){
-			Core.fireEmployee(type, this)
-		})
-		li.appendChild(text)
-		li.appendChild(qjbutton)
-	Core._('ul.employee-list').appendChild(li)
-}
-
-Core.hireEmployee = function(button){
-	var type = button.getAttribute('data-type')
-	if(!employees[type]) return false
-	if(Stats.availableSpaces <= 0) return false
-	if(employees[type].salary > Stats.money) return false
-	Stats.money -= employees[type].salary
-	Core.base.pulseDuration -= Core.base.pulseDuration * employees[type].increment
-	Stats[type]++
-	Stats.availableSpaces--
-	Stats.employees.push({
-		'type': type,
-		'salary': employees[type].salary,
-		'increment': employees[type].increment
-	})
-	if(typeof employees[type].unlocks === 'function'){
-		employees[type].unlocks()
-	}
-	Core._('.fireEmployee[data-type=' + type + ']').removeAttribute('disabled')
-	Core.updateHUD()
-}
-
-Core.fireEmployee = function(button){
-	var type = button.getAttribute('data-type')
-	if(!employees[type]) return false
-	// Eliminar del array de empleados
-	var index = -1
-	for(var i = 0, len = Stats.employees.length; i < len; i++){
-		if(Stats.employees[i].type === type){
-			index = i
-			break
-		}
-	}
-	if(index === -1){
-		button.setAttribute('disabled', true)
-		return false
-	}
-	Stats[type]--
-	Core.base.pulseDuration += Core.base.pulseDuration * employees[type].increment
-	Stats.availableSpaces++
-	Stats.employees.splice(index, 1)
-	Core.updateHUD()
-	if(Stats[type] === 0){
-		Core._('.fireEmployee[data-type=' + type + ']').setAttribute('disabled', true)
-	}
 }
 
 Core.showImprovementButton = function(id){
@@ -876,85 +730,10 @@ Core.hasImprovement = function(ID){
 	return Stats.improvements.indexOf(ID) !== -1
 }
 
-Core.initRentingSection = function(){
-	var section = Core._('#renting-list')
-		section.innerHTML = ''
-	var rents = ['house', 'room', 'floor', 'building', 'warehouse']
-	for(var r = 0, len = rents.length; r < len; r++){
-		for(var n = 0; n < Rents[rents[r]].max; n++){
-			var button = document.createElement('BUTTON')
-				button.className = 'rentRoom'
-				if(Stats[rents[r] + 's'] > n){
-					button.className += ' owned'
-					button.innerText = 'Rent ' + rents[r] + ': ' + Rents[rents[r]].spaces + ' seats. ' + Core.numberFormat(Rents[rents[r]].price) + '/m'
-					if(rents[r] !== 'house'){
-						var dropButton = document.createElement('BUTTON')
-						dropButton.className = 'inline'
-						dropButton.innerText = ' Drop ' + rents[r]
-						dropButton.onclick = function(){ Core.dropRent(this) }
-						dropButton.setAttribute('data-type', rents[r])
-						button.appendChild(dropButton)
-					}
-				}else{
-					button.setAttribute('disabled', true)
-					button.setAttribute('data-cost', Rents[rents[r]].price)
-					button.setAttribute('data-type', rents[r])
-					button.innerText = 'Rent ' + rents[r] + ' (+' + Rents[rents[r]].spaces + ' seats)(' + Core.numberFormat(Rents[rents[r]].price) + '/m)'
-				}
-			section.appendChild(button)
-		}
-	}
-	// Listeners
-	var rents = Core._('.rentRoom', true)
-	for(var i = 0, len = rents.length; i < len; i++){
-		rents[i].addEventListener('click', function(){
-			var ty = this.getAttribute('data-type')
-			Core.rentRoom(ty, this)
-		})
-	}
-}
-
-Core.initRecruitingSection = function(){
-	if(!employees) return false
-	var HTMLTemplate = [
-		'<div>',
-			'<span class="help label stat" data-title="Increase the pulse speed ::increment::%. ::help::">::label::</span>',
-			'<span class="hireContainer">',
-				'<button class="fireEmployee" disabled="disabled" data-type="::type::">-</button>',
-				'<span class="employeeCounter" id="::id::Counter">0</span>',
-				'<button class="hireEmployee help" data-title="Hiring cost: ::cost::' + Core.base.moneyChar + ' per minute" data-type="::type::">+</button>',
-			'</span>',
-		'</div>'
-	].join('')
-	var HTML = ''
-	for(var type in employees){
-		if(employees.hasOwnProperty(type)){
-			HTML += HTMLTemplate
-						.replace('::label::', employees[type].label)
-						.replace('::id::', employees[type].id)
-						.replace(/::type::/g, type)
-						.replace('::cost::', employees[type].salary)
-						.replace('::increment::', employees[type].increment)
-						.replace('::help::', employees[type].help || '')
-		}
-	}
-	Core._('#employee-types').innerHTML = HTML
-	// Listeners
-	var hires = Core._('.hireEmployee', true)
-	for(var i = 0, len = hires.length; i < len; i++){
-		hires[i].addEventListener('click', function(){ Core.hireEmployee(this) })
-	}
-	var fires = Core._('.fireEmployee', true)
-	for(var i = 0, len = fires.length; i < len; i++){
-		fires[i].addEventListener('click', function(){ Core.fireEmployee(this) })
-	}
-}
-
 Core.addListeners = function(){
 	Core._('#takeJob').addEventListener('click', function(){ Core.takeJob(this) })
 	Core._('#start-job-search').addEventListener('click', function(){ Core.jobFinder(this) })
 	Core._('#takeQuickProject').addEventListener('click', function(){ Projects.takeQuickProject(this) })
-	Core._('.startProject').addEventListener('click', function(){ Projects.startProject(this) })
 	Core._('#buyTicket').addEventListener('click', function(){ Core.buyTicket(this) })
 	var improvs = Core._('.startImprovement', true)
 	for(var i = 0, len = improvs.length; i < len; i++){
@@ -986,8 +765,8 @@ Core.addListeners = function(){
 	Core.tooltip.id = "tooltip"
 	Core._('body').appendChild(Core.tooltip)
 	document.onmousemove = function(event){
-		if(Core.hasClass(event.target, 'help')){
-			Core.tooltip.innerHTML = event.target.getAttribute('data-title')
+		if(Core.hasClass(event.target, 'help') || Core.hasClass(event.target.parentNode, 'help')){
+			Core.tooltip.innerHTML = event.target.getAttribute('data-title') || event.target.parentNode.getAttribute('data-title')
 			Core.tooltip.style.display = 'block'
 			Core.tooltip.style.top = event.clientY + 15 + 'px'
 			Core.tooltip.style.left = event.clientX + 15 + 'px'
@@ -1024,23 +803,6 @@ Core.hasClass = function(element, cssClass){
 Core.removeClass = function(element, cssClass){
 	var rgx = new RegExp('\b*' + cssClass + '\b*', 'g')
 	element.className = element.className.replace(rgx, '').replace(/^\s+|\s+$/g, '')
-}
-
-Core.checkAchievements = function(silent){
-	if(achievements && achievements.length){
-		for(var i = 0, len = achievements.length; i < len; i++){
-			if(!achievements[i].done){
-				achievements[i].done = achievements[i].check()
-				if(achievements[i].done && !silent){
-					Core.showPopUp({
-						'title': 'Achievement unlocked!',
-						'description': achievements[i].title
-					})
-				}
-			}
-		}
-		Core.refreshAchievementList()
-	}
 }
 
 Core.showPopUp = function(data){
@@ -1086,22 +848,66 @@ Core.showPopUp = function(data){
 	// Core.notification(data.title, data.description)
 }
 
-Core.refreshAchievementList = function(){
+// Achievements
+Core.checkAchievements = function(silent){
+	if(achievements && achievements.length){
+		for(var i = 0, len = achievements.length; i < len; i++){
+			if(!achievements[i].done){
+				achievements[i].done = achievements[i].check()
+				if(achievements[i].done){
+					if(!silent){
+						Marquee.show('<strong>Achievement unlocked!</strong> ' + achievements[i].title)
+					}
+					achievements[i].unlock()
+				}
+				if(typeof achievements[i].update === 'function') achievements[i].update()
+			}
+		}
+	}
+}
+
+Core.buildAchievementsList = function(){
 	if(!achievements || !achievements.length) return false
 	var table = document.createElement('TABLE')
 	var tr = document.createElement('tr')
 	var td = document.createElement('td')
 		td.setAttribute('colspan', 2)
 	var completed = 0
+	var hiddenCompleted = 0
 	td.className = 'header'
 	tr.appendChild(td)
 	table.appendChild(tr)
 	for(var i = 0, len = achievements.length; i < len; i++){
+		var tr = document.createElement('TR')
+		// Métodos de logros
+		achievements[i].element = tr
+		// Unlock
+		achievements[i].unlock = function(){
+			Core.removeClass(this.element, 'locked')
+			Core.addClass(this.element, 'unlocked')
+			if(this.hidden){
+				if(this.help){
+					Core.setHelp(this.element, this.help)
+				}
+				this.element.querySelector('td:first-child').innerHTML = this.title
+				Stats.achievementsHiddenUnlocked++
+			}
+			this.element.querySelector('td:last-child').innerHTML = 'Unlocked'
+			Stats.achievementsUnlocked++
+			this.element.parentNode.parentNode.querySelector('tr:first-child td:first-child').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * Stats.achievementsCount) / 100) + '%)'
+		}
+		// Update progress
+		achievements[i].update = function(){
+			if(typeof this.progress !== 'function') return false
+			this.element.querySelector('td:first-child').innerHTML = this.title + ' <span class="achievement-progress-text">(' + this.progress() + ')</span>'
+		}
 		var title = achievements[i].title
 		if(achievements[i].hidden === true && !achievements[i].done){
 			title = '???'
 		}
-		var tr = document.createElement('TR')
+		if(achievements[i].help && (!achievements[i].hidden || achievements[i].done)){
+			Core.setHelp(tr, achievements[i].help)
+		}
 		var tdTitle = document.createElement('TD')
 		var tdStatus = document.createElement('TD')
 		var statusText = achievements[i].done ? 'Unlocked' : 'Locked'
@@ -1110,17 +916,22 @@ Core.refreshAchievementList = function(){
 			tdTitle.innerHTML += ' <span class="achievement-progress-text">(' + achievements[i].progress() + ')</span>'
 		}
 		tdStatus.innerText = tdStatus.textContent = statusText
-		tr.className = statusText.toLowerCase()
+		Core.addClass(tr, statusText.toLowerCase())
 		if(achievements[i].hidden){
-			tr.className += ' hidden'
+			Core.addClass(tr, 'hidden')
 		}
 		tr.appendChild(tdTitle)
 		tr.appendChild(tdStatus)
 		table.appendChild(tr)
 		if(achievements[i].done){
 			completed++
+			if(achievements[i].hidden){
+				hiddenCompleted++
+			}
 		}
 	}
+	Stats.achievementsUnlocked = completed
+	Stats.achievementsHiddenUnlocked = hiddenCompleted
 	Core._('#achievement-list').innerHTML =''
 	td.innerHTML = 'Completed ' + ((completed * achievements.length) / 100) + '% (' + completed + '/' + achievements.length + ')'
 	Core._('#achievement-list').appendChild(table)
@@ -1201,7 +1012,7 @@ Core.secondsDiff = function(date1, date2){
 Core.initWildPixelSpawner = function(){
 	var seconds = Math.floor(Math.random() * (Core.base.wildPixelMaxSpawnTime - Core.base.wildPixelMinSpawnTime + 1) + Core.base.wildPixelMinSpawnTime)
 	Core.timers.wildPixel = setTimeout(function(){
-		Core.spawWildPixel()
+		Core.spawnWildPixel()
 		Core.initWildPixelSpawner()
 		setTimeout(function(){
 			var p = Core._('.wild-pixel')
@@ -1226,6 +1037,7 @@ Core.popWildPixel = function(){
 	for(var p in Core.base.wildPixelTypes){
 		Core.base.wildPixelTypes[p]
 		if(rand >= Core.base.wildPixelTypes[p].odds[0] && rand <= Core.base.wildPixelTypes[p].odds[1]){
+			Core.base.wildPixelTypes[p].poped++
 			pixel = Core.base.wildPixelTypes[p]
 		}
 	}
@@ -1233,14 +1045,14 @@ Core.popWildPixel = function(){
 	pixel.effect(function(text){
 		Stats.wildPixelsClicked++
 		Core.showPopUp({
-			'title': pixel.name + '!',
+			'title': pixel.name,
 			'description': text
 		})
 		Core.updateHUD()
 	})
 }
 
-Core.spawWildPixel = function(){
+Core.spawnWildPixel = function(){
 	var pixel = document.createElement('div')
 	pixel.className = 'wild-pixel help'
 	pixel.setAttribute('data-title','???')
@@ -1250,4 +1062,20 @@ Core.spawWildPixel = function(){
 	if(pixel.style.left + pixel.width > window.innerWidth) pixel.style.left = (window.innerWidth - pixel.width) + 'px'
 	pixel.onclick = Core.popWildPixel
 	Core._('body').appendChild(pixel)
+}
+
+Core.setHelp = function(element, text, stats){
+	if(!element) return false
+	if(!Core.hasClass(element, 'help')){
+		Core.addClass(element, 'help')
+	}
+	var title = text
+	if(stats && typeof stats === 'object' && Object.keys(stats).length){
+		title += '<hr>'
+		for(var k in stats){
+			title += k + ': ' + stats[k] + '<br>'
+		}
+	}
+	title = title.replace(/\<br\>$/, '')
+	element.setAttribute('data-title', title)
 }

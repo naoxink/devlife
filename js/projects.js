@@ -56,8 +56,8 @@ Projects.pulse = function(projectID, button){
 
 Projects.createProjectButton = function(){
 	var startProjectButton = document.createElement('button')
-		startProjectButton.innerText = 'Start project'
-		startProjectButton.className = 'startProject'
+		startProjectButton.innerText = startProjectButton.textContent = 'Start project'
+		startProjectButton.className = 'startProject project'
 	startProjectButton.addEventListener('click', function(){
 		Projects.startProject(this)
 	})
@@ -67,7 +67,7 @@ Projects.createProjectButton = function(){
 
 Projects.createQuickProjectButton = function(){
 	var button = document.createElement('BUTTON')
-		button.className = 'startProject'
+		button.className = 'startProject quickProject'
 		button.innerText = button.textContent = 'Quick project '
 		button.setAttribute('disabled', true)
 	Core._('#projects-section').appendChild(button)
@@ -107,8 +107,9 @@ Projects.startQuickProject = function(button){
 	var projectTime = Projects.calcQuickProjectTime(max, min)
 	var projectID = 'qproject-' + new Date().getTime()
 	Core.projects[projectID] = {  }
-	// Plus de ganancia por trabajador
-	Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * (Core.calcEmployeesMoneyInc() || 1)
+	// Plus de ganancia
+	// Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * (Core.calcEmployeesMoneyInc() || 1)
+	Core.projects[projectID].moneyPlus = 0
 	Core.projects[projectID].moneyPlus += Core.projects[projectID].moneyPlus * ((30 - projectTime) / 100)
 	Core.projects[projectID].profit = 0
 	Core.projects[projectID].secondsLeft = projectTime
@@ -132,7 +133,8 @@ Projects.startProject = function(button){
 	var projectID = 'project-' + new Date().getTime()
 	Core.projects[projectID] = {  }
 	// Plus de ganancia
-	Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * Core.calcEmployeesMoneyInc()
+	// Core.projects[projectID].moneyPlus = Core.base.moneyIncPerPulse * Core.calcEmployeesMoneyInc()
+	Core.projects[projectID].moneyPlus = 0
 	if(Core.base.oscilatingValue > 0){
 		Core.projects[projectID].moneyPlus += Core.base.moneyIncPerPulse * (Core.base.oscilatingValue / 10)
 	}
