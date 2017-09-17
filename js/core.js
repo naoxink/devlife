@@ -33,12 +33,11 @@ Core.init = function(fromLoad){
 			}
 		}
 		Core.showImprovementButton('upgradeComputer')
+		if(!Core._('.startProject', true).length){
+			Projects.createProjectButton()
+		}
 	}else{
 		Core.checkAchievements(true)
-	}
-
-	if(!Core._('.startProject', true).length){
-		Projects.createProjectButton()
 	}
 
 	if(Notification.permission !== "granted" && !Core.base.notificationsRequested){
