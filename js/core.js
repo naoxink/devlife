@@ -455,7 +455,7 @@ Core.save = function(silent){
 			'dateEnd': Core.improvements[iid].dateEnd,
 			'type': Core.improvements[iid].type
 		}
-		localStorage.setItem(iid, JSON.stringify(idata))
+		localStorage.setItem('improvement-inProgress-' + iid, JSON.stringify(idata))
 	}
 	// Core.base
 	for(var k in Core.base){
@@ -480,15 +480,15 @@ Core.save = function(silent){
 	}
 	// Investigaciones que se están mostrando
 	for(var k in improvements){
-		localStorage.setItem('improv-status-' + k, JSON.stringify({
-			'label': improvements[k].label,
-			'help': improvements[k].help,
-			'cost': improvements[k].cost,
-			'investigationTime': improvements[k].investigationTime,
-			'inProgress': improvements[k].inProgress,
-			'showing': improvements[k].showing,
-			'type': k
-		}))
+		if(improvements[k].showing && !improvements[k].inProgress){
+			localStorage.setItem('improv-showing-' + k, JSON.stringify({
+				'cost': improvements[k].cost,
+				'investigationTime': improvements[k].investigationTime,
+				'inProgress': improvements[k].inProgress,
+				'showing': improvements[k].showing,
+				'type': k
+			}))
+		}
 	}
 	// Objetos de la tienda
 	for(var itemID in Shop.items){
@@ -523,6 +523,31 @@ Core.load = function(){
 	for(var i = 0, len = items.length; i < len; i++){
 		items[i].parentNode.removeChild(items[i])
 	}
+	// Limpiar botones de mejoras
+	var impButtons = Core._('.startImprovement', true)
+	for(var i = 0, len = impButtons.length; i < len; i++){
+		impButtons[i].parentNode.removeChild(impButtons[i])
+	}
+	// Limpiar botones actuales de proyectos
+	var projectButtons = Core._('.startProject', true)
+	for(var i = 0, len = projectButtons.length; i < len; i++){
+		projectButtons[i].parentNode.removeChild(projectButtons[i])
+	}
+	// Limpiar estantería
+	var items = Core._('#showcase .item', true)
+	for(var i = 0, len = items.length; i < len; i++){
+		items[i].parentNode.removeChild(items[i])
+	}
+	// Limpieza de intervals/timeouts
+	clearInterval(window.monthInterval)
+	clearInterval(window.coffeeInterval)
+	clearInterval(window.energyDrinkInterval)
+	clearInterval(window.marketingCampaignInterval)
+	window.monthInterval             = null
+	window.coffeeInterval            = null
+	window.energyDrinkInterval       = null
+	window.marketingCampaignInterval = null
+
 	// Listar todo el localStorage
 	for (var i = 0; i < localStorage.length; i++){
 		var key = localStorage.key(i)
@@ -557,15 +582,18 @@ Core.load = function(){
 				Shop.showItemButton(key)
 			}
 			Shop.items[key].owned = value.owned === true
-		}else if(key.indexOf('improv-status-') === 0){ // Estado de las mejoras
-			key = key.replace('improv-status-', '')
+		}else if(key.indexOf('improv-showing-') === 0){ // Estado de las mejoras
+			key = key.replace('improv-showing-', '')
 			value = JSON.parse(value)
-			improvements[key].label = value.label
-			improvements[key].help = value.help
+			// improvements[key].label = value.label
+			// improvements[key].help = value.help
 			improvements[key].cost = value.cost
 			improvements[key].investigationTime = value.investigationTime
 			improvements[key].inProgress = value.inProgress
 			improvements[key].showing = value.showing
+			if(value.showing && !value.inProgress){
+				Core.showImprovementButton(key)
+			}
 		}else if(key === 'achievements'){
 			value = value.split('')
 			for(var i = 0, len = value.length; i < len; i++){
@@ -581,15 +609,6 @@ Core.load = function(){
 		Core.addJobToList(Stats.jobs[i])
 	}
 
-	// Limpieza de intervals/timeouts
-	clearInterval(window.monthInterval)
-	clearInterval(window.coffeeInterval)
-	clearInterval(window.energyDrinkInterval)
-	clearInterval(window.marketingCampaignInterval)
-	window.monthInterval             = null
-	window.coffeeInterval            = null
-	window.energyDrinkInterval       = null
-	window.marketingCampaignInterval = null
 	// Proyectos
 	if(Core.projects){
 		for(var pid in Core.projects){
@@ -607,12 +626,7 @@ Core.load = function(){
 		}
 	}
 	// Retomar proyectos
-	// 1. Limpiar botones actuales de proyectos
-	var projectButtons = Core._('.startProject', true)
-	for(var i = 0, len = projectButtons.length; i < len; i++){
-		projectButtons[i].parentNode.removeChild(projectButtons[i])
-	}
-	// 2. Buscar los proyectos guardados
+	// 1. Buscar los proyectos guardados
 	for (var i = 0; i < localStorage.length; i++){
 		var key = localStorage.key(i)
 		var value = localStorage.getItem(localStorage.key(i))
@@ -625,9 +639,9 @@ Core.load = function(){
 				'dateStart': new Date(projectData.dateStart) || new Date(),
 				'dateEnd': new Date(projectData.dateEnd) || new Date()
 			}
-			// 3. Crear botón
+			// 2. Crear botón
 			var button = Projects.createProjectButton()
-			// 4. Retomar proyecto
+			// 3. Retomar proyecto
 			Projects.resumeProject(key, button)
 		}
 		if(key.indexOf('qproject-') === 0){
@@ -639,24 +653,22 @@ Core.load = function(){
 				'dateStart': new Date(projectData.dateStart) || new Date(),
 				'dateEnd': new Date(projectData.dateEnd) || new Date()
 			}
-			// 3. Crear botón
+			// 2. Crear botón
 			var button = Projects.createQuickProjectButton()
-			// 4. Retomar proyecto
+			// 3. Retomar proyecto
 			Projects.resumeQuickProject(key, button)
 		}
 	}
+	if(!Core._('.startProject', true).length){
+		Projects.createProjectButton()
+	}
 	
 	// Retomar investigaciones activas (Mejoras)
-	// 1. Limpiar botones actuales
-	var impButtons = Core._('.startImprovement', true)
-	for(var i = 0, len = impButtons.length; i < len; i++){
-		impButtons[i].parentNode.removeChild(impButtons[i])
-	}
-	// 2. Buscar las investigaciones guardadas
+	// 1. Buscar las investigaciones guardadas
 	for (var i = 0; i < localStorage.length; i++){
 		var key = localStorage.key(i)
 		var value = localStorage.getItem(localStorage.key(i))
-		if(key.indexOf('improvement-') === 0){
+		if(key.indexOf('improvement-inProgress-') === 0){
 			var impData = JSON.parse(value)
 			Core.improvements[key] = {
 				'secondsLeft': impData.secondsLeft,
@@ -664,18 +676,14 @@ Core.load = function(){
 				'dateEnd': new Date(impData.dateEnd),
 				'type': impData.type
 			}
-			// 3. Crear botón
+			// 2. Crear botón
 			var button = Core.showImprovementButton(impData.type)
-			// 4. Retomar el progreso
+			// 3. Retomar el progreso
 			Core.resumeImprovement(key, button)
 		}
 	}
 
 	// Mostrar showCase
-	var items = Core._('#showcase .item', true)
-	for(var i = 0, len = items.length; i < len; i++){
-		items[i].parentNode.removeChild(items[i])
-	}
 	for(var i = 0, len = Stats.showCase.length; i < len; i++){
 		Core.addToShowcase(Stats.showCase[i])
 	}
