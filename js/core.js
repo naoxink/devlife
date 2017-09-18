@@ -145,7 +145,7 @@ Core.updateHUD = function(){
 		}
 	}
 	// Logros
-	Core._('#achievement-resume').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * Stats.achievementsCount) / 10).toFixed(1) + '%)'
+	Core._('#achievement-resume').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * 100) / Stats.achievementsCount).toFixed(1) + '%)'
 	// Desglose de logros
 	Core.setHelp(Core._('#achievement-resume').parentNode, 'Achievements unlocked', { 'Hidden': Stats.achievementsHiddenUnlocked })
 	Core._('#wild-pixels-poped').innerHTML = Stats.wildPixelsClicked
@@ -597,8 +597,8 @@ Core.load = function(){
 		}else if(key === 'achievements'){
 			value = value.split('')
 			for(var i = 0, len = value.length; i < len; i++){
-				if(achievements[i]){
-					achievements[i].done = value[i] === '1'
+				if(achievements[i] && value[i] === '1' && typeof achievements[i].unlock === 'function'){
+					achievements[i].unlock()
 				}
 			}
 		}
@@ -788,7 +788,7 @@ Core.addListeners = function(){
 
 Core.addCompactFunctionality = function(header){
 	header.addEventListener('click', function(){
-		if(this.parentNode.className.indexOf('compact') === -1){
+		if(!Core.hasClass(this.parentNode, 'compact')){
 			Core.addClass(this.parentNode, 'compact')
 		}else{
 			Core.removeClass(this.parentNode, 'compact')
@@ -798,16 +798,19 @@ Core.addCompactFunctionality = function(header){
 
 Core.addClass = function(element, cssClass){
 	if(!Core.hasClass(element, cssClass)){
-		element.className += ' ' + cssClass
+		if(!element.className) element.className = cssClass
+		else element.className += ' ' + cssClass
 	}
 }
 
 Core.hasClass = function(element, cssClass){
+	if(!element || !element.className) return false
 	var rgx = new RegExp('\b*' + cssClass + '\b*')
 	return rgx.test(element.className)
 }
 
 Core.removeClass = function(element, cssClass){
+	if(!element || !element.className) return false
 	var rgx = new RegExp('\b*' + cssClass + '\b*', 'g')
 	element.className = element.className.replace(rgx, '').replace(/^\s+|\s+$/g, '')
 }
@@ -901,7 +904,7 @@ Core.buildAchievementsList = function(){
 			}
 			this.element.querySelector('td:last-child').innerHTML = 'Unlocked'
 			Stats.achievementsUnlocked++
-			this.element.parentNode.parentNode.querySelector('tr:first-child td:first-child').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * Stats.achievementsCount) / 100) + '%)'
+			this.element.parentNode.parentNode.querySelector('tr:first-child td:first-child').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * 100) / Stats.achievementsCount).toFixed(1) + '%)'
 		}
 		// Update progress
 		achievements[i].update = function(){
@@ -939,8 +942,8 @@ Core.buildAchievementsList = function(){
 	}
 	Stats.achievementsUnlocked = completed
 	Stats.achievementsHiddenUnlocked = hiddenCompleted
-	Core._('#achievement-list').innerHTML =''
-	td.innerHTML = 'Completed ' + ((completed * achievements.length) / 100) + '% (' + completed + '/' + achievements.length + ')'
+	Core._('#achievement-list').innerHTML = ''
+	td.innerHTML = 'Completed ' + ((completed * 100) / achievements.length).toFixed(1) + '% (' + completed + '/' + achievements.length + ')'
 	Core._('#achievement-list').appendChild(table)
 }
 
