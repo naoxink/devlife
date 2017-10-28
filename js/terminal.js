@@ -26,12 +26,12 @@ terminal.cpNumberAnimation = function(){
 	Core._('body').appendChild(cpna)
 	var animationTime = 100
 	var animationID = 'cpnai-' + new Date().getTime() + Core._('.command-prompt-number-key-up', true).length
+	cpna.setAttribute('id', animationID)
 	window[animationID] = setInterval(function(){
 		if(animationTime <= 0){
 			clearInterval(window[animationID])
-			if(cpna){
-				cpna.parentNode.removeChild(cpna)
-				cpna = null
+			if(Core._('#' + animationID, true).length){
+				Core._('#' + animationID).parentNode.removeChild(Core._('#' + animationID))
 			}
 		}else{
 			animationTime--

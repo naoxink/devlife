@@ -126,7 +126,7 @@ var improvements = {
 		'investigationTime': 10000, // 10s
 		'load': function () {
 			if(Stats.computerVersion <= Core.base.maxComputerVersion){
-				if(Stats.computerVersion === 1 && !Shop.items.devmx300.owned){
+				if(Stats.computerVersion === 1 && !Shop.items.devmx300.owned && !Core.hasImprovement('intranetCommandPrompt')){
 					Core.showImprovementButton('intranetCommandPrompt')
 				}
 				if(Core.base.maxComputerVersion < Stats.computerVersion + 1){

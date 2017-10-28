@@ -77,6 +77,8 @@ Shop.items = {
 		'help': 'Buy a better keyboard to increase the money you make with the command prompt<hr>Command prompt key value x2',
 		'cost': 1000,
 		'buy': function(){
+			this.showing = false
+			this.owned = true
 			Core.base.commandPromptInc *= 2
 			Core.addToShowcase({
 				'title': 'Brand new mechanical keyboard (Command prompt key value x2)',

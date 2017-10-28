@@ -105,7 +105,6 @@ Core.base = {
 				}
 				// Elimina los botones de los proyectos
 				var buttons = Core._('#projects-section .project', true)
-				console.log(buttons)
 				var totalButtons = buttons.length
 				for(var i = 0; i < totalButtons; i++){
 					buttons[i].parentNode.removeChild(buttons[i])

@@ -2,7 +2,7 @@ var Core = {  }
 
 Core.engine = {  }
 Core.projects = {  }
-Core.improvements = {  }
+Core.improvementsInProgress = {  }
 Core.timers = {
 	'oscilatingValue': null,
 	'popup': null,
@@ -33,11 +33,12 @@ Core.init = function(fromLoad){
 			}
 		}
 		Core.showImprovementButton('upgradeComputer')
-		if(!Core._('.startProject', true).length){
-			Projects.createProjectButton()
-		}
 	}else{
 		Core.checkAchievements(true)
+	}
+
+	if(!Core._('.startProject', true).length){
+		Projects.createProjectButton()
 	}
 
 	if(Notification.permission !== "granted" && !Core.base.notificationsRequested){
@@ -262,32 +263,32 @@ Core.startImprovement = function(ty, button){
 	button.setAttribute('disabled', true)
 	button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(improvements[ty].investigationTime) + ')'
 	var impID = 'improvement-' + new Date().getTime()
-	Core.improvements[impID] = {  }
-	Core.improvements[impID].secondsLeft = improvements[ty].investigationTime / 1000
-	Core.improvements[impID].dateStart = new Date()
-	Core.improvements[impID].dateEnd = new Date(Date.now() + improvements[ty].investigationTime)
-	Core.improvements[impID].type = ty
+	Core.improvementsInProgress[impID] = {  }
+	Core.improvementsInProgress[impID].secondsLeft = improvements[ty].investigationTime / 1000
+	Core.improvementsInProgress[impID].dateStart = new Date()
+	Core.improvementsInProgress[impID].dateEnd = new Date(Date.now() + improvements[ty].investigationTime)
+	Core.improvementsInProgress[impID].type = ty
 	Core.updateHUD()
 	Core.resumeImprovement(impID, button)
 }
 
 Core.resumeImprovement = function(impID, button){
-	improvements[Core.improvements[impID].type].inProgress = true
-	Core.improvements[impID].timer = setInterval(function(){
-		if(Core.improvements[impID].secondsLeft <= 0){
-			Stats.improvements.push(Core.improvements[impID].type)
+	improvements[Core.improvementsInProgress[impID].type].inProgress = true
+	Core.improvementsInProgress[impID].timer = setInterval(function(){
+		if(Core.improvementsInProgress[impID].secondsLeft <= 0){
+			Stats.improvements.push(Core.improvementsInProgress[impID].type)
 			button.parentNode.removeChild(button)
-			clearInterval(Core.improvements[impID].timer)
-			improvements[Core.improvements[impID].type].showing = false
-			improvements[Core.improvements[impID].type].effect()
-			improvements[Core.improvements[impID].type].load()
-			improvements[Core.improvements[impID].type].inProgress = false
-			Stats.companyValue += improvements[Core.improvements[impID].type].cost / 2
-			delete Core.improvements[impID]
+			clearInterval(Core.improvementsInProgress[impID].timer)
+			improvements[Core.improvementsInProgress[impID].type].showing = false
+			improvements[Core.improvementsInProgress[impID].type].effect()
+			improvements[Core.improvementsInProgress[impID].type].load()
+			improvements[Core.improvementsInProgress[impID].type].inProgress = false
+			Stats.companyValue += improvements[Core.improvementsInProgress[impID].type].cost / 2
+			delete Core.improvementsInProgress[impID]
 			Core.updateHUD()
 		}else{
-			button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Core.improvements[impID].secondsLeft * 1000) + ')'
-			Core.improvements[impID].secondsLeft--
+			button.innerText = button.textContent = button.innerText.replace(/\(.*\)/g, '') + ' (Investigation in progress) (Time left: ' + Core.timeFormat(Core.improvementsInProgress[impID].secondsLeft * 1000) + ')'
+			Core.improvementsInProgress[impID].secondsLeft--
 		}
 	}, 1000)
 }
@@ -435,7 +436,9 @@ Core.pad = function(number){
 Core.save = function(silent){
 	if(!localStorage || !JSON || typeof JSON.stringify !== 'function') return false
 	localStorage.clear()
-	localStorage.setItem('savedDate', new Date())
+	localStorage.setItem('dev-savedDate', new Date())
+	// Cuántos botones de empezar proyecto tenemos
+	localStorage.setItem('dev-startProject-button-count', Core._('.startProject', true).length)
 	// Proyectos activos
 	for(var pid in Core.projects){
 		var pdata = {
@@ -445,66 +448,66 @@ Core.save = function(silent){
 			'dateStart': Core.projects[pid].dateStart,
 			'dateEnd': Core.projects[pid].dateEnd
 		}
-		localStorage.setItem(pid, JSON.stringify(pdata))
+		localStorage.setItem('dev-active-project-' + pid, JSON.stringify(pdata))
 	}
 	// Investigaciones activas
-	for(var iid in Core.improvements){
+	for(var iid in Core.improvementsInProgress){
 		var idata = {
 			'secondsLeft': Core.improvements[iid].secondsLeft,
 			'dateStart': Core.improvements[iid].dateStart,
 			'dateEnd': Core.improvements[iid].dateEnd,
 			'type': Core.improvements[iid].type
 		}
-		localStorage.setItem('improvement-inProgress-' + iid, JSON.stringify(idata))
+		localStorage.setItem('dev-improvement-inProgress-' + iid, JSON.stringify(idata))
 	}
 	// Core.base
 	for(var k in Core.base){
 		if(k === 'wildPixelTypes') continue
 		if(typeof Core.base[k] === 'object'){
-			localStorage.setItem('core.base.' + k, JSON.stringify(Core.base[k]))
+			localStorage.setItem('dev-core.base.' + k, JSON.stringify(Core.base[k]))
 		}else{
-			localStorage.setItem('core.base.' + k, Core.base[k])
+			localStorage.setItem('dev-core.base.' + k, Core.base[k])
 		}
 	}
 	// Stats
 	for(var k in Stats){
 		if(k === 'employees'){
 			for(var i = 0, len = Stats.employees.length; i < len; i++){
-				localStorage.setItem('stats.employees.' + i, JSON.stringify(Stats.employees[i]))
+				localStorage.setItem('dev-stats.employees.' + i, JSON.stringify(Stats.employees[i]))
 			}
 		}else if(k === 'improvements' || k === 'commandPrompt' || k === 'jobs' || k === 'showCase'){
-			localStorage.setItem('stats.' + k, JSON.stringify(Stats[k]))
+			localStorage.setItem('dev-stats.' + k, JSON.stringify(Stats[k]))
 		}else{
-			localStorage.setItem('stats.' + k, Stats[k])
+			localStorage.setItem('dev-stats.' + k, Stats[k])
 		}
 	}
 	// Investigaciones que se están mostrando
 	for(var k in improvements){
 		if(improvements[k].showing && !improvements[k].inProgress){
-			localStorage.setItem('improv-showing-' + k, JSON.stringify({
+			localStorage.setItem('dev-improv-showing-' + k, JSON.stringify({
 				'cost': improvements[k].cost,
 				'investigationTime': improvements[k].investigationTime,
-				'inProgress': improvements[k].inProgress,
-				'showing': improvements[k].showing,
+				'inProgress': false,
+				'showing': true,
 				'type': k
 			}))
 		}
 	}
 	// Objetos de la tienda
 	for(var itemID in Shop.items){
-		localStorage.setItem('shop-item-' + itemID, JSON.stringify({
+		localStorage.setItem('dev-shop-item-' + itemID, JSON.stringify({
 			'showing': Shop.items[itemID].showing,
 			'owned': Shop.items[itemID].owned
 		}))
 	}
 	// Logros
-	achievements = ''
+	achievementsStr = ''
 	for(var i = 0, len = achievements.length; i < len; i++){
-		achievements += achievements[i].done ? '1' : '0'
+		achievementsStr += achievements[i].done ? '1' : '0'
 	}
-	localStorage.setItem('achievements', achievements)
+	localStorage.setItem('dev-achievements', achievementsStr)
 
-	localStorage.setItem('css', Core._('#css').getAttribute('href'))
+	localStorage.setItem('dev-css', Core._('#css').getAttribute('href'))
 	if(silent === false){
 		Core.showPopUp({
 			'title': 'Success!',
@@ -528,7 +531,7 @@ Core.load = function(){
 	for(var i = 0, len = impButtons.length; i < len; i++){
 		impButtons[i].parentNode.removeChild(impButtons[i])
 	}
-	// Limpiar botones actuales de proyectos
+	// Limpiar botones de proyectos
 	var projectButtons = Core._('.startProject', true)
 	for(var i = 0, len = projectButtons.length; i < len; i++){
 		projectButtons[i].parentNode.removeChild(projectButtons[i])
@@ -543,17 +546,19 @@ Core.load = function(){
 	clearInterval(window.coffeeInterval)
 	clearInterval(window.energyDrinkInterval)
 	clearInterval(window.marketingCampaignInterval)
+	clearInterval(Core.timers.wildPixel)
 	window.monthInterval             = null
 	window.coffeeInterval            = null
 	window.energyDrinkInterval       = null
 	window.marketingCampaignInterval = null
+	Core.timers.wildPixel            = null
 
 	// Listar todo el localStorage
 	for (var i = 0; i < localStorage.length; i++){
 		var key = localStorage.key(i)
 		var value = localStorage.getItem(localStorage.key(i))
-		if(key.indexOf('stats.') === 0){ // Stats
-			key = key.replace('stats.', '')
+		if(key.indexOf('dev-stats.') === 0){ // Stats
+			key = key.replace('dev-stats.', '')
 			if(key === 'jobs' || key === 'improvements' || key === 'commandPrompt' || key === 'showCase'){
 				Stats[key] = JSON.parse(value)
 			}else{
@@ -563,11 +568,11 @@ Core.load = function(){
 					Stats[key] = !isNaN(value) ? parseFloat(value) : value
 				}
 			}
-		}else if(key === 'css'){ // CSS
+		}else if(key === 'dev-css'){ // CSS
 			value = value.replace(/(\?.*$)/, '?' + new Date().getTime())
 			Core._('#css').setAttribute('href', value)
-		}else if(key.indexOf('core.base.') === 0){ // Core.base
-			key = key.replace('core.base.', '')
+		}else if(key.indexOf('dev-core.base.') === 0){ // Core.base
+			key = key.replace('dev-core.base.', '')
 			if(value.indexOf('[') === 0 && value.indexOf(']') === value.length -1){
 				Core.base[key] = JSON.parse(value)
 			}else if(['true', 'false'].indexOf(value) !== -1){
@@ -575,15 +580,15 @@ Core.load = function(){
 			}else{
 				Core.base[key] = !isNaN(value) ? parseFloat(value) : value
 			}
-		}else if(key.indexOf('shop-item-') === 0){ // Objetos de la tienda
-			key = key.replace('shop-item-', '')
+		}else if(key.indexOf('dev-shop-item-') === 0){ // Objetos de la tienda
+			key = key.replace('dev-shop-item-', '')
 			value = JSON.parse(value)
 			if(value.showing === true){
 				Shop.showItemButton(key)
 			}
 			Shop.items[key].owned = value.owned === true
-		}else if(key.indexOf('improv-showing-') === 0){ // Estado de las mejoras
-			key = key.replace('improv-showing-', '')
+		}else if(key.indexOf('dev-improv-showing-') === 0){ // Estado de las mejoras
+			key = key.replace('dev-improv-showing-', '')
 			value = JSON.parse(value)
 			// improvements[key].label = value.label
 			// improvements[key].help = value.help
@@ -594,7 +599,7 @@ Core.load = function(){
 			if(value.showing && !value.inProgress){
 				Core.showImprovementButton(key)
 			}
-		}else if(key === 'achievements'){
+		}else if(key === 'dev-achievements'){
 			value = value.split('')
 			for(var i = 0, len = value.length; i < len; i++){
 				if(achievements[i] && value[i] === '1' && typeof achievements[i].unlock === 'function'){
@@ -609,7 +614,7 @@ Core.load = function(){
 		Core.addJobToList(Stats.jobs[i])
 	}
 
-	// Proyectos
+	// Proyectos activos
 	if(Core.projects){
 		for(var pid in Core.projects){
 			if(Core.projects.hasOwnProperty(pid) && Core.projects[pid].timer){
@@ -617,20 +622,22 @@ Core.load = function(){
 			}
 		}
 	}
-	// Investigaciones (Mejoras)
-	if(Core.improvements){
-		for(var iid in Core.improvements){
-			if(Core.improvements.hasOwnProperty(iid) && Core.improvements[iid].timer){
-				clearInterval(Core.improvements[iid].timer)
+	Core.Projects = {  }
+	// Investigaciones activas (Mejoras)
+	if(Core.improvementsInProgress){
+		for(var iid in Core.improvementsInProgress){
+			if(Core.improvementsInProgress.hasOwnProperty(iid) && Core.improvementsInProgress[iid].timer){
+				clearInterval(Core.improvementsInProgress[iid].timer)
 			}
 		}
 	}
+	Core.improvementsInProgress = {  }
 	// Retomar proyectos
 	// 1. Buscar los proyectos guardados
 	for (var i = 0; i < localStorage.length; i++){
 		var key = localStorage.key(i)
 		var value = localStorage.getItem(localStorage.key(i))
-		if(key.indexOf('project-') === 0){
+		if(key.indexOf('dev-active-project-') === 0){
 			var projectData = JSON.parse(value)
 			Core.projects[key] = {
 				'profit': projectData.profit || 0,
@@ -644,23 +651,27 @@ Core.load = function(){
 			// 3. Retomar proyecto
 			Projects.resumeProject(key, button)
 		}
-		if(key.indexOf('qproject-') === 0){
-			var projectData = JSON.parse(value)
-			Core.projects[key] = {
-				'profit': projectData.profit || 0,
-				'moneyPlus': projectData.moneyPlus || 0,
-				'secondsLeft': projectData.secondsLeft || 0,
-				'dateStart': new Date(projectData.dateStart) || new Date(),
-				'dateEnd': new Date(projectData.dateEnd) || new Date()
-			}
-			// 2. Crear botón
-			var button = Projects.createQuickProjectButton()
-			// 3. Retomar proyecto
-			Projects.resumeQuickProject(key, button)
-		}
+		// ** FALTA GUARDAR LOS PROYECTOS RÁPIDOS **
+		// if(key.indexOf('qproject-') === 0){
+		// 	var projectData = JSON.parse(value)
+		// 	Core.projects[key] = {
+		// 		'profit': projectData.profit || 0,
+		// 		'moneyPlus': projectData.moneyPlus || 0,
+		// 		'secondsLeft': projectData.secondsLeft || 0,
+		// 		'dateStart': new Date(projectData.dateStart) || new Date(),
+		// 		'dateEnd': new Date(projectData.dateEnd) || new Date()
+		// 	}
+		// 	// 2. Crear botón
+		// 	var button = Projects.createQuickProjectButton()
+		// 	// 3. Retomar proyecto
+		// 	Projects.resumeQuickProject(key, button)
+		// }
 	}
-	if(!Core._('.startProject', true).length){
-		Projects.createProjectButton()
+	var startProjectButtonCount = localStorage.getItem('dev-startProject-button-count') || 1
+	if(Core._('.startProject', true).length < startProjectButtonCount){
+		while(Core._('.startProject', true).length < startProjectButtonCount){
+			Projects.createProjectButton()
+		}
 	}
 	
 	// Retomar investigaciones activas (Mejoras)
@@ -668,7 +679,7 @@ Core.load = function(){
 	for (var i = 0; i < localStorage.length; i++){
 		var key = localStorage.key(i)
 		var value = localStorage.getItem(localStorage.key(i))
-		if(key.indexOf('improvement-inProgress-') === 0){
+		if(key.indexOf('dev-improvement-inProgress-') === 0){
 			var impData = JSON.parse(value)
 			Core.improvements[key] = {
 				'secondsLeft': impData.secondsLeft,
@@ -709,6 +720,15 @@ Core.load = function(){
 		var button = Core._('#shop-item-marketingCampaign')
 		Shop.items.marketingCampaign.buy(button, Stats.marketingCampaignTimeLeft)
 	}
+
+	// Wild pixels
+	var pixels = Core._('.wild-pixel', true)
+	for(var w = 0, len = pixels.length; w < len; w++){
+		if(w.parentNode){
+			w.parentNode.removeChild(w)
+		}
+	}
+	Core.initWildPixelSpawner()
 
 	Core.init(true) // Evitamos algunas líneas necesarias sólo al principio (Sin cargar)
 
@@ -1000,13 +1020,17 @@ Core.printBarChart = function(value){
 
 
 Core.addToShowcase = function(data){
+	var imagePath = 'img/' + data.image
 	if(Core._('#showcase .empty')){
 		Core._('#showcase .empty').parentNode.removeChild(Core._('#showcase .empty'))
+	}
+	if(Core._('#showcase img[src="' + imagePath + '"]')){
+		return true
 	}
 	var item = document.createElement('img')
 	item.className = 'item help'
 	item.setAttribute('data-title', data.title)
-	item.src = 'img/' + data.image
+	item.src = imagePath
 	Stats.showCase.push(data)
 	Core._('#showcase').appendChild(item)
 }
@@ -1045,7 +1069,6 @@ Core.popWildPixel = function(){
 	var pixel = null
 	// Elegir según las probabilidades de cada uno
 	for(var p in Core.base.wildPixelTypes){
-		Core.base.wildPixelTypes[p]
 		if(rand >= Core.base.wildPixelTypes[p].odds[0] && rand <= Core.base.wildPixelTypes[p].odds[1]){
 			Core.base.wildPixelTypes[p].poped++
 			pixel = Core.base.wildPixelTypes[p]
