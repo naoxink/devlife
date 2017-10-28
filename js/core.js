@@ -453,10 +453,10 @@ Core.save = function(silent){
 	// Investigaciones activas
 	for(var iid in Core.improvementsInProgress){
 		var idata = {
-			'secondsLeft': Core.improvements[iid].secondsLeft,
-			'dateStart': Core.improvements[iid].dateStart,
-			'dateEnd': Core.improvements[iid].dateEnd,
-			'type': Core.improvements[iid].type
+			'secondsLeft': Core.improvementsInProgress[iid].secondsLeft,
+			'dateStart': Core.improvementsInProgress[iid].dateStart,
+			'dateEnd': Core.improvementsInProgress[iid].dateEnd,
+			'type': Core.improvementsInProgress[iid].type
 		}
 		localStorage.setItem('dev-improvement-inProgress-' + iid, JSON.stringify(idata))
 	}
