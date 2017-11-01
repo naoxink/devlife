@@ -62,6 +62,7 @@ Projects.createProjectButton = function(){
 		Projects.startProject(this)
 	})
 	Core._('#projects-section').appendChild(startProjectButton)
+	Stats.parallelProjects++
 	return startProjectButton
 }
 

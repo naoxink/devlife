@@ -240,7 +240,7 @@ ul > li > button {
 	border: 1px solid #0F0;
 	width: 300px;
 	z-index: 2;
-	top: 10px;
+	bottom: 20px;
 	left: 50%;
 	margin-left: -150px;
 }
@@ -401,6 +401,7 @@ ul > li > button {
 	float: left;
 	width: 95%;
 	border: 0;
+	font-family: monospace;
 }
 #command-prompt:before {
 	content: '>';
@@ -486,6 +487,10 @@ p.disabled {
 	display: none;
 	font-weight: normal;
 	max-width: 400px;
+}
+#tooltip.hidden {
+	border-color: #FF0;
+	color: #FF0;
 }
 .wild-pixel {
 	position: fixed;

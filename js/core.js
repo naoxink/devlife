@@ -33,6 +33,7 @@ Core.init = function(fromLoad){
 			}
 		}
 		Core.showImprovementButton('upgradeComputer')
+		Marquee.show('Welcome to devlife. You can now become the richest rich in the world.')
 	}else{
 		Core.checkAchievements(true)
 	}
@@ -50,7 +51,6 @@ Core.init = function(fromLoad){
 	// Core.refreshAchievementList()
 	Core.buildAchievementsList()
 	Core.updateHUD()
-	Marquee.show('Welcome to devlife. You can now become the richest rich in the world.')
 }
 
 Core.startMonthTimer = function(secondsLeft){
@@ -438,7 +438,7 @@ Core.save = function(silent){
 	localStorage.clear()
 	localStorage.setItem('dev-savedDate', new Date())
 	// Cuántos botones de empezar proyecto tenemos
-	localStorage.setItem('dev-startProject-button-count', Core._('.startProject', true).length)
+	localStorage.setItem('dev-stats-parallel-projects', Stats.parallelProjects)
 	// Proyectos activos
 	for(var pid in Core.projects){
 		var pdata = {
@@ -464,24 +464,20 @@ Core.save = function(silent){
 	for(var k in Core.base){
 		if(k === 'wildPixelTypes') continue
 		if(typeof Core.base[k] === 'object'){
-			localStorage.setItem('dev-core.base.' + k, JSON.stringify(Core.base[k]))
+			localStorage.setItem('dev-core-base-' + k, JSON.stringify(Core.base[k]))
 		}else{
-			localStorage.setItem('dev-core.base.' + k, Core.base[k])
+			localStorage.setItem('dev-core-base-' + k, Core.base[k])
 		}
 	}
 	// Stats
 	for(var k in Stats){
-		if(k === 'employees'){
-			for(var i = 0, len = Stats.employees.length; i < len; i++){
-				localStorage.setItem('dev-stats.employees.' + i, JSON.stringify(Stats.employees[i]))
-			}
-		}else if(k === 'improvements' || k === 'commandPrompt' || k === 'jobs' || k === 'showCase'){
-			localStorage.setItem('dev-stats.' + k, JSON.stringify(Stats[k]))
+		if(k === 'improvements' || k === 'jobs' || k === 'showCase'){
+			localStorage.setItem('dev-stats-' + k, JSON.stringify(Stats[k]))
 		}else{
-			localStorage.setItem('dev-stats.' + k, Stats[k])
+			localStorage.setItem('dev-stats-' + k, Stats[k])
 		}
 	}
-	// Investigaciones que se están mostrando
+	// Investigaciones que se están mostrando pero no están en progreso
 	for(var k in improvements){
 		if(improvements[k].showing && !improvements[k].inProgress){
 			localStorage.setItem('dev-improv-showing-' + k, JSON.stringify({
@@ -507,59 +503,25 @@ Core.save = function(silent){
 	}
 	localStorage.setItem('dev-achievements', achievementsStr)
 
-	localStorage.setItem('dev-css', Core._('#css').getAttribute('href'))
-	if(silent === false){
-		Core.showPopUp({
-			'title': 'Success!',
-			'description': 'Your game is saved in this browser!'
-		})
-	}else{
-		console.info('Game saved: ' + new Date())
-	}
+	Core.showPopUp({
+		'title': 'Success!',
+		'description': 'Your game is saved in this browser!'
+	})
 	return true
 }
 
 Core.load = function(){
 	if(!localStorage || !JSON || typeof JSON.parse !== 'function') return false
-	// Limpiar items de la tienda
-	var items = Core._('#shop .shopItem', true)
-	for(var i = 0, len = items.length; i < len; i++){
-		items[i].parentNode.removeChild(items[i])
-	}
-	// Limpiar botones de mejoras
-	var impButtons = Core._('.startImprovement', true)
-	for(var i = 0, len = impButtons.length; i < len; i++){
-		impButtons[i].parentNode.removeChild(impButtons[i])
-	}
-	// Limpiar botones de proyectos
-	var projectButtons = Core._('.startProject', true)
-	for(var i = 0, len = projectButtons.length; i < len; i++){
-		projectButtons[i].parentNode.removeChild(projectButtons[i])
-	}
-	// Limpiar estantería
-	var items = Core._('#showcase .item', true)
-	for(var i = 0, len = items.length; i < len; i++){
-		items[i].parentNode.removeChild(items[i])
-	}
-	// Limpieza de intervals/timeouts
-	clearInterval(window.monthInterval)
-	clearInterval(window.coffeeInterval)
-	clearInterval(window.energyDrinkInterval)
-	clearInterval(window.marketingCampaignInterval)
-	clearInterval(Core.timers.wildPixel)
-	window.monthInterval             = null
-	window.coffeeInterval            = null
-	window.energyDrinkInterval       = null
-	window.marketingCampaignInterval = null
-	Core.timers.wildPixel            = null
+	
+	Core.clean()
 
 	// Listar todo el localStorage
-	for (var i = 0; i < localStorage.length; i++){
-		var key = localStorage.key(i)
-		var value = localStorage.getItem(localStorage.key(i))
-		if(key.indexOf('dev-stats.') === 0){ // Stats
-			key = key.replace('dev-stats.', '')
-			if(key === 'jobs' || key === 'improvements' || key === 'commandPrompt' || key === 'showCase'){
+	for (var key in localStorage){
+		var value = localStorage.getItem(key)
+
+		if(key.indexOf('dev-stats-') === 0){ // Stats
+			key = key.replace('dev-stats-', '')
+			if(key === 'jobs' || key === 'improvements' || key === 'showCase'){
 				Stats[key] = JSON.parse(value)
 			}else{
 				if(['true', 'false'].indexOf(value) !== -1){
@@ -568,11 +530,13 @@ Core.load = function(){
 					Stats[key] = !isNaN(value) ? parseFloat(value) : value
 				}
 			}
+
 		}else if(key === 'dev-css'){ // CSS
 			value = value.replace(/(\?.*$)/, '?' + new Date().getTime())
 			Core._('#css').setAttribute('href', value)
-		}else if(key.indexOf('dev-core.base.') === 0){ // Core.base
-			key = key.replace('dev-core.base.', '')
+
+		}else if(key.indexOf('dev-core-base-') === 0){ // Core.base
+			key = key.replace('dev-core-base-', '')
 			if(value.indexOf('[') === 0 && value.indexOf(']') === value.length -1){
 				Core.base[key] = JSON.parse(value)
 			}else if(['true', 'false'].indexOf(value) !== -1){
@@ -580,18 +544,18 @@ Core.load = function(){
 			}else{
 				Core.base[key] = !isNaN(value) ? parseFloat(value) : value
 			}
+
 		}else if(key.indexOf('dev-shop-item-') === 0){ // Objetos de la tienda
 			key = key.replace('dev-shop-item-', '')
 			value = JSON.parse(value)
-			if(value.showing === true){
+			if(value.showing === true && !value.owned){
 				Shop.showItemButton(key)
 			}
 			Shop.items[key].owned = value.owned === true
+
 		}else if(key.indexOf('dev-improv-showing-') === 0){ // Estado de las mejoras
 			key = key.replace('dev-improv-showing-', '')
 			value = JSON.parse(value)
-			// improvements[key].label = value.label
-			// improvements[key].help = value.help
 			improvements[key].cost = value.cost
 			improvements[key].investigationTime = value.investigationTime
 			improvements[key].inProgress = value.inProgress
@@ -599,45 +563,16 @@ Core.load = function(){
 			if(value.showing && !value.inProgress){
 				Core.showImprovementButton(key)
 			}
-		}else if(key === 'dev-achievements'){
+
+		}else if(key === 'dev-achievements'){ // Restaurar logros
 			value = value.split('')
 			for(var i = 0, len = value.length; i < len; i++){
 				if(achievements[i] && value[i] === '1' && typeof achievements[i].unlock === 'function'){
 					achievements[i].unlock()
 				}
 			}
-		}
-	}
 
-	Core._('ul.job-list').innerHTML = ''
-	for(var i = 0, len = Stats.jobs.length; i < len; i++){
-		Core.addJobToList(Stats.jobs[i])
-	}
-
-	// Proyectos activos
-	if(Core.projects){
-		for(var pid in Core.projects){
-			if(Core.projects.hasOwnProperty(pid) && Core.projects[pid].timer){
-				clearInterval(Core.projects[pid].timer)
-			}
-		}
-	}
-	Core.Projects = {  }
-	// Investigaciones activas (Mejoras)
-	if(Core.improvementsInProgress){
-		for(var iid in Core.improvementsInProgress){
-			if(Core.improvementsInProgress.hasOwnProperty(iid) && Core.improvementsInProgress[iid].timer){
-				clearInterval(Core.improvementsInProgress[iid].timer)
-			}
-		}
-	}
-	Core.improvementsInProgress = {  }
-	// Retomar proyectos
-	// 1. Buscar los proyectos guardados
-	for (var i = 0; i < localStorage.length; i++){
-		var key = localStorage.key(i)
-		var value = localStorage.getItem(localStorage.key(i))
-		if(key.indexOf('dev-active-project-') === 0){
+		}else if(key.indexOf('dev-active-project-') === 0){ // Retomar proyectos
 			var projectData = JSON.parse(value)
 			Core.projects[key] = {
 				'profit': projectData.profit || 0,
@@ -650,39 +585,11 @@ Core.load = function(){
 			var button = Projects.createProjectButton()
 			// 3. Retomar proyecto
 			Projects.resumeProject(key, button)
-		}
-		// ** FALTA GUARDAR LOS PROYECTOS RÁPIDOS **
-		// if(key.indexOf('qproject-') === 0){
-		// 	var projectData = JSON.parse(value)
-		// 	Core.projects[key] = {
-		// 		'profit': projectData.profit || 0,
-		// 		'moneyPlus': projectData.moneyPlus || 0,
-		// 		'secondsLeft': projectData.secondsLeft || 0,
-		// 		'dateStart': new Date(projectData.dateStart) || new Date(),
-		// 		'dateEnd': new Date(projectData.dateEnd) || new Date()
-		// 	}
-		// 	// 2. Crear botón
-		// 	var button = Projects.createQuickProjectButton()
-		// 	// 3. Retomar proyecto
-		// 	Projects.resumeQuickProject(key, button)
-		// }
-	}
-	var startProjectButtonCount = localStorage.getItem('dev-startProject-button-count') || 1
-	if(Core._('.startProject', true).length < startProjectButtonCount){
-		while(Core._('.startProject', true).length < startProjectButtonCount){
-			Projects.createProjectButton()
-		}
-	}
-	
-	// Retomar investigaciones activas (Mejoras)
-	// 1. Buscar las investigaciones guardadas
-	for (var i = 0; i < localStorage.length; i++){
-		var key = localStorage.key(i)
-		var value = localStorage.getItem(localStorage.key(i))
-		if(key.indexOf('dev-improvement-inProgress-') === 0){
+
+		}else if(key.indexOf('dev-improvement-inProgress-') === 0){ // Retomar investigaciones activas (Mejoras)
 			var impData = JSON.parse(value)
-			Core.improvements[key] = {
-				'secondsLeft': impData.secondsLeft,
+			Core.improvementsInProgress[key] = {
+				'secondsLeft': impData.secondsLeft || 0,
 				'dateStart': new Date(impData.dateStart),
 				'dateEnd': new Date(impData.dateEnd),
 				'type': impData.type
@@ -691,6 +598,16 @@ Core.load = function(){
 			var button = Core.showImprovementButton(impData.type)
 			// 3. Retomar el progreso
 			Core.resumeImprovement(key, button)
+		}
+	}
+
+	for(var i = 0, len = Stats.jobs.length; i < len; i++){
+		Core.addJobToList(Stats.jobs[i])
+	}
+	var startProjectButtonCount = localStorage.getItem('dev-startProject-button-count') || 1
+	if(Core._('.startProject', true).length < startProjectButtonCount){
+		while(Core._('.startProject', true).length < startProjectButtonCount){
+			Projects.createProjectButton()
 		}
 	}
 
@@ -721,13 +638,17 @@ Core.load = function(){
 		Shop.items.marketingCampaign.buy(button, Stats.marketingCampaignTimeLeft)
 	}
 
-	// Wild pixels
-	var pixels = Core._('.wild-pixel', true)
-	for(var w = 0, len = pixels.length; w < len; w++){
-		if(w.parentNode){
-			w.parentNode.removeChild(w)
+	// Desbloquear objetos
+	for(var item in Shop.items){
+		var unlocks = Shop.items[item].unlocks
+		if(unlocks){
+			var unlockItem = Shop.items[unlocks]
+			if(!unlockItem.owned && !unlockItem.showing){
+				Shop.showItemButton(unlocks)
+			}
 		}
 	}
+
 	Core.initWildPixelSpawner()
 
 	Core.init(true) // Evitamos algunas líneas necesarias sólo al principio (Sin cargar)
@@ -737,6 +658,70 @@ Core.load = function(){
 		'description': 'Your game is loaded!'
 	})
 	return true
+}
+
+Core.clean = function(){
+	// Limpieza de intervals/timeouts
+	clearInterval(window.monthInterval)
+	clearInterval(window.coffeeInterval)
+	clearInterval(window.energyDrinkInterval)
+	clearInterval(window.marketingCampaignInterval)
+	clearInterval(Core.timers.wildPixel)
+	window.monthInterval             = null
+	window.coffeeInterval            = null
+	window.energyDrinkInterval       = null
+	window.marketingCampaignInterval = null
+	Core.timers.wildPixel            = null
+	Core.improvementsInProgress      = {  }
+	Core.Projects                    = {  }
+	Stats.parallelProjects           = 0
+
+	// Limpiar items de la tienda
+	var items = Core._('#shop .shopItem', true)
+	for(var i = 0, len = items.length; i < len; i++){
+		items[i].parentNode.removeChild(items[i])
+	}
+	// Limpiar botones de mejoras
+	var impButtons = Core._('.startImprovement', true)
+	for(var i = 0, len = impButtons.length; i < len; i++){
+		impButtons[i].parentNode.removeChild(impButtons[i])
+	}
+	// Limpiar botones de proyectos
+	var projectButtons = Core._('.startProject', true)
+	for(var i = 0, len = projectButtons.length; i < len; i++){
+		projectButtons[i].parentNode.removeChild(projectButtons[i])
+	}
+	// Limpiar estantería
+	var items = Core._('#showcase .item', true)
+	for(var i = 0, len = items.length; i < len; i++){
+		items[i].parentNode.removeChild(items[i])
+	}
+
+	// Proyectos activos
+	if(Core.projects){
+		for(var pid in Core.projects){
+			if(Core.projects.hasOwnProperty(pid) && Core.projects[pid].timer){
+				clearInterval(Core.projects[pid].timer)
+			}
+		}
+	}
+	// Investigaciones activas (Mejoras)
+	if(Core.improvementsInProgress){
+		for(var iid in Core.improvementsInProgress){
+			if(Core.improvementsInProgress.hasOwnProperty(iid) && Core.improvementsInProgress[iid].timer){
+				clearInterval(Core.improvementsInProgress[iid].timer)
+			}
+		}
+	}
+	// Wild pixels
+	var pixels = Core._('.wild-pixel', true)
+	for(var w = 0, len = pixels.length; w < len; w++){
+		if(pixels[w].parentNode){
+			pixels[w].parentNode.removeChild(pixels[w])
+		}
+	}
+	// Limpiar lista de trabajos
+	Core._('ul.job-list').innerHTML = ''
 }
 
 Core.notification = function(title, text){
@@ -785,6 +770,9 @@ Core.addListeners = function(){
 	Core._('#load').addEventListener('click', Core.load)
 	Core._('#reset').addEventListener('click', function(){
 		if(confirm('ALL PROGRESS WILL BE LOST, are you sure you want to RESET?')){
+			if(localStorage){
+				localStorage.clear()
+			}
 			window.location.reload()
 		}
 	})
@@ -800,7 +788,13 @@ Core.addListeners = function(){
 			if((event.clientX + 300) > window.innerWidth){
 				Core.tooltip.style.left = event.clientX - 430 + 'px'
 			}
+			if(Core.hasClass(event.target, 'hidden') || Core.hasClass(event.target.parentNode, 'hidden')){
+				Core.tooltip.className = 'hidden'
+			}else{
+				Core.tooltip.className = ''
+			}
 		}else{
+			Core.tooltip.className = ''
 			Core.tooltip.style.display = 'none'
 		}
 	}
@@ -825,8 +819,8 @@ Core.addClass = function(element, cssClass){
 
 Core.hasClass = function(element, cssClass){
 	if(!element || !element.className) return false
-	var rgx = new RegExp('\b*' + cssClass + '\b*')
-	return rgx.test(element.className)
+	if(element.classList) return element.classList.contains(cssClass)
+    return !!element.className.match(new RegExp('(\\s|^)' + cssClass + '(\\s|$)'))
 }
 
 Core.removeClass = function(element, cssClass){
@@ -869,12 +863,12 @@ Core.showPopUp = function(data){
 	}
 	var lastDocTitle = document.title
 	document.title = data.title
-	Core.timers.popup = setTimeout(function(){
-		if(Core._('.popup')){
-			Core._('.popup').parentNode.removeChild(Core._('.popup'))
-		}
-		document.title = lastDocTitle
-	}, 5000)
+	// Core.timers.popup = setTimeout(function(){
+	// 	if(Core._('.popup')){
+	// 		Core._('.popup').parentNode.removeChild(Core._('.popup'))
+	// 	}
+	// 	document.title = lastDocTitle
+	// }, 5000)
 	// Core.notification(data.title, data.description)
 }
 
@@ -907,30 +901,33 @@ Core.buildAchievementsList = function(){
 	td.className = 'header'
 	tr.appendChild(td)
 	table.appendChild(tr)
+	var unlock = function(){
+		this.done = true
+		Core.removeClass(this.element, 'locked')
+		Core.addClass(this.element, 'unlocked')
+		if(this.hidden){
+			if(this.help){
+				Core.setHelp(this.element, this.help)
+			}
+			this.element.querySelector('td:first-child').innerHTML = this.title
+			Stats.achievementsHiddenUnlocked++
+		}
+		this.element.querySelector('td:last-child').innerHTML = 'Unlocked'
+		Stats.achievementsUnlocked++
+		this.element.parentNode.parentNode.querySelector('tr:first-child td:first-child').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * 100) / Stats.achievementsCount).toFixed(1) + '%)'
+	}
+	var update = function(){
+		if(typeof this.progress !== 'function') return false
+		this.element.querySelector('td:first-child').innerHTML = this.title + ' <span class="achievement-progress-text">(' + this.progress() + ')</span>'
+	}
 	for(var i = 0, len = achievements.length; i < len; i++){
 		var tr = document.createElement('TR')
 		// Métodos de logros
 		achievements[i].element = tr
 		// Unlock
-		achievements[i].unlock = function(){
-			Core.removeClass(this.element, 'locked')
-			Core.addClass(this.element, 'unlocked')
-			if(this.hidden){
-				if(this.help){
-					Core.setHelp(this.element, this.help)
-				}
-				this.element.querySelector('td:first-child').innerHTML = this.title
-				Stats.achievementsHiddenUnlocked++
-			}
-			this.element.querySelector('td:last-child').innerHTML = 'Unlocked'
-			Stats.achievementsUnlocked++
-			this.element.parentNode.parentNode.querySelector('tr:first-child td:first-child').innerHTML = Stats.achievementsUnlocked + '/' + Stats.achievementsCount + ' (' + ((Stats.achievementsUnlocked * 100) / Stats.achievementsCount).toFixed(1) + '%)'
-		}
+		achievements[i].unlock = unlock.bind(achievements[i])
 		// Update progress
-		achievements[i].update = function(){
-			if(typeof this.progress !== 'function') return false
-			this.element.querySelector('td:first-child').innerHTML = this.title + ' <span class="achievement-progress-text">(' + this.progress() + ')</span>'
-		}
+		achievements[i].update = update.bind(achievements[i])
 		var title = achievements[i].title
 		if(achievements[i].hidden === true && !achievements[i].done){
 			title = '???'

@@ -107,6 +107,7 @@ Shop.items = {
 			}
 			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
 			Shop.items.coffee.showing = false
+			this.showing = false
 			Core.addToShowcase({
 				'title': 'Infinite Coffee contract (Permanent +' + (Core.base.coffeeInc * 100) + '% ' + Core.base.moneyChar + '/pulse)',
 				'image': 'items/coffee-contract.png'
@@ -134,6 +135,7 @@ Shop.items = {
 			}
 			Core._('#shop-item-energyDrink').parentNode.removeChild(Core._('#shop-item-energyDrink'))
 			Shop.items.energyDrink.showing = false
+			this.showing = false
 			Core.addToShowcase({
 				'title': 'Energy Partner (Permanent pulse speed: +' + (Core.base.energyDrinkInc) + '%',
 				'image': 'items/energy-partner.png'
@@ -194,16 +196,18 @@ Shop.items = {
 			}, 1000)
 		}
 	},
-	'virtualPersonalAssistant': {
+	'yaa': {
 		'showing': false,
 		'oneuse': true,
 		'initial': true,
 		'label': 'Y.A.A.',
 		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects<hr>Project time reduction: 1%',
 		'cost': 10000,
+		'unlocks': 'rasberryPi',
 		'buy': function(button){
 			Core.base.projectTimeReductionPercent += 1
 			this.owned = true
+			this.showing = false
 			Core.addToShowcase({
 				'title': 'Y.A.A. (Your Awesome Assistant) "What do you need?" (Project time reduction: 1%)',
 				'image': 'items/yaa.png'
@@ -219,6 +223,7 @@ Shop.items = {
 		'cost': 15000,
 		'buy': function(){
 			this.owned = true
+			this.showing = false
 			Stats.computerModel = 'Dev-MX300'
 			Stats.computerVersion = 1
 			Core.base.computerMultiplierCost = 612
@@ -247,6 +252,7 @@ Shop.items = {
 		'cost': 45000,
 		'buy': function(){
 			this.owned = true
+			this.showing = false
 			Stats.computerModel = 'Dev-550sx PRO'
 			Stats.computerVersion = 1
 			Core.base.computerMultiplierCost = 961
@@ -275,6 +281,7 @@ Shop.items = {
 		'cost': 100000000,
 		'buy': function(){
 			this.owned = true
+			this.showing = false
 			Core.addToShowcase({
 				'title': '"I\'m a rich b**ch" diamond plate (Useless)',
 				'image': 'items/diamond-plate.png'
@@ -290,6 +297,7 @@ Shop.items = {
 		'cost': 1000000,
 		'buy': function(){
 			this.owned = true
+			this.showing = false
 			Core.base.commandPromptInc *= 2
 			if(Stats.isEnergyDrinkPowered){
 				Core.base.energyDrinkInc = 0
@@ -299,6 +307,41 @@ Shop.items = {
 			Stats.computerModel = 'dev-mainframe'
 			Stats.computerVersion = 1
 		}
+	},
+	'rasberryPi': {
+		'showing': false,
+		'oneuse': true,
+		'initial': false,
+		'label': 'Raspberry Pi',
+		'help': 'Some room for your scripts<hr>Project time reduction: 2%',
+		'cost': 25000,
+		'unlocks': 'rasberryPi2',
+		'buy': function(button){
+			Core.base.projectTimeReductionPercent += 2
+			this.owned = true
+			this.showing = false
+			Core.addToShowcase({
+				'title': 'Raspberry Pi (Project time reduction: 2%)',
+				'image': 'items/rasp.png'
+			})
+		},
+	},
+	'rasberryPi2': {
+		'showing': false,
+		'oneuse': true,
+		'initial': false,
+		'label': 'Raspberry Pi 2',
+		'help': 'Some room for your scripts<hr>Project time reduction: 4%',
+		'cost': 50000,
+		'buy': function(button){
+			Core.base.projectTimeReductionPercent += 4
+			this.owned = true
+			this.showing = false
+			Core.addToShowcase({
+				'title': 'Raspberry Pi (Project time reduction: 4%)',
+				'image': 'items/rasp2.png'
+			})
+		},
 	}
 }
 
@@ -328,6 +371,9 @@ Shop.showItemButton = function(itemID){
 		if(item.oneuse){
 			this.parentNode.removeChild(this)
 			item.showing = false
+		}
+		if(item.unlocks && Shop.items[item.unlocks] && !Shop.items[item.unlocks].owned && !Shop.items[item.unlocks].showing){
+			Shop.showItemButton(item.unlocks)
 		}
 		Core.updateHUD()
 	}

@@ -148,10 +148,10 @@ var achievements = [
 		'title': 'Command prompt addict',
 		'help': 'Press 200 keys in the command prompt',
 		'check': function(){
-			return Stats.commandPrompt.keysPressed >= 200
+			return Stats.commandPromptKeysPressed >= 200
 		},
 		'progress': function(){
-			return '' + Stats.commandPrompt.keysPressed + '/' + 200
+			return '' + Stats.commandPromptKeysPressed + '/' + 200
 		},
 		'done': false
 	},
@@ -159,10 +159,10 @@ var achievements = [
 		'title': 'Key spammer',
 		'help': 'Make ' + Core.numberFormat(1000) + ' with the command prompt',
 		'check': function(){
-			return Stats.commandPrompt.moneyEarned >= 1000
+			return Stats.commandPromptMoneyEarned >= 1000
 		},
 		'progress': function(){
-			return '' + Core.numberFormat(Stats.commandPrompt.moneyEarned) + '/' + Core.numberFormat(1000)
+			return '' + Core.numberFormat(Stats.commandPromptMoneyEarned) + '/' + Core.numberFormat(1000)
 		},
 		'done': false
 	},
@@ -244,7 +244,7 @@ var achievements = [
 		'title': 'Keys on fire',
 		'help': 'Make ' + Core.numberFormat(10000) + ' with the command prompt',
 		'check': function(){
-			return Stats.commandPrompt.moneyEarned >= 10000
+			return Stats.commandPrompMoneyEarned >= 10000
 		},
 		'done': false,
 		'hidden': true
@@ -253,7 +253,7 @@ var achievements = [
 		'title': 'Key blender',
 		'help': 'Make ' + Core.numberFormat(100000) + ' with the command prompt',
 		'check': function(){
-			return Stats.commandPrompt.moneyEarned >= 100000
+			return Stats.commandPrompMoneyEarned >= 100000
 		},
 		'done': false,
 		'hidden': true
@@ -262,7 +262,7 @@ var achievements = [
 		'title': 'Command guru',
 		'help': 'Make ' + Core.numberFormat(1000000) + ' with the command prompt',
 		'check': function(){
-			return Stats.commandPrompt.moneyEarned >= 1000000
+			return Stats.commandPrompMoneyEarned >= 1000000
 		},
 		'done': false,
 		'hidden': true

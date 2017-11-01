@@ -7,21 +7,7 @@ var Stats = {
 	'money': 10,
 	'jobs': [  ],
 	'projects': 0,
-	'employees': [  ],
-	// Spaces
-	'houses': 1,
-	'rooms': 0,
-	'floors': 0,
-	'buildings': 0,
-	'warehouses': 0,
-	'availableSpaces': 3,
-	// Employees
-	'programmer-junior': 0,
-	'programmer-senior': 0,
-	'designer-web': 0,
-	'friend': 0,
-	'seo': 0,
-	'project-manager': 0,
+	'parallelProjects': 1,
 	// Statuses
 	'coffeesBought': 0,
 	'isCoffeePowered': false,
@@ -37,13 +23,11 @@ var Stats = {
 	'lotteryWins': 0,
 	'percentWon': 0,
 	'moneyWon': 0,
-	// Arrays
+	// Improvements
 	'improvements': [  ],
 	// Command prompt
-	'commandPrompt': {
-		'keysPressed': 0,
-		'moneyEarned': 0
-	},
+	'commandPromptKeysPressed': 0,
+	'commandPromptMoneyEarned': 0,
 	'showCase': [  ],
 	'wildPixelsClicked': 0,
 	'achievementsUnlocked': 0,

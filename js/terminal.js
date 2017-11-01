@@ -85,9 +85,9 @@ terminal.keyUp = function(e){
 		}
 	}
 	Stats.money += Core.base.commandPromptInc * window.commandPrompt.multiplier
-	Stats.commandPrompt.keysPressed++
+	Stats.commandPromptKeysPressed++
 	terminal.cpNumberAnimation() // Sobrecarga en algunas ocasiones (Firefox)
-	Stats.commandPrompt.moneyEarned += Core.base.commandPromptInc
+	Stats.commandPromptMoneyEarned += Core.base.commandPromptInc
 	if(this.value.length > Math.floor(Math.random() * 60) + 25 || e.keyCode === 13){
 		terminal.addToLog('$ ' + this.value)
 		terminal.checkCommand(this.value)
