@@ -134,8 +134,9 @@ terminal.enterDarkSide = function(){
 	var csstransition = document.createElement('STYLE')
 		csstransition.setAttribute('id', 'css-dark-side-transition')
 		csstransition.innerHTML = '* { transition: all .5s; }'
-	Core._('body').appendChild(csstransition)
+	Core._('head').appendChild(csstransition)
 	Core._('#css-dark-side').setAttribute('href', 'css/terminal-dark-side.css?' + new Date().getTime())
+	Core._('head').appendChild(Core._('#css-dark-side'))
 	setTimeout(function(){
 		csstransition.parentNode.removeChild(csstransition)
 		csstransition = null
