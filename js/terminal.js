@@ -39,7 +39,7 @@ terminal.cpNumberAnimation = function(){
 			cpna.style.opacity = parseFloat(cpna.style.opacity) - 0.01
 		}
 		
-	})
+	}, 1)
 }
 
 terminal.addToLog = function(text){
