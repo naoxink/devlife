@@ -156,7 +156,6 @@ terminal.checkCommand = function(text){
 			terminal.addToLog('! Achievement HACKED')
 			break
 		case 'init dark-side':
-			return terminal.addToLog('! `dark-side` temporarily DISABLED')
 			terminal.enterDarkSide()
 			terminal.addToLog('! Dark side ACTIVATED')
 			terminal.addToLog('! Antivirus not installed, please install using: "install dl-avirus"')
