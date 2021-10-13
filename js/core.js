@@ -441,14 +441,15 @@ Core.save = function(silent){
 	localStorage.setItem('dev-stats-parallel-projects', Stats.parallelProjects)
 	// Proyectos activos
 	for(var pid in Core.projects){
-		var pdata = {
-			'secondsLeft': Core.projects[pid].secondsLeft,
-			'moneyPlus': Core.projects[pid].moneyPlus,
-			'profit': Core.projects[pid].profit,
-			'dateStart': Core.projects[pid].dateStart,
-			'dateEnd': Core.projects[pid].dateEnd
-		}
-		localStorage.setItem('dev-active-project-' + pid, JSON.stringify(pdata))
+			var pdata = {
+				'secondsLeft': Core.projects[pid].secondsLeft,
+				'moneyPlus': Core.projects[pid].moneyPlus,
+				'profit': Core.projects[pid].profit,
+				'dateStart': Core.projects[pid].dateStart,
+				'dateEnd': Core.projects[pid].dateEnd,
+				'quick': !!Core.projects[pid].quick
+			}
+			localStorage.setItem('dev-active-project-' + pid, JSON.stringify(pdata))
 	}
 	// Investigaciones activas
 	for(var iid in Core.improvementsInProgress){
@@ -579,12 +580,21 @@ Core.load = function(){
 				'moneyPlus': projectData.moneyPlus || 0,
 				'secondsLeft': projectData.secondsLeft || 0,
 				'dateStart': new Date(projectData.dateStart) || new Date(),
-				'dateEnd': new Date(projectData.dateEnd) || new Date()
+				'dateEnd': new Date(projectData.dateEnd) || new Date(),
+				'quick': !!projectData.quick
 			}
-			// 2. Crear botón
-			var button = Projects.createProjectButton()
-			// 3. Retomar proyecto
-			Projects.resumeProject(key, button)
+			
+			if(Core.projects[key].quick){
+				// 2. Crear botón
+				const button = Projects.createQuickProjectButton()
+				// 3. Retomar proyecto
+				Projects.resumeQuickProject(key, button)
+			}else{
+				// 2. Crear botón
+				const button = Projects.createProjectButton()
+				// 3. Retomar proyecto
+				Projects.resumeProject(key, button)
+			}
 
 		}else if(key.indexOf('dev-improvement-inProgress-') === 0){ // Retomar investigaciones activas (Mejoras)
 			var impData = JSON.parse(value)
@@ -604,7 +614,7 @@ Core.load = function(){
 	for(var i = 0, len = Stats.jobs.length; i < len; i++){
 		Core.addJobToList(Stats.jobs[i])
 	}
-	var startProjectButtonCount = localStorage.getItem('dev-startProject-button-count') || 1
+	var startProjectButtonCount = localStorage.getItem('dev-stats-parallel-projects') || 1
 	if(Core._('.startProject', true).length < startProjectButtonCount){
 		while(Core._('.startProject', true).length < startProjectButtonCount){
 			Projects.createProjectButton()

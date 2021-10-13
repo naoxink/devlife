@@ -116,6 +116,7 @@ Projects.startQuickProject = function(button){
 	Core.projects[projectID].secondsLeft = projectTime
 	Core.projects[projectID].dateStart = new Date()
 	Core.projects[projectID].dateEnd = new Date(Date.now() + (projectTime * 1000))
+	Core.projects[projectID].quick = true
 
 	Projects.resumeQuickProject(projectID, button)
 }
