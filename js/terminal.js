@@ -39,7 +39,7 @@ terminal.cpNumberAnimation = function(){
 			cpna.style.opacity = parseFloat(cpna.style.opacity) - 0.01
 		}
 		
-	})
+	}, 1)
 }
 
 terminal.addToLog = function(text){
@@ -134,8 +134,9 @@ terminal.enterDarkSide = function(){
 	var csstransition = document.createElement('STYLE')
 		csstransition.setAttribute('id', 'css-dark-side-transition')
 		csstransition.innerHTML = '* { transition: all .5s; }'
-	Core._('body').appendChild(csstransition)
+	Core._('head').appendChild(csstransition)
 	Core._('#css-dark-side').setAttribute('href', 'css/terminal-dark-side.css?' + new Date().getTime())
+	Core._('head').appendChild(Core._('#css-dark-side'))
 	setTimeout(function(){
 		csstransition.parentNode.removeChild(csstransition)
 		csstransition = null
@@ -155,7 +156,6 @@ terminal.checkCommand = function(text){
 			terminal.addToLog('! Achievement HACKED')
 			break
 		case 'init dark-side':
-			return terminal.addToLog('! `dark-side` temporarily DISABLED')
 			terminal.enterDarkSide()
 			terminal.addToLog('! Dark side ACTIVATED')
 			terminal.addToLog('! Antivirus not installed, please install using: "install dl-avirus"')

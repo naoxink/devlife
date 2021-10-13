@@ -210,7 +210,7 @@ Core.addJobToList = function(job){
 }
 
 Core.quitJob = function(button){
-	button = button.srcElement
+	button = button.srcElement || button.target
 	var jobID = button.getAttribute('id')
 	if(!jobID) return false
 	var j = null
