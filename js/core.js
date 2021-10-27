@@ -651,11 +651,10 @@ Core.load = function(){
 	// Desbloquear objetos
 	for(var item in Shop.items){
 		var unlocks = Shop.items[item].unlocks
-		if(unlocks){
-			var unlockItem = Shop.items[unlocks]
-			if(!unlockItem.owned && !unlockItem.showing){
-				Shop.showItemButton(unlocks)
-			}
+		if(!unlocks) continue;
+		var unlockItem = Shop.items[unlocks]
+		if(Shop.items[item].owned && !unlockItem.owned){
+			Shop.showItemButton(unlocks)
 		}
 	}
 
@@ -1051,8 +1050,10 @@ Core.secondsDiff = function(date1, date2){
 
 // Wild Pixel
 Core.initWildPixelSpawner = function(){
+	if(Core.timers.wildPixel) return false;
 	var seconds = Math.floor(Math.random() * (Core.base.wildPixelMaxSpawnTime - Core.base.wildPixelMinSpawnTime + 1) + Core.base.wildPixelMinSpawnTime)
 	Core.timers.wildPixel = setTimeout(function(){
+		Core.timers.wildPixel = null;
 		Core.spawnWildPixel()
 		Core.initWildPixelSpawner()
 		setTimeout(function(){

@@ -7,7 +7,7 @@ var Stats = {
 	'money': 10,
 	'jobs': [  ],
 	'projects': 0,
-	'parallelProjects': 1,
+	'parallelProjects': 0,
 	// Statuses
 	'coffeesBought': 0,
 	'isCoffeePowered': false,
