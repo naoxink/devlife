@@ -5,7 +5,7 @@ Shop.items = {
 		'showing': false,
 		'oneuse': false,
 		'initial': true,
-		'label': 'Buy coffee',
+		'label': 'Coffee',
 		'help': 'Have a coffee and temporarily increase your money rate<hr>Money +' + (Core.base.coffeeInc * 100) + '% ' + Core.base.moneyChar + '/pulse',
 		'cost': 5,
 		'buy': function(button, secondsLeft){
@@ -17,20 +17,20 @@ Shop.items = {
 			button.setAttribute('disabled', true)
 			button.setAttribute('data-running', 'true')
 			Stats.coffeeTimeLeft = secondsLeft || Core.base.coffeeEffectTime
-			button.innerText = button.textContent = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
+			button.innerText = button.textContent = 'Time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
 			window.coffeeInterval = setInterval(function(){
 				if(Stats.coffeeTimeLeft <= 0){
 					Core.base.moneyIncPerPulse -= Stats.coffeeIncrement
 					Stats.coffeeIncrement = 0
 					Stats.isCoffeePowered = false
-					button.innerText = button.textContent = 'Buy Coffee (' + Core.numberFormat(Core.base.coffeePrice) + ')'
+					button.innerText = button.textContent = 'Buy for ' + Core.numberFormat(Core.base.coffeePrice)
 					button.removeAttribute('disabled')
 					button.removeAttribute('data-running')
 					clearInterval(window.coffeeInterval)
 					delete Stats.coffeeTimeLeft
 					Core.updateHUD()
 				}else{
-					button.innerText = button.textContent = 'Coffee time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
+					button.innerText = button.textContent = 'Time left: ' + Core.timeFormat(Stats.coffeeTimeLeft * 1000)
 					Stats.coffeeTimeLeft--
 				}
 			}, 1000)
@@ -40,7 +40,7 @@ Shop.items = {
 		'showing': false,
 		'oneuse': false,
 		'initial': true,
-		'label': 'Buy energy drink',
+		'label': 'Energy drink',
 		'help': 'Have an energy drink to boost your pulse speed<hr>Pulse speed +' + (Core.base.energyDrinkInc) + '%',
 		'cost': 15,
 		'buy': function(button, secondsLeft){
@@ -51,19 +51,19 @@ Shop.items = {
 			button.setAttribute('disabled', true)
 			button.setAttribute('data-running', 'true')
 			Stats.energyDrinkTimeLeft = secondsLeft || Core.base.energyDrinkEffectTime
-			button.innerText = button.textContent = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
+			button.innerText = button.textContent = 'Time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
 			window.energyDrinkInterval = setInterval(function(){
 				if(Stats.energyDrinkTimeLeft <= 0){
 					Core.base.pulseDuration /= Core.base.energyDrinkInc
 					Stats.isEnergyDrinkPowered = false
-					button.innerText = button.textContent = 'Buy Energy Drink (' + Core.numberFormat(Core.base.energyDrinkPrice) + ')'
+					button.innerText = button.textContent = 'Buy for ' + Core.numberFormat(Core.base.energyDrinkPrice)
 					button.removeAttribute('disabled')
 					button.removeAttribute('data-running')
 					clearInterval(window.energyDrinkInterval)
 					delete Stats.energyDrinkTimeLeft
 					Core.updateHUD()
 				}else{
-					button.innerText = button.textContent = 'Energy Drink time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
+					button.innerText = button.textContent = 'Time left: ' + Core.timeFormat(Stats.energyDrinkTimeLeft * 1000)
 					Stats.energyDrinkTimeLeft--
 				}
 			}, 1000)
@@ -105,7 +105,7 @@ Shop.items = {
 			if(Stats.coffeesBought < 200){
 				Stats.coffeesBought = 200
 			}
-			Core._('#shop-item-coffee').parentNode.removeChild(Core._('#shop-item-coffee'))
+			Core._('#shop-item-coffee').parentNode.parentNode.removeChild(Core._('#shop-item-coffee').parentNode)
 			Shop.items.coffee.showing = false
 			this.showing = false
 			Core.addToShowcase({
@@ -133,7 +133,7 @@ Shop.items = {
 			if(Stats.energyDrinksBought < 200){
 				Stats.energyDrinksBought = 200
 			}
-			Core._('#shop-item-energyDrink').parentNode.removeChild(Core._('#shop-item-energyDrink'))
+			Core._('#shop-item-energyDrink').parentNode.parentNode.removeChild(Core._('#shop-item-energyDrink').parentNode)
 			Shop.items.energyDrink.showing = false
 			this.showing = false
 			Core.addToShowcase({
@@ -147,7 +147,7 @@ Shop.items = {
 		'oneuse': false,
 		'initial': true,
 		'label': 'Company name change',
-		'help': '',
+		'help': 'Name your company as you want',
 		'cost': 5000,
 		'buy': function(){
 			var oldName = Stats.companyName
@@ -201,7 +201,7 @@ Shop.items = {
 		'oneuse': true,
 		'initial': true,
 		'label': 'Y.A.A.',
-		'help': '"Your Awesome Assistant" will help you in your everyday tasks so you can take more time for your projects<hr>Project time reduction: 1%',
+		'help': '"Your Awesome Assistant" will help you so you can take more time for your projects<hr>Project time reduction: 1%',
 		'cost': 10000,
 		'unlocks': 'rasberryPi',
 		'buy': function(button){
@@ -221,6 +221,7 @@ Shop.items = {
 		'label': 'PC Dev-MX300',
 		'help': 'You got the power!<hr>Project time reduction: 3%<br>Improvement time reduction: 10%<br>Command prompt key value: x2<br>Pulse speed increase: 0.15%',
 		'cost': 15000,
+		'unlocks': 'themeSwitcher',
 		'buy': function(){
 			this.owned = true
 			this.showing = false
@@ -342,25 +343,49 @@ Shop.items = {
 				'image': 'items/rasp2.png'
 			})
 		},
+	},
+	'themeSwitcher': {
+		'showing': false,
+		'oneuse': true,
+		'initial': false,
+		'label': 'Intranet theme switcher',
+		'help': 'Select a new visual style for your intranet',
+		'cost': 10000,
+		'buy': function(button){
+			this.owned = true
+			this.showing = false
+			ThemeSwitcher.init()
+		}
 	}
 }
 
 Shop.showItemButton = function(itemID){
 	if(!Shop.items[itemID]) return false
 	var item = Shop.items[itemID]
-	var button = document.createElement('BUTTON')
-	button.innerText = button.textContent = button.textContent = item.label + ' (' + Core.numberFormat(item.cost) + ')'
-	button.className = 'shopItem'
-	button.setAttribute('id', 'shop-item-' + itemID)
-	button.setAttribute('data-cost', item.cost)
+
+	const itemContainer = document.createElement('DIV')
+	itemContainer.className = 'shop-item-container'
+	const itemTitle = document.createElement('DIV')
+	itemTitle.className = 'shop-item-title'
+	const itemDescription = document.createElement('DIV')
+	itemDescription.className = 'shop-item-description'
+	const itemBuyButton = document.createElement('BUTTON')
+	itemBuyButton.className = 'shopItem shop-item-buy-button'
+
+	// Añadir texto al título
+	itemTitle.innerHTML = item.label
+
+	// Añadir texto de la descripción
+	itemDescription.innerHTML = item.help
+
+	// Cosas del botón
+	itemBuyButton.innerHTML = 'Buy for ' + Core.numberFormat(item.cost)
+	itemBuyButton.setAttribute('id', 'shop-item-' + itemID)
+	itemBuyButton.setAttribute('data-cost', item.cost)
 	if(Stats.money < item.cost){
-		button.setAttribute('disabled', true)
+		itemBuyButton.setAttribute('disabled', true)
 	}
-	if(item.help){
-		button.className += ' help'
-		button.setAttribute('data-title', item.help)
-	}
-	button.onclick = function(e){
+	itemBuyButton.onclick = function(e){
 		e.preventDefault()
 		if(Stats.money < item.cost){
 			this.setAttribute('disabled', true)
@@ -369,7 +394,7 @@ Shop.showItemButton = function(itemID){
 		Stats.money -= item.cost
 		item.buy(this)
 		if(item.oneuse){
-			this.parentNode.removeChild(this)
+			this.parentNode.parentNode.removeChild(this.parentNode)
 			item.showing = false
 		}
 		if(item.unlocks && Shop.items[item.unlocks] && !Shop.items[item.unlocks].owned && !Shop.items[item.unlocks].showing){
@@ -377,7 +402,11 @@ Shop.showItemButton = function(itemID){
 		}
 		Core.updateHUD()
 	}
-	Core._('#shop').appendChild(button)
+
+	itemContainer.appendChild(itemTitle)
+	itemContainer.appendChild(itemDescription)
+	itemContainer.appendChild(itemBuyButton)
+	Core._('#shop-items').appendChild(itemContainer)
 	item.showing = true
 	Core.updateHUD()
 }

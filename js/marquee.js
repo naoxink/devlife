@@ -15,7 +15,7 @@ Marquee.show = function(text){
 	}
 	Marquee.runing = true
 	Marquee._createContent(text)
-	Marquee.timer = setTimeout(Marquee._check, 10)
+	Marquee.timer = window.requestAnimationFrame(Marquee._check)
 }
 
 Marquee._createContent = function(text){
@@ -33,7 +33,6 @@ Marquee._check = function(){
 			Marquee._content.parentNode.removeChild(Marquee._content)
 		}
 		Marquee._content = null
-		Marquee.timer = null
 		Marquee.runing = false
 		if(Marquee.hasQueue()){
 			return Marquee.show(Marquee.getOne())
@@ -41,7 +40,7 @@ Marquee._check = function(){
 		return true
 	}
 	Marquee._content.style.left = (left - Marquee.jump) + 'px'
-	Marquee.timer = setTimeout(Marquee._check, 10)
+	Marquee.timer = window.requestAnimationFrame(Marquee._check)
 }
 
 Marquee.addToQueue = function(text){

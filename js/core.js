@@ -513,7 +513,7 @@ Core.save = function(silent){
 
 Core.load = function(){
 	if(!localStorage || !JSON || typeof JSON.parse !== 'function') return false
-	
+
 	Core.clean()
 
 	// Listar todo el localStorage
@@ -553,6 +553,10 @@ Core.load = function(){
 				Shop.showItemButton(key)
 			}
 			Shop.items[key].owned = value.owned === true
+			// Inicializar el theme switcher
+			if(key === 'themeSwitcher' && Shop.items[key].owned){
+				ThemeSwitcher.init()
+			}
 
 		}else if(key.indexOf('dev-improv-showing-') === 0){ // Estado de las mejoras
 			key = key.replace('dev-improv-showing-', '')
@@ -688,7 +692,7 @@ Core.clean = function(){
 	// Limpiar items de la tienda
 	var items = Core._('#shop .shopItem', true)
 	for(var i = 0, len = items.length; i < len; i++){
-		items[i].parentNode.removeChild(items[i])
+		items[i].parentNode.parentNode.removeChild(items[i].parentNode)
 	}
 	// Limpiar botones de mejoras
 	var impButtons = Core._('.startImprovement', true)

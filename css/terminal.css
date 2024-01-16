@@ -516,3 +516,36 @@ p.disabled {
 	left: 100%;
 	white-space: nowrap;
 }
+
+/* Shop  */
+#shop-items {
+	overflow: hidden;
+	text-align: center;
+}
+.shop-item-container {
+	float: left;
+	border: 1px solid #0F0;
+	width: 30%;
+	height: 150px;
+	margin: 5px;
+	padding: 5px;
+}
+
+.shop-item-title {
+	background-color: #0F0;
+	color: #000;
+	margin-bottom: 5px;
+}
+
+.shop-item-description {
+	font-weight: normal;
+}
+
+.shop-item-buy-button {
+	margin: 15px auto 0 auto;
+}
+
+.ts-button {
+	display: inline-block;
+	margin: 5px;
+}
